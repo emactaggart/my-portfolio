@@ -1,0 +1,115 @@
+@import url('https://fonts.googleapis.com/css?family=Raleway');
+/* @import 'profile-a.css'; */
+
+
+/* Header  */
+/* html, body { */
+    /* width: 100%; */
+/* } */
+
+header {
+    background: #1b2430;
+    color: white;
+    border-bottom: 3px solid cyan;
+    z-index: 1;
+    max-height: 100px;
+    overflow: hidden;
+    transition: max-height 1s ease;
+}
+
+.squeeze-out {
+    max-height: 0;
+    border: 0;
+    transition: max-height 0.5s ease;
+}
+
+.nav-link {
+    background: #1b2430;
+    color: white;
+    transition: color .5s ease;
+}
+
+a.nav-link:hover {
+    color: salmon;
+}
+
+.canvas-container {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.crazy-canvas {
+    z-index: -1;
+    background: darkslategrey;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    /* min-height: 100%; */
+    /* min-width: 100%; */
+}
+
+/* Footer */
+
+.footer {
+    background: #1b2430;
+    color: white;
+}
+
+/* Sections */
+
+.home {
+    background: transparent;
+    font-family: Raleway;
+    color: white;
+    min-height: 100vh;
+}
+
+.about {
+    background: lightblue;
+}
+
+.portfolio {
+    background: lightgreen;
+}
+
+/* Contact Section */
+
+.contact {
+    color: white;
+    background: #252931;
+    border-radius: 0;
+}
+
+.contact input, .contact input:focus, .contact textarea, .contact textarea:focus {
+    color: white;
+    border-radius: 0;
+    border: 0;
+    background: #1f242c;
+}
+
+.contact button {
+    color: white;
+}
+
+.garbage-btn {
+    background-color: Transparent;
+    border-radius: 0px;
+    border: 2px solid white;
+}
+
+.garbage-btn:hover {
+    background-color: salmon;
+    border-color: salmon;
+    transition-duration: 0.5s;
+}
+
+.garbage-btn .rotate-90-animation {
+    transition: transform .5s ease-in-out
+}
+
+.garbage-btn:hover .rotate-90-animation {
+    transition-duration: 0.5s;
+    transform: rotate(90deg);
+}
+

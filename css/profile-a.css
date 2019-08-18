@@ -1,0 +1,20 @@
+/* .garbage-btn { */
+/*     background-color: Transparent; */
+/*     border-radius: 0px; */
+/*     border: 2px solid white; */
+/* } */
+
+/* .garbage-btn:hover { */
+/*     background-color: salmon; */
+/*     border-color: salmon; */
+/*     transition-duration: 0.5s; */
+/* } */
+
+/* .garbage-btn .rotate-90 { */
+/*     transition: transform .5s ease-in-out */
+/* } */
+
+/* .garbage-btn:hover .rotate-90 { */
+/*     transition-duration: 0.5s; */
+/*     transform: rotate(90deg); */
+/* } */

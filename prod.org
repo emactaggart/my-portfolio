@@ -1,0 +1,173 @@
+* Prod
+** DONE Wire up send message functionality
+   CLOSED: [2019-07-23 Tue 22:34]
+   :LOGBOOK:
+   CLOCK: [2019-07-18 Tue 16:07]--[2019-07-18 Tue 18:54] =>  2:47
+   :END:
+*** DONE (send-email)
+    CLOSED: [2019-07-18 Thu 19:00]
+*** DONE form submit
+    CLOSED: [2019-07-23 Tue 10:46]
+*** DONE jquery post
+    CLOSED: [2019-07-23 Tue 10:46]
+** DONE Validations [1/1]
+   CLOSED: [2019-07-25 Thu 19:52]
+   :LOGBOOK:
+   CLOCK: [2019-07-25 Thu 11:27]--[2019-07-25 Thu 16:00] =>  4:33
+   :END:
+   - [X] client
+     - [X] Name
+     - [X] Email
+     - [X] Messagen
+   - [X] server
+     - [X] Name
+     - [X] Email
+     - [X] Message
+*** DONE Create validation framework
+    CLOSED: [2019-07-26 Fri 19:11]
+    :LOGBOOK:
+    CLOCK: [2019-07-24 Wed 16:30]--[2019-07-24 Wed 21:36] =>  5:06
+    :END:
+** TODO Pre Deploy Security [2/6]
+   - [ ] Don't leak server version (perhaps migrate to clack or caveman? https://github.com/fukamachi/caveman )
+     - look into hunchentoot reply objects
+   - [X] Improved logging... 
+*** TODO Pen test and Security Review
+   - [ ] Security Review https://www.google.com/search?ei=3o44XdpO2Na1BpXIsvAH&q=hunchentoot+security+review&oq=hunchentoot+security+review&gs_l=psy-ab.3..33i160.106483.107725..107897...0.0..0.216.930.0j6j1......0....1..gws-wiz.......0i71j33i21.g_mCbXDATCI&ved=0ahUKEwjateyPhM7jAhVYa80KHRWkDH4Q4dUDCAo&uact=5
+   - [ ] https://zaries.wordpress.com/2010/11/09/lisp-web-server-from-scratch-using-hunchentoot-and-nginx/
+   - [ ] https://zaries.wordpress.com/2010/12/22/hunchentoot-webserver-and-application-security/
+*** TODO Cleanup Endpoints
+    - [X] deal with acceptors and other schnazz
+    - [ ] verify default hunchentoot 404s and other statuses working
+*** TODO Cleanup acceptor
+    - [ ] Threading
+    - [ ] C-c'ing
+*** DONE API key storage
+    CLOSED: [2019-07-25 Thu 22:29]
+    :LOGBOOK:
+    CLOCK: [2019-07-25 Thu 20:29]--[2019-07-25 Thu 22:29] =>  2:00
+    :END:
+*** DONE Basic Logging
+    CLOSED: [2019-07-26 Fri 19:06]
+    - [X] Requests
+    - [X] Emails
+*** TODO Improve logging functionality
+    - [ ] log hunchentoot:*request* objects with slots
+    - [ ] get requesting IP
+    - [ ] get requesting GET POST variables
+    - [ ] make wrapper to apply to all handlers
+    - [ ] Future: Don't log passwords!
+** TODO Post Deploy Security
+   - [ ] Certificate & Signature
+   - [ ] DNS
+   - [ ] Database password storage
+   - [ ] HTTPS
+   - [ ] Mailgun best practices https://www.mailgun.com/blog/domain-reputation-and-dmarc
+   - [ ] https://documentation.mailgun.com/en/latest/best_practices.html#reputation
+** DONE Home Section [3/3] 3:21:19 
+   CLOSED: [2019-07-19 Fri 17:24]
+   - [X] Title and Welcome
+   - [X] Canvas
+   - [X] View button
+** TODO About Section [1/3]
+*** TODO Profile photo
+*** TODO Skills [1/2]
+    :LOGBOOK:
+    CLOCK: [2019-07-23 Tue 15:30]--[2019-07-23 Tue 16:00] =>  0:00
+    :END:
+    - [X] Languages - Java, Javascript, SQL
+    # - [ ] Technologies
+    # - [ ] Programs
+    # - [ ] Stacks?
+    - [ ] Progress bars
+*** DONE Icon descriptions [4/4]
+    CLOSED: [2019-07-23 Tue 22:28]
+    - [X] Full Stack - From UI design to data modeling I am capable of working full stack.
+    - [X] Devops - I'm not afraid to get my hands dirty in bashy build scripts.
+    - [X] Imperfections - I'm only human but willing am working towards attaining wizard status!
+    - [X] Functional - Functions for first class citizens! Funcations are Dataers Too!
+** DONE Mobile Responsive [2/2]
+   CLOSED: [2019-07-23 Tue 22:28]
+   :LOGBOOK:
+   CLOCK: [2019-07-23 Tue 16:00]--[2019-07-23 Tue 20:30] =>  4:30
+   :END:
+   - [X] Sizing
+   - [X] Scrolling
+** TODO Page Hosting [0/5]
+   - [ ] Domain name
+   - [ ] Rocketmail domain name
+   - [ ] Deployement
+   - [ ] Hosting Provider
+   - [ ] Docker Shenanigans
+** TODO Testing [/]
+   - [ ] Unit tests
+** DONE Generic pathnaming
+   CLOSED: [2019-07-31 Wed 14:44]
+** TODO Error and other HTTP Status pages
+
+** House Keeping & Goodies [0/7]
+*** TODO Devops [0/3]
+    - [ ] CI Server (Gitlab?)
+    - [ ] Automated deploy
+    - [ ] Git repo
+*** TODO UI [0/3]
+    - [ ] Mobile scrolling with Nav header
+    - [ ] Cleanup colors
+    - [ ] Less blatant copying?
+    - [ ] Hover over links description?
+*** TODO Macros
+    - [ ] Jquery marco
+    - [ ] onclick macro
+    - [ ] http://lisp-univ-etc.blogspot.com/2009/03/cl-who-macros.html
+    - 
+*** TODO Misc
+    - [ ] Code quality and duplication (more macros?)
+      - [ ] email-sender cleanup https://github.com/40ants/mailgun/blob/master/src/core.lisp 
+    - [ ] Cleanup junk code & create junk project
+    - [ ] Create project template
+    - [ ] Cookies
+    - [ ] performance
+    - [ ] load times
+    - [ ] email server
+    - [ ] server controls and startup
+    - [ ] D3 Bubble Plot
+    - [ ] Google analytics
+    - [ ] Profile performance
+    - [ ] session
+
+*** TODO Animations [1/6]
+    :LOGBOOK:
+    CLOCK: [2019-07-19 Fri 16:25]--[2019-07-19 Fri 17:13] =>  0:48
+    CLOCK: [2019-07-19 Fri 14:30]--[2019-07-19 Fri 15:32] =>  1:02
+    :END:
+    - [X] Nav bar
+    - [ ] Home
+    - [ ] About
+    - [ ] Portfolio
+    - [ ] Contact
+    - [ ] Footer
+*** TODO Browser Support [0/1]
+    - [ ] TODO IE Message
+*** TODO index.txt and robots.txt and sitemaps
+    - types of robots
+    - html <meta> robots directive
+    - http response headers x-robots-tag
+    - .htaccess hunchentoot equivalent?
+** Bugs [1/1]
+*** DONE None :)
+    CLOSED: [2019-07-23 Tue 22:34]
+** TODO Rename project
+** TODO Handler logging file size growth
+** TODO log4cl
+#+src 
+;; NOTE eventually upgrade to log4cl from hunchentoot's default logging functionality
+(defun log4cl-setup ()
+  (when (string= "PROD" (get-config "PROFILE"))
+    (log4cl:remove-all-appenders log4cl:*root-logger*)
+    ;; TODO standardized logging file location? /var/log/lisp-application.log
+    (log:config :daily "~/lisp-application.log" :backup t)
+    (setf (log4cl:logger-log-level log4cl:*root-logger*) log4cl:+log-level-info+))
+  (when (string= "DEV" (get-config "PROFILE"))
+    ;; TODO figure out how to setup a default log4cl instance...
+    nil))
+#+end_src

@@ -10,6 +10,8 @@
 
 (defun main ()
   (print "Starting server on port 8080")
+
+  ;; this should be in the thread?
   (start-server)
   ;; let the webserver run.
   ;; warning: hardcoded "hunchentoot".
@@ -30,7 +32,13 @@
 
 (defun start-server ()
   (setf **acceptor**
-        (start (make-instance 'easy-acceptor :port 8080))))
+        (start (make-instance 'easy-acceptor
+                              :port 8080
+                              :document-root #p"/dev/null"
+                              ;; :acceptor-error-template-directory #p"/dev/null"
+                              :access-log-destination (merge-pathnames "access.log")
+                              :message-log-destination (merge-pathnames "message.log")
+                              ))))
 
 (defun stop-server ()
   (when (not (hunchentoot::acceptor-shutdown-p **acceptor**))

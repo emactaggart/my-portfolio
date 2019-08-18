@@ -2,15 +2,26 @@
   :version "0.0.0"
   :author ""
   :license ""
-  :depends-on (:cl-fad
+  :depends-on (:alexandria
+               :bordeaux-threads
+               :cl-arrows
+               :cl-fad
+               :cl-ppcre
                :cl-who
+               :dexador
                :hunchentoot
+               :jsown
+               ;; :log4cl ;; implement this later and replace hunchentoot's default logging
                :parenscript
                :prove
-               :bordeaux-threads)
+               :uiop)
   :components ((:module "src"
                 :components
-                ((:file "handler")
+                ((:file "config")
+                 (:file "email-sender"
+                  :depends-on ("config"))
+                 (:file "handler"
+                  :depends-on ("email-sender"))
                  (:file "control"
                   :depends-on ("handler")))))
   :description ""
