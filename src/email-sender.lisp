@@ -26,7 +26,7 @@
                     :verbose t)
     (t (e)
       (log-message* :error
-       "Failed to send email with parameters from: " from " to: " to " subject: " subject " text: " message)
+       "Failed to send email with parameters from: ~s to: ~s subject: ~s text: ~s" from to subject message)
        e )))
 
 (defun send-to-self (name from message)

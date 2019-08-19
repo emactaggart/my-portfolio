@@ -36,6 +36,6 @@ EXPOSE 8080
 # CMD [""]
 # ENTRYPOINT ["/bin/bash"]
 
-ENTRYPOINT ["sbcl", "--eval", "(ql:quickload 'prod)", "--eval", "(control:main)"]
+ENTRYPOINT ["sbcl", "--eval", "(ql:quickload 'prod)", "--eval", "(control:start-server)"]
 # ENTRYPOINT ["sbcl", "--load", "/usr/src/app/main.lisp"]
 

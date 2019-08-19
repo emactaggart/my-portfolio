@@ -28,20 +28,22 @@
     :LOGBOOK:
     CLOCK: [2019-07-24 Wed 16:30]--[2019-07-24 Wed 21:36] =>  5:06
     :END:
-** TODO Pre Deploy Security [2/6]
-   - [ ] Don't leak server version (perhaps migrate to clack or caveman? https://github.com/fukamachi/caveman )
+** TODO Pre Deploy Security [4/7]
+   - [ ] Don't leak server version +(perhaps migrate to clack or caveman? https://github.com/fukamachi/caveman )+
      - look into hunchentoot reply objects
    - [X] Improved logging... 
 *** TODO Pen test and Security Review
    - [ ] Security Review https://www.google.com/search?ei=3o44XdpO2Na1BpXIsvAH&q=hunchentoot+security+review&oq=hunchentoot+security+review&gs_l=psy-ab.3..33i160.106483.107725..107897...0.0..0.216.930.0j6j1......0....1..gws-wiz.......0i71j33i21.g_mCbXDATCI&ved=0ahUKEwjateyPhM7jAhVYa80KHRWkDH4Q4dUDCAo&uact=5
    - [ ] https://zaries.wordpress.com/2010/11/09/lisp-web-server-from-scratch-using-hunchentoot-and-nginx/
    - [ ] https://zaries.wordpress.com/2010/12/22/hunchentoot-webserver-and-application-security/
-*** TODO Cleanup Endpoints
+*** DONE Cleanup Endpoints [2/2]
+    CLOSED: [2019-08-18 Sun 16:22]
     - [X] deal with acceptors and other schnazz
-    - [ ] verify default hunchentoot 404s and other statuses working
+    - [X] verify default hunchentoot 404s and other statuses working
 *** TODO Cleanup acceptor
     - [ ] Threading
     - [ ] C-c'ing
+*** TODO Find better Lisp code formatter
 *** DONE API key storage
     CLOSED: [2019-07-25 Thu 22:29]
     :LOGBOOK:
@@ -51,12 +53,13 @@
     CLOSED: [2019-07-26 Fri 19:06]
     - [X] Requests
     - [X] Emails
-*** TODO Improve logging functionality
-    - [ ] log hunchentoot:*request* objects with slots
-    - [ ] get requesting IP
-    - [ ] get requesting GET POST variables
-    - [ ] make wrapper to apply to all handlers
-    - [ ] Future: Don't log passwords!
+*** DONE Improve logging functionality [4/4]
+    CLOSED: [2019-08-18 Sun 16:21]
+    - [X] log hunchentoot:*request* objects with slots
+      # using default hunchentoot logging so close enough
+    - [X] get requesting IP
+    - [X] get requesting GET POST variables
+    - [X] make wrapper to apply to all handlers
 ** TODO Post Deploy Security
    - [ ] Certificate & Signature
    - [ ] DNS
@@ -64,6 +67,8 @@
    - [ ] HTTPS
    - [ ] Mailgun best practices https://www.mailgun.com/blog/domain-reputation-and-dmarc
    - [ ] https://documentation.mailgun.com/en/latest/best_practices.html#reputation
+** TODO Deployable build script
+   - [ ] grab vendor dependencies
 ** DONE Home Section [3/3] 3:21:19 
    CLOSED: [2019-07-19 Fri 17:24]
    - [X] Title and Welcome
@@ -75,11 +80,9 @@
     :LOGBOOK:
     CLOCK: [2019-07-23 Tue 15:30]--[2019-07-23 Tue 16:00] =>  0:00
     :END:
-    - [X] Languages - Java, Javascript, SQL
-    # - [ ] Technologies
-    # - [ ] Programs
-    # - [ ] Stacks?
-    - [ ] Progress bars
+    - [ ] D3 bubble diagram
+    - [ ] Language with project experience and future ambitions
+    - [X] ...There are no skills
 *** DONE Icon descriptions [4/4]
     CLOSED: [2019-07-23 Tue 22:28]
     - [X] Full Stack - From UI design to data modeling I am capable of working full stack.
@@ -99,11 +102,16 @@
    - [ ] Deployement
    - [ ] Hosting Provider
    - [ ] Docker Shenanigans
-** TODO Testing [/]
+** TODO Testing [0/1]
    - [ ] Unit tests
+   - [ ] End to end integration testing (phantom.js?)
 ** DONE Generic pathnaming
    CLOSED: [2019-07-31 Wed 14:44]
 ** TODO Error and other HTTP Status pages
+   - [ ] 404
+   - [ ] 50x
+   - [ ] 40x
+   - [ ] maintenance pages? This might require higher level nginx stuff
 
 ** House Keeping & Goodies [0/7]
 *** TODO Devops [0/3]
@@ -153,6 +161,9 @@
     - html <meta> robots directive
     - http response headers x-robots-tag
     - .htaccess hunchentoot equivalent?
+*** TODO improve validation logic 
+    - check out the design of https://github.com/fisxoj/validate
+
 ** Bugs [1/1]
 *** DONE None :)
     CLOSED: [2019-07-23 Tue 22:34]
@@ -171,3 +182,30 @@
     ;; TODO figure out how to setup a default log4cl instance...
     nil))
 #+end_src
+** Server Daemon
+#+BEGIN_SRC common-lisp
+;; NOTE: maybe use this for deployment of webserver
+
+(require 'sb-daemon)
+(require 'swank)
+(require 'mysite)
+
+(progn
+  (defparameter *running* nil)
+  (defun launch-app (argv)
+    (declare (ignore argv))
+    (sb-daemon:daemonize :output "/tmp/mysite.output"
+                         :error "/tmp/mysite.error"
+                         :pidfile "/tmp/mysite.pid"
+                         :exit-parent t
+                         :sigterm (lambda (sig)
+                                    (declare (ignore sig))
+                                    (setf *running* nil)))
+    (swank:create-server :port 4006 :dont-close t)
+    (setf *running* t)
+    (mysite:start-app)
+    (loop while *running* do (sleep 10))
+    (mysite:stop-app)
+    (sb-ext:exit))
+  (launch-app nil))
+#+END_SRC

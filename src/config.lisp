@@ -4,8 +4,8 @@
 
 (in-package #:config)
 
-;; FIXME encrypt api keys
-(defvar **secrets-location** "~/.lisp-app-secrets-rc")
+;; FIXME use secret manager
+(defvar **secrets-location** ".app-secrets")
 (defvar **configs** (make-hash-table :test 'equal))
 
 (defun load-configs ()
