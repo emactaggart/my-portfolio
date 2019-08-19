@@ -8,3 +8,4 @@
 .#*
 /access.log
 /message.log
+/.app-secrets
