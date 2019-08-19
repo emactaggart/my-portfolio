@@ -209,3 +209,5 @@
     (sb-ext:exit))
   (launch-app nil))
 #+END_SRC
+** TODO Application Secrets
+   - Figure out how to use Docker secrets without mangling the development experience
