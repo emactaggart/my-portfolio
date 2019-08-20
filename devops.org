@@ -147,16 +147,6 @@ drwxr-xr-x. 20 root root 4096 Aug 20 14:02 ..
 
  #+END_SRC
 
-
-
-*** Exit shells
-#+begin_src sh :session docker
-  (quit)
-  exit
-  # TODO ideally cleanup the newly created container, for now just use docker.el *shrug*
-  exit
-#+end_src
-
 *** Future Improvemens [0/3]
 **** TODO Cache the quicklisp dependencies 
      It would be possilble to link a volume for the dev environment?
