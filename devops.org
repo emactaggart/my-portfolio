@@ -1,13 +1,9 @@
 * Devops  
   Special thanks to [[https://github.com/wrightmikea/simple-docker-tangle][wrightmikea]]!
 ** Overview
-Create a shell session to set up docker environment.
-Create directories to be shared with Docker
-Tangle a Dockerfile
-Use docker shell session to run docker build.
-Use docker shell session to run a command in the built container.
-** Dev Environment Setup                                                :dev:docker:setup:
-*** set docker environement variables; create test data in to-be-shared directory
+   Trying out some literate devops
+** Docker setup                                            :dev:docker:setup:
+*** Setup env variables
 #+name: setup
 #+BEGIN_SRC sh :results output verbatim :session docker
 eval "$(docker-machine env default)"
@@ -16,7 +12,7 @@ eval "$(docker-machine env default)"
 #+RESULTS: setup
 : Docker machine "default" does not exist. Use "docker-machine ls" to list machines. Use "docker-machine create" to add a new one.
 
-*** verify docker is working                                :dev:docker:setup:
+*** Verify Docker works                                    :dev:docker:setup:
 #+name: verify-docker
 #+BEGIN_SRC sh :results output verbatim replace :session docker
 echo "show docker env"
@@ -57,6 +53,29 @@ my-container
 #+end_example
 
 ** Dockerfile Creation and deployment
+
+*** Configure Logging Directory
+#+name: configure-logging-directory
+#+begin_src sh :dir "/sudo::/var/log" :results output verbatim drawer replace :var dir="evan-webapp" username=(user-login-name)
+  mkdir $dir
+  touch $dir/access.log
+  touch $dir/message.log
+  chown -R $username:$username $dir
+  chmod 755 $dir
+  pwd
+  ls -al $dir
+#+end_src
+
+#+RESULTS: configure-logging-directory
+:RESULTS:
+/var/log
+total 12
+drwxr-xr-x.  2 evan evan 4096 Aug 20 15:23 .
+drwxr-xr-x. 20 root root 4096 Aug 20 14:02 ..
+-rw-r--r--.  1 evan evan 1139 Aug 20 15:28 access.log
+-rw-r--r--.  1 evan evan    0 Aug 20 15:28 message.log
+:END:
+
 *** Generate a Dockerfile for the project
 #+name: generate-dockerfile
 #+BEGIN_SRC dockerfile :padline no :tangle Dockerfile
@@ -92,10 +111,6 @@ my-container
     sbcl --load quicklisp.lisp --quit --eval '(quicklisp-quickstart:install)'
 
   COPY sbclrc /root/.sbclrc
-
-  # TODO handle configurations via volumes?
-  # TODO handle secret location via volumes?
-  # TODO handle log location via volumes?
   COPY ./ /root/prod/
   RUN ln -s /root/prod/prod.asd /root/quicklisp/local-projects/
 
@@ -103,33 +118,53 @@ my-container
 
   WORKDIR /root
 
-  # TODO can we cache quicklisp install folders to avoid installing everytime? Should we?
-  # CMD [""]
   ENTRYPOINT ["/bin/bash"]
-
-  # ENTRYPOINT ["sbcl", "--eval", "(ql:quickload 'prod)", "--eval", "(control:start-server)"]
-  # ENTRYPOINT ["sbcl", "--load", "/usr/src/app/main.lisp"]
+  # CMD ["/bin/bash"]
+  # CMD ["sbcl", "--eval", "(ql:quickload 'prod)", "--eval", "(control:start-server)"]
 
 #+END_SRC
 
 *** Docker Build
 #+name: build-image
 #+BEGIN_SRC sh :results none :session docker
-   echo "----BUILDING-----"
+   echo "---- Building Docker File -----"
    docker build -t evan-webapp ./
 #+END_SRC
 
 *** Docker Run
  #+name: run-image
- #+BEGIN_SRC sh :results none :session docker
-   echo "-----RUNNING-----"
-   docker run -it -p8080:8080 -v ~/.prodrc:/root/.devrc:ro evan-webapp
+ #+BEGIN_SRC sh :results none :session docker :var application_name="evan-webapp"
+   # TODO run as -d detached after finished testing
+   ## Various other flags that might be useful during development
+   # -d
+   # -e "TZ=America/Regina" \ # it would appear that time zone is unecessary for logging
+
+   echo "----- Running Docker Container -----"
+   docker run -it -p 8080:8080 \
+          -v ~/.prodrc:/root/.devrc:ro \
+          -v /var/log/$application_name:/var/log/$application_name \
+          $application_name
+
  #+END_SRC
 
+
+
+*** Exit shells
+#+begin_src sh :session docker
+  (quit)
+  exit
+  # TODO ideally cleanup the newly created container, for now just use docker.el *shrug*
+  exit
+#+end_src
+
+*** Future Improvemens [0/3]
 **** TODO Cache the quicklisp dependencies 
      It would be possilble to link a volume for the dev environment?
+     For production we should probably just install everything fresh? Load time is pretty bad though...
 **** TODO How do we want to execute main
 ***** Start in bash
 ***** Start with sbcl -eval
 ***** Create an executable
+**** TODO Monitor for time drift 
+     This appears to be a macos problem only.
 

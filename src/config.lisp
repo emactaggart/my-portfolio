@@ -1,6 +1,6 @@
 (defpackage #:config
   (:use #:cl)
-  (:export #:get-config #:get-config-or-error #:*application-root*))
+  (:export #:get-config #:get-config-or-error #:*application-root* #:*application-name*))
 
 (in-package #:config)
 
@@ -28,3 +28,5 @@
 
 (load-configs)
 (defvar *application-root* (truename (get-config-or-error "APPLICATION_ROOT")))
+(defvar *application-name* (get-config-or-error "APPLICATION_NAME"))
+

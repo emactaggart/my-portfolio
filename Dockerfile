@@ -30,10 +30,6 @@ RUN cd /tmp && \
   sbcl --load quicklisp.lisp --quit --eval '(quicklisp-quickstart:install)'
 
 COPY sbclrc /root/.sbclrc
-
-# TODO handle configurations via volumes?
-# TODO handle secret location via volumes?
-# TODO handle log location via volumes?
 COPY ./ /root/prod/
 RUN ln -s /root/prod/prod.asd /root/quicklisp/local-projects/
 
@@ -41,9 +37,6 @@ EXPOSE 8080
 
 WORKDIR /root
 
-# TODO can we cache quicklisp install folders to avoid installing everytime? Should we?
-# CMD [""]
 ENTRYPOINT ["/bin/bash"]
-
-# ENTRYPOINT ["sbcl", "--eval", "(ql:quickload 'prod)", "--eval", "(control:start-server)"]
-# ENTRYPOINT ["sbcl", "--load", "/usr/src/app/main.lisp"]
+# CMD ["/bin/bash"]
+# CMD ["sbcl", "--eval", "(ql:quickload 'prod)", "--eval", "(control:start-server)"]

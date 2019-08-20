@@ -7,6 +7,7 @@
 (in-package control)
 
 (defvar **acceptor** nil)
+(defvar log-directory (truename (merge-pathnames config:*application-name* #p"/var/log/")))
 
 (if (string= "DEV" (config:get-config "PROFILE"))
     (progn (setf hunchentoot:*show-lisp-errors-p* t)
@@ -28,8 +29,8 @@
                               :port 8080
                               ;; :document-root #p"/dev/null" ;; TODO eventually create custom error pages
                               ;; :acceptor-error-template-directory #p"/dev/null"
-                              :access-log-destination (merge-pathnames "access.log")
-                              :message-log-destination (merge-pathnames "message.log")))))
+                              :access-log-destination (merge-pathnames "access.log" log-directory)
+                              :message-log-destination (merge-pathnames "message.log" log-directory)))))
 
 (defun stop-server ()
   (when (not (hunchentoot::acceptor-shutdown-p **acceptor**))

@@ -23,7 +23,7 @@
                  (:file "handler"
                   :depends-on ("email-sender"))
                  (:file "control"
-                  :depends-on ("handler")))))
+                  :depends-on ("config" "handler")))))
   :description ""
   :in-order-to ((test-op (test-op "prod/tests"))))
 
