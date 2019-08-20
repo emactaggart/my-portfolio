@@ -40,9 +40,6 @@
     CLOSED: [2019-08-18 Sun 16:22]
     - [X] deal with acceptors and other schnazz
     - [X] verify default hunchentoot 404s and other statuses working
-*** TODO Cleanup acceptor
-    - [ ] Threading
-    - [ ] C-c'ing
 *** TODO Find better Lisp code formatter
 *** DONE API key storage
     CLOSED: [2019-07-25 Thu 22:29]
@@ -60,15 +57,43 @@
     - [X] get requesting IP
     - [X] get requesting GET POST variables
     - [X] make wrapper to apply to all handlers
-** TODO Post Deploy Security
+** TODO Cleanup control
+   Is threading necessary? 
+   - [ ] Threading
+   - [ ] C-c'ing
+*** Code in question:
+#+begin_src common-lisp
+(defun main ()
+  (print "starting server on port 8080")
+
+  ;; this should be in the thread?
+  (start-server)
+  ;; let the webserver run.
+  ;; warning: hardcoded "hunchentoot".
+  (handler-case (bt:join-thread (find-if (lambda (th)
+                                           (search "hunchentoot" (bt:thread-name th)))
+                                         (bt:all-threads)))
+    ;; catch a user's c-c
+    (#+sbcl sb-sys:interactive-interrupt
+     #+ccl  ccl:interrupt-signal-condition
+     #+clisp system::simple-interrupt-condition
+     #+ecl ext:interactive-interrupt
+     #+allegro excl:interrupt-signal
+     () (progn
+          (format *error-output* "aborting.~&")
+          (stop-server)
+          (uiop:quit)))
+    (error (c) (format t "woops, an unknown error occured:~&~a~&" c))))
+#+end_src
+** TODO Post Deploy Security Review [0/6]
    - [ ] Certificate & Signature
    - [ ] DNS
    - [ ] Database password storage
    - [ ] HTTPS
-   - [ ] Mailgun best practices https://www.mailgun.com/blog/domain-reputation-and-dmarc
-   - [ ] https://documentation.mailgun.com/en/latest/best_practices.html#reputation
+   - [ ] [[https://www.mailgun.com/blog/domain-reputation-and-dmarc][Mailgun Domain Reputation and DMARC]]
+   - [ ] [[https://documentation.mailgun.com/en/latest/best_practices.html#reputation][Mailgun Best Practices]]
 ** TODO Deployable build script
-   - [ ] grab vendor dependencies
+   - [ ] grab vendor dependencies... or store them in the repo...
 ** DONE Home Section [3/3] 3:21:19 
    CLOSED: [2019-07-19 Fri 17:24]
    - [X] Title and Welcome
@@ -106,7 +131,7 @@
    - [ ] Unit tests
    - [ ] End to end integration testing (phantom.js?)
 ** DONE Generic pathnaming
-   CLOSED: [2019-07-31 Wed 14:44]
+   CLOSED: [2019-08-20 Tue 12:01]
 ** TODO Error and other HTTP Status pages
    - [ ] 404
    - [ ] 50x
@@ -168,8 +193,13 @@
 *** DONE None :)
     CLOSED: [2019-07-23 Tue 22:34]
 ** TODO Rename project
+   /Perhaps grab a domain name first?/
+   - [ ] What should this project be called?
 ** TODO Handler logging file size growth
+   - [ ] use correct directory for storage
 ** TODO log4cl
+   *Is this necessary?* Perhaps only for learning purposes...
+   Probably an improvement over hunchentoot's mutex stuff
 #+src 
 ;; NOTE eventually upgrade to log4cl from hunchentoot's default logging functionality
 (defun log4cl-setup ()
@@ -181,8 +211,9 @@
   (when (string= "DEV" (get-config "PROFILE"))
     ;; TODO figure out how to setup a default log4cl instance...
     nil))
-#+end_src
-** Server Daemon
+    #+end_src
+** TODO Server Daemon
+   *Do we even need this? What is the benefit?*
 #+BEGIN_SRC common-lisp
 ;; NOTE: maybe use this for deployment of webserver
 
@@ -209,5 +240,11 @@
     (sb-ext:exit))
   (launch-app nil))
 #+END_SRC
-** TODO Application Secrets
-   - Figure out how to use Docker secrets without mangling the development experience
+** TODO Improve handling of application secrets
+   *Avoid creating a development environment nightmare*
+   - [[https://docs.docker.com/engine/swarm/secrets/][Docker Secrets]]
+   - [[https://www.vaultproject.io/][Vault]]
+** TODO Remove cl-fad
+   Reason: [[https://stackoverflow.com/a/44687561][According to this]]
+** TODO Dockerfile compatibility for macos, (windows)? 
+   More specifically the location of log files, ie /var/log

@@ -1,6 +1,8 @@
 (defpackage #:handler
   (:use #:cl #:hunchentoot #:parenscript #:cl-fad #:cl-who))
 
+
+
 (in-package #:handler)
 
 (setf cl-who:*attribute-quote-char* #\")
@@ -21,10 +23,10 @@
         (log-message* :error "Something blew up when calling: ~a with ~s" fn args)
         c))))
 
-(push (create-folder-dispatcher-and-handler "/css/" (merge-pathnames "css/")) *dispatch-table*)
-(push (create-folder-dispatcher-and-handler "/webfonts/" (merge-pathnames "vendor/fontawesome-free-5.9.0-web/webfonts/")) *dispatch-table*)
-(push (create-folder-dispatcher-and-handler "/resources/" (merge-pathnames "resources/")) *dispatch-table*)
-(push (create-static-file-dispatcher-and-handler "/favicon.ico" (merge-pathnames "resources/favicon.ico")) *dispatch-table*)
+(push (create-folder-dispatcher-and-handler "/css/" (merge-pathnames "css/" config:*application-root*)) *dispatch-table*)
+(push (create-folder-dispatcher-and-handler "/webfonts/" (merge-pathnames "vendor/fontawesome-free-5.9.0-web/webfonts/" config:*application-root*)) *dispatch-table*)
+(push (create-folder-dispatcher-and-handler "/resources/" (merge-pathnames "resources/" config:*application-root*)) *dispatch-table*)
+(push (create-static-file-dispatcher-and-handler "/favicon.ico" (merge-pathnames "resources/favicon.ico" config:*application-root*)) *dispatch-table*)
 
 (push (create-regex-dispatcher "^/$" (log-handler-wrapper 'profile-handler)) *dispatch-table*)
 (push (create-regex-dispatcher "/send-message" (log-handler-wrapper 'message-handler :log-response-body t)) *dispatch-table*)

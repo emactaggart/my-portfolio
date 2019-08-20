@@ -1,0 +1,135 @@
+* Devops  
+  Special thanks to [[https://github.com/wrightmikea/simple-docker-tangle][wrightmikea]]!
+** Overview
+Create a shell session to set up docker environment.
+Create directories to be shared with Docker
+Tangle a Dockerfile
+Use docker shell session to run docker build.
+Use docker shell session to run a command in the built container.
+** Dev Environment Setup                                                :dev:docker:setup:
+*** set docker environement variables; create test data in to-be-shared directory
+#+name: setup
+#+BEGIN_SRC sh :results output verbatim :session docker
+eval "$(docker-machine env default)"
+#+END_SRC
+
+#+RESULTS: setup
+: Docker machine "default" does not exist. Use "docker-machine ls" to list machines. Use "docker-machine create" to add a new one.
+
+*** verify docker is working                                :dev:docker:setup:
+#+name: verify-docker
+#+BEGIN_SRC sh :results output verbatim replace :session docker
+echo "show docker env"
+env | grep DOC
+docker run --name my-container hello-world
+echo "\n"
+docker container rm my-container
+echo "\n"
+#+END_SRC
+
+#+RESULTS: verify-docker
+#+begin_example
+show docker env
+sh-5.0$ 
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+
+To generate this message, Docker took the following steps:
+ 1. The Docker client contacted the Docker daemon.
+ 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+    (amd64)
+ 3. The Docker daemon created a new container from that image which runs the
+    executable that produces the output you are currently reading.
+ 4. The Docker daemon streamed that output to the Docker client, which sent it
+    to your terminal.
+
+To try something more ambitious, you can run an Ubuntu container with:
+docker run -it ubuntu bash
+
+Share images, automate workflows, and more with a free Docker ID:
+ https://hub.docker.com/
+
+For more examples and ideas, visit:
+ https://docs.docker.com/get-started/
+\n
+my-container
+\n
+#+end_example
+
+** Dockerfile Creation and deployment
+*** Generate a Dockerfile for the project
+#+name: generate-dockerfile
+#+BEGIN_SRC dockerfile :padline no :tangle Dockerfile
+  FROM daewok/sbcl:alpine
+
+  # COPY ./ /usr/src/app/
+
+  ## TODO Securer install of quicklisp (needs to be updated for alpine (no apt-get))
+  # RUN set -x \
+  #   && apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt \
+  #   && curl "https://beta.quicklisp.org/release-key.txt" > /tmp/quicklisp-release-key.txt \
+  #   && curl "https://beta.quicklisp.org/quicklisp.lisp" > /tmp/quicklisp.lisp \
+  #   && curl "https://beta.quicklisp.org/quicklisp.lisp.asc" > /tmp/quicklisp.lisp.asc \
+  #   && export GNUPGHOME="$(mktemp -d)" \
+  #   && gpg --batch --import /tmp/quicklisp-release-key.txt \
+  #   && gpg --batch --verify /tmp/quicklisp.lisp.asc /tmp/quicklisp.lisp \
+  #   && sync \
+  #   && sleep 2 \
+  #   && rm -rf "$GNUPGHOME" /tmp/quicklisp.lisp.asc \
+  #   && export HOME=/home/lisp \
+  #   && sbcl --no-sysinit --no-userinit --non-interactive \
+  #   --load /tmp/quicklisp.lisp \
+  #   --eval "(quicklisp-quickstart:install)" \
+  #   --eval "(ql::without-prompting (dolist (imp '(:sbcl :ccl :abcl :ecl)) (ql:add-to-init-file imp)))" \
+  #   && rm -rf /tmp/*
+
+  # FIXME remove this for production (but make available in development?)
+  RUN apk add --no-cache bash
+
+  # FIXME improve security and fingerprinting for quicklisp install...
+  RUN cd /tmp && \
+    wget https://beta.quicklisp.org/quicklisp.lisp && \
+    sbcl --load quicklisp.lisp --quit --eval '(quicklisp-quickstart:install)'
+
+  COPY sbclrc /root/.sbclrc
+
+  # TODO handle configurations via volumes?
+  # TODO handle secret location via volumes?
+  # TODO handle log location via volumes?
+  COPY ./ /root/prod/
+  RUN ln -s /root/prod/prod.asd /root/quicklisp/local-projects/
+
+  EXPOSE 8080
+
+  WORKDIR /root
+
+  # TODO can we cache quicklisp install folders to avoid installing everytime? Should we?
+  # CMD [""]
+  ENTRYPOINT ["/bin/bash"]
+
+  # ENTRYPOINT ["sbcl", "--eval", "(ql:quickload 'prod)", "--eval", "(control:start-server)"]
+  # ENTRYPOINT ["sbcl", "--load", "/usr/src/app/main.lisp"]
+
+#+END_SRC
+
+*** Docker Build
+#+name: build-image
+#+BEGIN_SRC sh :results none :session docker
+   echo "----BUILDING-----"
+   docker build -t evan-webapp ./
+#+END_SRC
+
+*** Docker Run
+ #+name: run-image
+ #+BEGIN_SRC sh :results none :session docker
+   echo "-----RUNNING-----"
+   docker run -it -p8080:8080 -v ~/.prodrc:/root/.devrc:ro evan-webapp
+ #+END_SRC
+
+**** TODO Cache the quicklisp dependencies 
+     It would be possilble to link a volume for the dev environment?
+**** TODO How do we want to execute main
+***** Start in bash
+***** Start with sbcl -eval
+***** Create an executable
+
