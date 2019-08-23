@@ -22,7 +22,7 @@ FROM daewok/sbcl:alpine
 #   && rm -rf /tmp/*
 
 # FIXME remove this for production (but make available in development?)
-RUN apk add --no-cache bash
+# RUN apk add --no-cache bash
 
 # FIXME improve security and fingerprinting for quicklisp install...
 RUN cd /tmp && \
@@ -37,6 +37,4 @@ EXPOSE 8080
 
 WORKDIR /root
 
-ENTRYPOINT ["/bin/bash"]
-# CMD ["/bin/bash"]
-# CMD ["sbcl", "--eval", "(ql:quickload 'prod)", "--eval", "(control:start-server)"]
+ENTRYPOINT ["sbcl", "--eval", "(ql:quickload 'prod)", "--eval", "(control:start-server)"]

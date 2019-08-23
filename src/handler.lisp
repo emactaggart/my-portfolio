@@ -153,7 +153,7 @@
               :style "font-size: 2.5rem" "Hello I'm "
               (:span :style "color: deeppink; font-weight: bold" "Evan MacTaggart."))
 
-             (:div :style "font-size: 2.5rem" "I program things sometimes.")
+             (:div :style "font-size: 2.5rem" "I program things sometimes." (:b "(This is a beta)"))
 
              (:button :class "garbage-btn btn btn-primary btn-lg m-2 px-3 text-light"
                       :onclick
