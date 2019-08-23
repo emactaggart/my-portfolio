@@ -96,10 +96,7 @@
       (:head
        (:meta :charset "utf-8")
        (:meta :name "viewport" :content "width=device-width, initial-scale=1, shrink-to-fit=no")
-       (:link :rel "stylesheet" :href "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-              :integrity "sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-              :crossorigin "anonymous")
-       ;; (:link :rel "stylesheet" :href "/css/bootstrap.css")
+       (:link :rel "stylesheet" :href "/css/bootstrap.min.css")
        (:link :rel "stylesheet" :href "/css/fontawesome-all.css")
        (:link :rel "icon" :href "favicon.ico")
        (:link :rel "stylesheet" :type "text/css" :href "css/main.css")
@@ -141,19 +138,24 @@
       (:section
        :id "home" :class "home d-flex flex-row"
        (:div :class "canvas-container h-100 w-100"
-             :style "position:absolute;"
+             :style "position:absolute; background: green;"
              (:canvas :class "crazy-canvas" "Please use a modern browser to view this site ):")
-             (:script
-              :type "text/javascript"
-              (str (canvas-ps))))
+             ;; (:script
+             ;;  :type "text/javascript"
+             ;;  (str (canvas-ps))
+             ;;  )
+             )
+
 
        (:div :class "col align-self-center text-center"
 
-             (:div
-              :style "font-size: 2.5rem" "Hello I'm "
+             (:div :style "font-size: 2.5rem" "Hello, I'm "
               (:span :style "color: deeppink; font-weight: bold" "Evan MacTaggart."))
 
-             (:div :style "font-size: 2.5rem" "I program things sometimes." (:b "(This is a beta)"))
+             (:div
+              :style "font-size: 2.5rem"
+              "A traveller and programmer.")
+             ;; (:div :style "font-size: 2.5rem" (:b "(This definitely still a beta.)"))
 
              (:button :class "garbage-btn btn btn-primary btn-lg m-2 px-3 text-light"
                       :onclick
@@ -163,7 +165,7 @@
                                        (scroll-into-view (create :behavior "smooth")))))))
 
                       (:div :class "align-middle"
-                            (:span :class "align-middle" :style "height: 100%;" "View my garbage" )
+                            (:span :class "align-middle" :style "height: 100%;" "See more" )
                             (:i :class "fa fa-arrow-circle-right rotate-90-animation ml-2 align-middle")
                             ))))
 
@@ -497,7 +499,7 @@
 
       (defun init ()
         (setf circle-array (make-array))
-        (loop for i from 1 to 800
+        (loop for i from 1 to 50
               do
                  (let* ((radius (+ (* (-math.random) 3) 1))
                         (x (+ (* (-math.random) (- inner-width (* radius 2))) radius))
