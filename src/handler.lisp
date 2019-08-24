@@ -127,7 +127,7 @@
         (:div "hello world"))))))
 
 (defun profile-handler ()
-  (page-template (:title "Evan's Flavortown")
+  (page-template (:title "Evan's Swanky Chocolate Flavortown")
     (with-html-output (*standard-output*)
       (:script
        :type "text/javascript"
@@ -142,11 +142,11 @@
       (:section
        :id "home" :class "home d-flex flex-row"
        (:div :class "canvas-container h-100 w-100"
-             :style "position:absolute; background: green;"
-             (:canvas :class "crazy-canvas" "Please use a modern browser to view this site ):")
+             :style "position:absolute;"
+             (:canvas :class "canvas" "Please use a modern browser to view this site ):")
              ;; (:script
              ;;  :type "text/javascript"
-             ;;  (str (canvas-ps))
+             ;;  (str (home-canvas-ps))
              ;;  )
              )
 
@@ -154,12 +154,12 @@
        (:div :class "col align-self-center text-center"
 
              (:div :style "font-size: 2.5rem" "Hello, I'm "
-              (:span :style "color: deeppink; font-weight: bold" "Evan MacTaggart."))
+                   (:b :class "my-name" "Evan MacTaggart."))
 
              (:div
               :style "font-size: 2.5rem"
-              "A traveller and programmer.")
-             ;; (:div :style "font-size: 2.5rem" (:b "(This definitely still a beta.)"))
+              "A backpacker and programmer.")
+             (:div :style "font-size: 2.5rem" (:b "(This definitely still a beta.)"))
 
              (:button :class "garbage-btn btn btn-primary btn-lg m-2 px-3 text-light"
                       :onclick
@@ -172,7 +172,6 @@
                             (:span :class "align-middle" :style "height: 100%;" "See more" )
                             (:i :class "fa fa-arrow-circle-right rotate-90-animation ml-2 align-middle")
                             ))))
-
 
       ;; FIXME clean up sticky-top and instead use use jquery? mobile chrome doesn't work very well...
       (:header
@@ -192,7 +191,10 @@
                                                         (- window.inner-height 200))
                                                        (chain ($ "header") (remove-class "squeeze-out"))
                                                        (chain ($ "header") (add-class "squeeze-out"))
-                                                       ))))))))
+                                                       )))))))
+       )
+      
+
 
       (:section :id "about" :class "about py-5"
                 (:div :class "container text-center"
@@ -264,6 +266,8 @@
                         )
                       ))
 
+      (:hr)
+
       (:section :id "portfolio" :class "portfolio py-5 text-center"
 
                 (:div :class "d-flex flex-row justify-content-center"
@@ -280,15 +284,12 @@
                              (:div
                               (:div
                                (:a :class "m-2" :href "https://github.com/emactaggart"
-                                   :style "color: black"
-                                   (:i :class "fab fa-8x fa-github"))
+                                   (:i :class "wonk fab fa-8x fa-github"))
 
                                (:a :class "m-2" :href "https://www.linkedin.com/in/evan-mactaggart-1a7826122"
-                                   :style "color: black"
                                    (:i :class "fab fa-8x fa-linkedin"))
 
                                (:a :class "m-2 text-middle"
-                                   :style "color: black"
                                    :href "https://drive.google.com/file/d/1sZk9o56LG1O-f8gmzVKcrvowXqAjBiCU/view"
                                    (:i :class "fab fa-8x fa-google-drive")))))
                        (:div :class "alert alert-warning"
@@ -309,7 +310,7 @@
                                   (:div :style "height: 5px; width: 120px; background: white;"))
 
 
-                            (:div :class "py-3" :style "color: salmon"
+                            (:div :class "py-3 text-accent"
                                   "Interested? Any questions? Shoot me a message!")
 
                             (:form :id "my-form" :action "/send-message" :method "post"
@@ -345,7 +346,7 @@
                                                     :required t
                                                     )
                                          (:small
-                                          :style "position: absolute; z-index: 5; right: 0.5em; bottom: 0.5em; color: grey;"
+                                          :class "remaining"
                                           "Characters remaining: "
                                           (:span :id "message-count" )
                                           (:script :type "text/javascript"
@@ -369,10 +370,10 @@
                                                           ))))
                                          )
 
-                                   (:button :class "btn garbage-btn mt-1 float-right"
+                                   (:button :class "garbage-btn btn btn-primary mt-1 float-right"
                                             :type "submit"
                                             :id "submit"
-                                            (:b :class "mx-3" "SUBMIT"))
+                                            (:b :class "mx-3" "Submit"))
 
                                    (:script :type "text/javascript"
                                             (str (ps
@@ -427,14 +428,13 @@
       )))
 
 
-
-(defun canvas-ps ()
+(defun home-canvas-ps ()
   (ps
 
     (let ((canvas (chain document (query-selector "canvas"))))
 
-      (setf canvas.width (chain ($ ".canvas-container") (width)))
-      (setf canvas.height (chain ($ ".canvas-container") (height)))
+      (setf canvas.width (chain ($ ".home .canvas-container") (width)))
+      (setf canvas.height (chain ($ ".home .canvas-container") (height)))
 
       (defparameter c (chain canvas (get-context "2d")))
       (defvar max-radius 40)
@@ -525,3 +525,224 @@
       (init)
 
       )))
+
+(defun d3-bubbles-ps ()
+
+
+
+
+
+
+;; <meta charset="utf-8">
+;; <style type="text/css">
+;; text {
+;;   font: 10px sans-serif;
+;; }
+;; circle {
+;;     stroke: #565352;
+;;     stroke-width: 1;
+;; }
+;; </style>
+;; <body>
+;; <script src="https://d3js.org/d3.v3.min.js"></script>
+;; <script>
+
+  ;; var width = 960,
+  ;;     height = 500,
+  ;;     padding = 1.5, // separation between same-color nodes
+  ;;     clusterPadding = 6, // separation between different-color nodes
+  ;;     maxRadius = 12;
+
+  ;; var color = d3.scale.ordinal()
+  ;;       .range(["#7A99AC", "#E4002B"]);
+
+  (let* ((width 960)
+         (height 500)
+         (padding 1.5)
+         (cluster-padding 1.5)
+         (max-radius 12)
+         (color (chain d3 scale (ordinal)
+                       (range '("#7a99ac" "#e40028"))))
+
+         ;; d3.text("word_groups.csv", function(error, text) {
+         ;;   if (error) throw error;
+         ;;   var colNames = "text,size,group\n" + text;
+         ;;   var data = d3.csv.parse(colNames);
+         (col-names nil)
+         (data nil)
+
+         ;;   data.forEach(function(d) {
+         ;;     d.size = +d.size;
+         ;;   });
+         (data2 nil)
+
+         ;; //unique cluster/group id's
+         ;; var cs = [];
+         ;; data.forEach(function(d){
+         ;;         if(!cs.contains(d.group)) {
+         ;;             cs.push(d.group);
+         ;;         }
+         ;; });
+         (cs '())
+         (cs2 '())
+
+         ;; var n = data.length, // total number of nodes
+         ;;     m = cs.length; // number of distinct clusters
+         (n nil)
+         (m nil)
+
+         ;; //create clusters and nodes
+         ;; var clusters = new Array(m);
+         ;; var nodes = [];
+         ;; for (var i = 0; i<n; i++){
+         ;;     nodes.push(create_nodes(data,i));
+         ;; }
+
+         ;; var force = d3.layout.force()
+;;     .nodes(nodes)
+;;     .size([width, height])
+;;     .gravity(.02)
+;;     .charge(0)
+;;     .on("tick", tick)
+;;     .start();
+
+;; var svg = d3.select("body").append("svg")
+;;     .attr("width", width)
+;;     .attr("height", height);
+
+
+;; var node = svg.selectAll("circle")
+;;     .data(nodes)
+;;     .enter().append("g").call(force.drag);
+
+
+;; node.append("circle")
+;;     .style("fill", function (d) {
+;;     return color(d.cluster);
+;;     })
+;;     .attr("r", function(d){return d.radius})
+    
+
+;; node.append("text")
+;;       .attr("dy", ".3em")
+;;       .style("text-anchor", "middle")
+;;       .text(function(d) { return d.text.substring(0, d.radius / 3); });
+
+         )
+
+    ;; function create_nodes(data,node_counter) {
+    ;;   var i = cs.indexOf(data[node_counter].group),
+    ;;       r = Math.sqrt((i + 1) / m * -Math.log(Math.random())) * maxRadius,
+    ;;       d = {
+    ;;         cluster: i,
+    ;;         radius: data[node_counter].size*1.5,
+    ;;         text: data[node_counter].text,
+    ;;         x: Math.cos(i / m * 2 * Math.PI) * 200 + width / 2 + Math.random(),
+    ;;         y: Math.sin(i / m * 2 * Math.PI) * 200 + height / 2 + Math.random()
+    ;;       };
+    ;;   if (!clusters[i] || (r > clusters[i].radius)) clusters[i] = d;
+    ;;   return d;
+    ;; };
+
+    ;; function tick(e) {
+;;     node.each(cluster(10 * e.alpha * e.alpha))
+;;         .each(collide(.5))
+;;     .attr("transform", function (d) {
+;;         var k = "translate(" + d.x + "," + d.y + ")";
+;;         return k;
+;;     })
+
+;; }
+
+;; // Move d to be adjacent to the cluster node.
+;; function cluster(alpha) {
+;;     return function (d) {
+;;         var cluster = clusters[d.cluster];
+;;         if (cluster === d) return;
+;;         var x = d.x - cluster.x,
+;;             y = d.y - cluster.y,
+;;             l = Math.sqrt(x * x + y * y),
+;;             r = d.radius + cluster.radius;
+;;         if (l != r) {
+;;             l = (l - r) / l * alpha;
+;;             d.x -= x *= l;
+;;             d.y -= y *= l;
+;;             cluster.x += x;
+;;             cluster.y += y;
+;;         }
+;;     };
+;; }
+
+;; // Resolves collisions between d and all other circles.
+;; function collide(alpha) {
+;;     var quadtree = d3.geom.quadtree(nodes);
+;;     return function (d) {
+;;         var r = d.radius + maxRadius + Math.max(padding, clusterPadding),
+;;             nx1 = d.x - r,
+;;             nx2 = d.x + r,
+;;             ny1 = d.y - r,
+;;             ny2 = d.y + r;
+;;         quadtree.visit(function (quad, x1, y1, x2, y2) {
+;;             if (quad.point && (quad.point !== d)) {
+;;                 var x = d.x - quad.point.x,
+;;                     y = d.y - quad.point.y,
+;;                     l = Math.sqrt(x * x + y * y),
+;;                     r = d.radius + quad.point.radius + (d.cluster === quad.point.cluster ? padding : clusterPadding);
+;;                 if (l < r) {
+;;                     l = (l - r) / l * alpha;
+;;                     d.x -= x *= l;
+;;                     d.y -= y *= l;
+;;                     quad.point.x += x;
+;;                     quad.point.y += y;
+;;                 }
+;;             }
+;;             return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
+;;         });
+;;     };
+;; }
+;; });
+
+;; Array.prototype.contains = function(v) {
+;;     for(var i = 0; i < this.length; i++) {
+;;         if(this[i] === v) return true;
+;;     }
+;;     return false;
+;; };
+
+    )
+
+
+  ;; Allagash 25 1
+  ;; Dogfish 23 1
+  ;; Flying Dog 22 1
+  ;; Founders 21 1
+  ;; Stone 20 1
+  ;; Bells 19 1
+  ;; Victory 18 1
+  ;; 21st Amendment 17 1
+  ;; Yards 16 1
+  ;; Lagunitas 15 1
+  ;; Brooklyn 14 1
+  ;; Duvel 13 1
+  ;; Rogue 12 1
+  ;; Full Sail 11 1
+  ;; Left Hand 10 1
+  ;; Chevy 25 2
+  ;; Ford 23 2
+  ;; Dodge 22 2
+  ;; BMW 21 2
+  ;; Mercedes 20 2
+  ;; VW 19 2
+  ;; Porsche 18 2
+  ;; Audi 17 2
+  ;; Jeep 16 2
+  ;; Acura 15 2
+  ;; Honda 14 2
+  ;; Toyota 13 2
+  ;; Bugatti 12 2
+  ;; Ferrari 11 2
+  ;; Jaguar 10 2
+
+
+
+  )

@@ -1,26 +1,51 @@
 @import url('https://fonts.googleapis.com/css?family=Raleway');
-/* @import 'profile-a.css'; */
 
+/* FIXME: Let's have a throwback to a 70's colorscheme instead of swanky chocolate. */
 
-/* Header  */
-/* html, body { */
-    /* width: 100%; */
-/* } */
-
-/* RGB */
 :root {
+    --white: hsla(50, 50%, 98%, 1);
+    --black: hsla(50, 50%, 2%, 1);
+
+    --grey-100: hsla(50, 50%, 90%, 1);
+    --grey-200: hsla(50, 35%, 80%, 1);
+    --grey-300: hsla(50, 18%, 70%, 1);
+
     --color1: rgba(117, 193, 234, 1);
     --color2: rgba(255, 221, 153, 1);
     --color3: rgba(255, 183, 89, 1);
     --color4: rgba(186, 134, 55, 1);
-    --color5: rgba(96, 59, 0, 1);    
+
+    --home-bg: hsla(28, 20%, 20%, 1);
+    --header-bg: hsla(30, 60%, 8%, 1);
+    /* --about-bg: hsla(194, 53%, 79%, 1); */
+    /* --portfolio-bg: hsla(119, 75%, 75%, 1); */
+    --about-bg: var(--white);
+    --portfolio-bg: var(--white);
+
+    --accent-1: hsla(6, 93%, 71%, 1);
+    --accent-2: hsla(326, 87%, 53%, 1);
+    --header-accent: hsla(201, 75%, 69%, 1);
+    --accent-4: hsla(194, 53%, 79%, 1);
+    --accent-5: hsla(6, 82%, 70%, 1);
+    --accent-6: hsla(119, 75%, 75%, 1);
+
+    --input-bg: #1f242c;
+
 }
 
+/* Global */
+
+body {
+    color: var(--black);
+    background: var(--white);
+}
+
+/* Header */
 
 header {
-    background: #1b2430;
-    color: white;
-    border-bottom: 3px solid var(--color1);
+    background: var(--header-bg);
+    color: var(--white);
+    border-bottom: 3px solid var(--header-accent);
     z-index: 1;
     max-height: 100px;
     overflow: hidden;
@@ -34,83 +59,111 @@ header {
 }
 
 .nav-link {
-    background: #1b2430;
-    color: white;
+    background: var(--header-bg);
+    color: var(--white);
     transition: color .5s ease;
 }
 
 a.nav-link:hover {
-    color: salmon;
+    color: var(--accent-1);
 }
 
-.canvas-container {
-    margin: 0;
-    padding: 0;
-    border: 0;
-}
-
-.crazy-canvas {
-    z-index: -1;
-    background: var(--color5);
-    margin: 0;
-    padding: 0;
-    border: 0;
-    /* min-height: 100%; */
-    /* min-width: 100%; */
-}
-
-/* Footer */
-
-.footer {
-    background: #1b2430;
-    color: white;
-}
-
-/* Sections */
+/* Home Section  */
 
 .home {
     background: transparent;
     font-family: Raleway;
-    color: white;
+    color: var(--white);
     min-height: 100vh;
 }
 
-.about {
-    background: lightblue;
+.home .canvas-container {
+    background: var(--home-bg);
+    margin: 0;
+    padding: 0;
+    border: 0;
 }
 
+.home .canvas {
+    z-index: -1;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+/* About Section */
+
+.about {
+    background: var(--about-bg);
+}
+
+/* Portfolio Section */
+
 .portfolio {
-    background: lightgreen;
+    background: var(--portfolio-bg);
+}
+
+.portfolio a {
+    color: var(--black);
+}
+
+.portfolio a i:hover {
+    color: var(--accent-1);
 }
 
 /* Contact Section */
 
 .contact {
-    color: white;
-    background: #252931;
+    color: var(--white);
+    background: var(--home-bg);
     border-radius: 0;
 }
 
 .contact input, .contact input:focus, .contact textarea, .contact textarea:focus {
-    color: white;
+    color: var(--white);
     border-radius: 0;
     border: 0;
-    background: #1f242c;
+    background: var(--input-bg);
 }
 
 .contact button {
-    color: white;
+    color: var(--white);
+}
+
+.remaining {
+    position: absolute;
+    z-index: 5;
+    right: 0.5em;
+    bottom: 0.5em;
+    color: grey;
+}
+
+/* Footer */
+
+.footer {
+    background: var(--header-bg);
+    color: var(--white);
+}
+
+/* Components */
+
+.my-name {
+    color: var(--accent-2);
+}
+
+.text-accent {
+    color: var(--accent-1);
 }
 
 .garbage-btn {
     background-color: Transparent;
     border-radius: 0px;
-    border: 2px solid white;
+    border: 2px solid var(--white);
 }
 
 .garbage-btn:hover {
-    background-color: salmon;
-    border-color: salmon;
+    background-color: var(--accent-1);
+    border-color: var(--accent-1);
     transition-duration: 0.5s;
 }
 
@@ -122,4 +175,3 @@ a.nav-link:hover {
     transition-duration: 0.5s;
     transform: rotate(90deg);
 }
-
