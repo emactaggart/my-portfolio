@@ -1,4 +1,4 @@
-(defpackage #:handler
+>(defpackage #:handler
   (:use #:cl #:hunchentoot #:parenscript #:cl-fad #:cl-who))
 
 
@@ -106,6 +106,7 @@
        (:link :rel "stylesheet" :type "text/css" :href "css/main.css")
        (:title ,@title)
        (:script :src "https://code.jquery.com/jquery-3.2.1.min.js")
+       (:script :src "https://d3js.org/d3.v5.min.js")
        )
       (:body :class "container-fluid w-100 p-0"
              ,@body
@@ -138,6 +139,18 @@
                    (query-selector location)
                    (scroll-into-view (create :behavior "smooth")))
             f))))
+
+
+
+      (:div
+       (:div :class "bubbles")
+
+       (:script
+        :type "text/javascript"
+        ;; (str (d3-bubbles-ps))
+        (str (d3-playground-ps))
+        ))
+      
 
       (:section
        :id "home" :class "home d-flex flex-row"
@@ -193,8 +206,6 @@
                                                        (chain ($ "header") (add-class "squeeze-out"))
                                                        )))))))
        )
-      
-
 
       (:section :id "about" :class "about py-5"
                 (:div :class "container text-center"
@@ -230,8 +241,12 @@
                                    (:i :class "fa fa-5x fa-cogs")
                                    (:h3 "Simplicity"))
                                   (:p "Simplicity is the key to sane development. Likewise I prefer to avoid over-designing things.")))
-                      (:div :style "border: 1px solid black;"
-                            (:img :style "object-fit: contain; height: 300px; width: 300px;" :src "/resources/randy-marsh.png"))
+
+
+                      (:div :class "d-flex justify-content-center"
+                            (:div :class "portrait-container"
+                                  (:img :class "portrait" :src "/resources/profile-photos/cooking-ahh.jpg")))
+
                       (:div :class "py-3"
                             "I'm a simple developer capable of working full stack in a variety of technologies."
                             ;; I'm currently on vacation enjoying the simple life after having travelled South East Asia for the past 7 months.
@@ -277,7 +292,7 @@
                              (:div :class "d-flex justify-content-center"
                                    (:div :style "height: 5px; width: 120px; background: black;")))
 
-                       (:p "Check me out on other platforms:")
+                       (:p "Check me out on other platforms")
 
 
                        (:div :class "row justify-content-center m-4"
@@ -292,12 +307,11 @@
                                (:a :class "m-2 text-middle"
                                    :href "https://drive.google.com/file/d/1sZk9o56LG1O-f8gmzVKcrvowXqAjBiCU/view"
                                    (:i :class "fab fa-8x fa-google-drive")))))
-                       (:div :class "alert alert-warning"
+                       (:div :class "alert alert-warning" 
                              (:i :class "fa fa-lg fa-hard-hat")
-                             " My portfolio "
-                             " is currently under construction. "
-                             (:i :class "fa fa-lg fa-tools"))
-                       )
+                             " My portfolio is currently under construction. "
+                             "I'm currently tinkering away at my next project, come back later to check it out! "
+                             (:i :class "fa fa-lg fa-tools")))
                       ))
 
       (:section :id "contact" :class "contact py-5 h-100"
@@ -526,223 +540,253 @@
 
       )))
 
-(defun d3-bubbles-ps ()
+(defmacro/ps clog (&body body)
+  `(chain console (log ,@body)))
 
+(defun d3-playground-ps ()
+  (ps
 
+    (var width 960)
+    (var height 500)
+    (var max-radius 12)
+    (var n 200)
+    (var m 10)
 
+    (var color (chain d3 (scale-ordinal d3.scheme-category10)))
 
+    (var clusters (make-array m))
 
+    (var nodes (chain d3 (range n)
+                      (map (lambda (d)
+                             (let* ((i (-math.floor (* (+math.random) m)))))
+                             )
+                           )))
 
-;; <meta charset="utf-8">
-;; <style type="text/css">
-;; text {
-;;   font: 10px sans-serif;
-;; }
-;; circle {
-;;     stroke: #565352;
-;;     stroke-width: 1;
-;; }
-;; </style>
-;; <body>
-;; <script src="https://d3js.org/d3.v3.min.js"></script>
-;; <script>
-
-  ;; var width = 960,
-  ;;     height = 500,
-  ;;     padding = 1.5, // separation between same-color nodes
-  ;;     clusterPadding = 6, // separation between different-color nodes
-  ;;     maxRadius = 12;
-
-  ;; var color = d3.scale.ordinal()
-  ;;       .range(["#7A99AC", "#E4002B"]);
-
-  (let* ((width 960)
-         (height 500)
-         (padding 1.5)
-         (cluster-padding 1.5)
-         (max-radius 12)
-         (color (chain d3 scale (ordinal)
-                       (range '("#7a99ac" "#e40028"))))
-
-         ;; d3.text("word_groups.csv", function(error, text) {
-         ;;   if (error) throw error;
-         ;;   var colNames = "text,size,group\n" + text;
-         ;;   var data = d3.csv.parse(colNames);
-         (col-names nil)
-         (data nil)
-
-         ;;   data.forEach(function(d) {
-         ;;     d.size = +d.size;
-         ;;   });
-         (data2 nil)
-
-         ;; //unique cluster/group id's
-         ;; var cs = [];
-         ;; data.forEach(function(d){
-         ;;         if(!cs.contains(d.group)) {
-         ;;             cs.push(d.group);
-         ;;         }
-         ;; });
-         (cs '())
-         (cs2 '())
-
-         ;; var n = data.length, // total number of nodes
-         ;;     m = cs.length; // number of distinct clusters
-         (n nil)
-         (m nil)
-
-         ;; //create clusters and nodes
-         ;; var clusters = new Array(m);
-         ;; var nodes = [];
-         ;; for (var i = 0; i<n; i++){
-         ;;     nodes.push(create_nodes(data,i));
-         ;; }
-
-         ;; var force = d3.layout.force()
-;;     .nodes(nodes)
-;;     .size([width, height])
-;;     .gravity(.02)
-;;     .charge(0)
-;;     .on("tick", tick)
-;;     .start();
-
-;; var svg = d3.select("body").append("svg")
-;;     .attr("width", width)
-;;     .attr("height", height);
-
-
-;; var node = svg.selectAll("circle")
-;;     .data(nodes)
-;;     .enter().append("g").call(force.drag);
-
-
-;; node.append("circle")
-;;     .style("fill", function (d) {
-;;     return color(d.cluster);
-;;     })
-;;     .attr("r", function(d){return d.radius})
     
 
-;; node.append("text")
-;;       .attr("dy", ".3em")
-;;       .style("text-anchor", "middle")
-;;       .text(function(d) { return d.text.substring(0, d.radius / 3); });
+    ))
 
-         )
+(defun d3-bubbles-ps ()
+  (ps
 
-    ;; function create_nodes(data,node_counter) {
-    ;;   var i = cs.indexOf(data[node_counter].group),
-    ;;       r = Math.sqrt((i + 1) / m * -Math.log(Math.random())) * maxRadius,
-    ;;       d = {
-    ;;         cluster: i,
-    ;;         radius: data[node_counter].size*1.5,
-    ;;         text: data[node_counter].text,
-    ;;         x: Math.cos(i / m * 2 * Math.PI) * 200 + width / 2 + Math.random(),
-    ;;         y: Math.sin(i / m * 2 * Math.PI) * 200 + height / 2 + Math.random()
-    ;;       };
-    ;;   if (!clusters[i] || (r > clusters[i].radius)) clusters[i] = d;
-    ;;   return d;
-    ;; };
+  ;; <style type="text/css">
+  ;; text {
+  ;;   font: 10px sans-serif;
+  ;; }
+  ;; circle {
+  ;;     stroke: #565352;
+  ;;     stroke-width: 1;
+  ;; }
+  ;; </style>
 
-    ;; function tick(e) {
-;;     node.each(cluster(10 * e.alpha * e.alpha))
-;;         .each(collide(.5))
-;;     .attr("transform", function (d) {
-;;         var k = "translate(" + d.x + "," + d.y + ")";
-;;         return k;
-;;     })
+    (var width 960)
+    (var height 500)
+    (var padding 1.5) ;; separation between same-color nodes
+    (var cluster-padding 1.5) ;; separation between different-color nodes
+    (var max-radius 12)
+    
+    (var color (chain d3 (scale-ordinal)
+                      (range '("#7A99AC" "#E4002B"))
+                      ))
 
-;; }
+    (chain d3 (text "resources/word-groups.csv")
+           (then (lambda (text)
+                   (var col-names (+ "text,size,group" #\newline text))
+                   (var data (chain d3 (csv-parse col-names)))
+                   (data.for-each (lambda (d) (setq d.size (+ d.size))))
+                   (with-data data)
+                   )))
 
-;; // Move d to be adjacent to the cluster node.
-;; function cluster(alpha) {
-;;     return function (d) {
-;;         var cluster = clusters[d.cluster];
-;;         if (cluster === d) return;
-;;         var x = d.x - cluster.x,
-;;             y = d.y - cluster.y,
-;;             l = Math.sqrt(x * x + y * y),
-;;             r = d.radius + cluster.radius;
-;;         if (l != r) {
-;;             l = (l - r) / l * alpha;
-;;             d.x -= x *= l;
-;;             d.y -= y *= l;
-;;             cluster.x += x;
-;;             cluster.y += y;
-;;         }
-;;     };
-;; }
+    (defun with-data (data)
+      (var cs '())
 
-;; // Resolves collisions between d and all other circles.
-;; function collide(alpha) {
-;;     var quadtree = d3.geom.quadtree(nodes);
-;;     return function (d) {
-;;         var r = d.radius + maxRadius + Math.max(padding, clusterPadding),
-;;             nx1 = d.x - r,
-;;             nx2 = d.x + r,
-;;             ny1 = d.y - r,
-;;             ny2 = d.y + r;
-;;         quadtree.visit(function (quad, x1, y1, x2, y2) {
-;;             if (quad.point && (quad.point !== d)) {
-;;                 var x = d.x - quad.point.x,
-;;                     y = d.y - quad.point.y,
-;;                     l = Math.sqrt(x * x + y * y),
-;;                     r = d.radius + quad.point.radius + (d.cluster === quad.point.cluster ? padding : clusterPadding);
-;;                 if (l < r) {
-;;                     l = (l - r) / l * alpha;
-;;                     d.x -= x *= l;
-;;                     d.y -= y *= l;
-;;                     quad.point.x += x;
-;;                     quad.point.y += y;
-;;                 }
-;;             }
-;;             return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
-;;         });
-;;     };
-;; }
-;; });
+      (data.for-each (lambda (d)
+                       (when (not (cs.contains d.group))
+                         (cs.push d.group))
+                       (values)))
 
-;; Array.prototype.contains = function(v) {
-;;     for(var i = 0; i < this.length; i++) {
-;;         if(this[i] === v) return true;
-;;     }
-;;     return false;
-;; };
+      (var n data.length)
+      (var m cs.length)
 
-    )
+      (var clusters (make-array m))
+      (var nodes '())
+
+      (dotimes (i n)
+        (nodes.push (create-nodes data i cs m n clusters)))
+
+      
+
+      (var force (chain d3 (force-simulation)
+                        (nodes nodes)
+                        ;; (size '(width height))
+                        ;; (force "gravity" .02)
+                        ;; (charge 0)
+                        ;; (on "tick" tick)
+                        ;; (on "tick" tick)
+                        ;; (start)
+                        ))
 
 
-  ;; Allagash 25 1
-  ;; Dogfish 23 1
-  ;; Flying Dog 22 1
-  ;; Founders 21 1
-  ;; Stone 20 1
-  ;; Bells 19 1
-  ;; Victory 18 1
-  ;; 21st Amendment 17 1
-  ;; Yards 16 1
-  ;; Lagunitas 15 1
-  ;; Brooklyn 14 1
-  ;; Duvel 13 1
-  ;; Rogue 12 1
-  ;; Full Sail 11 1
-  ;; Left Hand 10 1
-  ;; Chevy 25 2
-  ;; Ford 23 2
-  ;; Dodge 22 2
-  ;; BMW 21 2
-  ;; Mercedes 20 2
-  ;; VW 19 2
-  ;; Porsche 18 2
-  ;; Audi 17 2
-  ;; Jeep 16 2
-  ;; Acura 15 2
-  ;; Honda 14 2
-  ;; Toyota 13 2
-  ;; Bugatti 12 2
-  ;; Ferrari 11 2
-  ;; Jaguar 10 2
+      (clog force)
+      return
+
+      (var svg (chain d3 (select ".bubbles")
+                      (append "svg")
+                      (attr "width" width)
+                      (attr "height" height)))
+
+      
+
+      (var node (chain svg (select-all "circle")
+                       (data nodes)
+                       (enter)
+                       (append "g")
+                       (call force.drag)))
+
+      (chain node (append "circle")
+             (style "fill" (lambda (d) (color d.cluster)))
+             (attr "r" (lambda (d) d.radius)))
+
+      (chain node (append "text")
+             (attr "dy" ".3em")
+             (style "text-anchor" "middle")
+             (text (lambda (d) (chain d text (substring 0 (/ d.radius 3))))))
+      )
 
 
+    (defun create-nodes (data node-counter cs m n clusters)
+      (let* ((i (chain cs (index-of (@ (elt data node-counter) group))))
+             (r (+math.sqrt (* (/ (+ i 1) m)
+                               (- (+math.log (+math.random)))
+                               max-radius)))
+             (d (create cluster i
+                        radius (* (@ (elt data node-counter) size) 1.5)
+                        text (@ (elt data node-counter) text)
+                        x (+ (* (+math.cos (* (/ i m)
+                                              2
+                                              +math.pi))
+                                200)
+                             (/ width 2) (+math.random))
+                        y (+ (* (+math.sin (* (/ i m)
+                                              2
+                                              +math.pi))
+                                200)
+                             (/ height 2) (+math.random)))))
+        (when (or (not (elt clusters i))
+                  (> r (@ (elt clusters i) radius)))
+          (setf (elt clusters i) d))
+        d))
 
-  )
+    (defun tick (e)
+      (chain node
+             (each (cluster (* 10 e.alpha e.alpha)))
+             (each (collide .5))
+             (attr "transform" (lambda (d)
+                                 (var k (+ "translate(" d.x "," d.y ")"))
+                                 k))))
+
+    (defun cluster (alpha)
+      (lambda (d)
+        (var cluster (elt cluseters d.cluster))
+
+        (when (eq cluster d)
+          return
+          )
+
+        (let* ((x (- d.x cluster.x))
+               (y (- d.y cluster.y))
+               (l (+math.sqrt (* x (+ x y) y)))
+               (r (+ d.radius cluster.radius))
+               )
+
+          (when (not (equal l r))
+            (setf l (/ (- l r) (* l alpha)))
+            (setf x (* x l))
+            (setf y (* y l))
+            (decf d.x x)
+            (decf d.y y)
+            (incf cluster.x x)
+            (incf cluster.y y)))
+        (values)))
+  
+    (defun collide (alpha) ()
+      (let ((quadtree (chain d3 geom (quadtree nodes))))
+        (labels ((fnd (d)
+                   (let* ((r (+ d.radius max-radius (+math.max padding cluster-padding)))
+                          (nx1 (- d.x r))
+                          (nx2 (+ d.x r))
+                          (ny1 (- d.y r))
+                          (ny2 (+ d.y r)))
+                     (chain quadtree (visit fnv))
+                     ))
+                 (fnv (quad x1 y1 x2 y2)
+                   (when (and quad.point
+                              (not (eq quad.point d)))
+                     (let* ((x (- d.x quad.point.x))
+                            (y (- d.y quad.point.y))
+                            (l (+math.sqrt (* x (+ x y) y)))
+                            (r (+ d.radius
+                                  quad.point.radius
+                                  (if (eq d.cluster quad.point.cluster)
+                                      padding
+                                      cluster-padding))
+                               ))
+
+                       (when (< l r)
+                         (setf l (/ (- l r) (* l alpha)))
+                         (setf x (* x l))
+                         (setf y (* y l))
+                         (decf d.x x)
+                         (decf d.y y)
+                         (incf cluster.x x)
+                         (incf cluster.y y)
+                         )
+                       )
+                     )
+                   (return-from fnv (or (> x1 nx2)
+                               (< x2 nx1)
+                               (> y1 ny2)
+                               (< y2 ny1)))
+                   )
+                 )
+          fnd
+          )
+
+        )
+
+    ;; function collide(alpha) {
+    ;;     return function (d) {
+    ;;         var r = d.radius + maxRadius + Math.max(padding, clusterPadding),
+    ;;             nx1 = d.x - r,
+    ;;             nx2 = d.x + r,
+    ;;             ny1 = d.y - r,
+    ;;             ny2 = d.y + r;
+    ;;         quadtree.visit(function (quad, x1, y1, x2, y2) {
+    ;;             if (quad.point && (quad.point !== d)) {
+    ;;                 var x = d.x - quad.point.x,
+    ;;                     y = d.y - quad.point.y,
+    ;;                     l = Math.sqrt(x * x + y * y),
+    ;;                     r = d.radius + quad.point.radius + (d.cluster === quad.point.cluster ? padding : clusterPadding);
+    ;;                 if (l < r) {
+    ;;                     l = (l - r) / l * alpha;
+    ;;                     d.x -= x *= l;
+    ;;                     d.y -= y *= l;
+    ;;                     quad.point.x += x;
+    ;;                     quad.point.y += y;
+    ;;                 }
+    ;;             }
+    ;;             return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
+    ;;         });
+    ;;     };
+    ;; }
+      ;; });
+
+      )
+   
+    (defun contains (v)
+      (dotimes (i this.length)
+        (when (eq (elt this i) v)
+          (return-from contains t)))
+      f)
+    (setf -array.prototype.contains contains)
+  ))
