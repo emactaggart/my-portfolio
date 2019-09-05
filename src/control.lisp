@@ -36,3 +36,22 @@
   (when (not (hunchentoot::acceptor-shutdown-p **acceptor**))
     (stop **acceptor**)))
 
+
+
+;; FIXME put this somewhere else...
+(when (string= (config:get-config "PROFILE") "DEV")
+  (defun test-handler ()
+    (who:with-html-output (*standard-output* nil :prologue t :indent nil)
+      (:html
+       (:body
+        (:div "hello world")))))
+  (defun always-success-handler ()
+    nil)
+  (defun always-error-handler ()
+    (setf (hunchentoot:return-code*) 400)
+    nil)
+  (push (create-regex-dispatcher "^/test$" 'test-handler) *dispatch-table*)
+  (push (create-regex-dispatcher "^/success$" 'always-success-handler) *dispatch-table*)
+  (push (create-regex-dispatcher "^/error$" 'always-error-handler) *dispatch-table*)
+  )
+
