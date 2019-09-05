@@ -1,7 +1,6 @@
 * Devops  
   Special thanks to [[https://github.com/wrightmikea/simple-docker-tangle][wrightmikea]]!
-** Overview
-   Trying out some literate devops
+  This file is an attempt at *Literate Devops*
 ** Docker setup                                            :dev:docker:setup:
 *** Setup env variables
 #+name: setup
@@ -51,56 +50,65 @@ For more examples and ideas, visit:
 my-container
 \n
 #+end_example
-** Logging Directory Setup
+
+** Server Setup
    :properties:
    :header-args: :var app_name="evan-webapp" username="ec2-user"
-   :header-args+: :dir /ssh:ec2-user@evan-webapp|sudo:evan-webapp:/var/log
    :end:
-
-#+begin_src sh :results output drawer
-  mkdir $dir
-  touch $dir/access.log
-  touch $dir/message.log
-  chown -R $username:$username $dir
-  chmod 755 $dir
-  whoami
-  pwd
-  ls -al $dir
+*** Send Configurations To Server
+#+begin_src sh
+scp ~/.prodrc ec2-user@evan-webapp:~/.devrc
 #+end_src
 
-#+RESULTS:
-:results:
-root
-/var/log
-total 672
-drwxr-xr-x  7 root     root       4096 Aug 21 02:23 .
-drwxr-xr-x 19 root     root       4096 Jun 11 00:40 ..
-drwxr-xr-x  3 root     root       4096 Aug 21 00:46 amazon
-drwx------  2 root     root       4096 Aug 21 00:46 audit
--rw-------  1 root     root          0 Aug 21 00:46 boot.log
--rw-------  1 root     utmp       3456 Aug 22 01:43 btmp
--rw-r--r--  1 root     root      77008 Aug 21 00:46 cloud-init.log
--rw-r--r--  1 root     root      14991 Aug 21 00:46 cloud-init-output.log
--rw-------  1 root     root      12045 Aug 22 05:01 cron
--rw-r--r--  1 root     root      23774 Aug 21 00:46 dmesg
--rw-r--r--  1 root     root      13433 Aug 21 03:07 docker
--rw-r--r--  1 root     root     215124 Aug 21 01:00 dracut.log
-drwxr-xr-x  2 ec2-user ec2-user   4096 Aug 21 02:24 evan-webapp
--rw-r--r--  1 root     root     146292 Aug 22 05:07 lastlog
-drwxr-xr-x  2 root     root       4096 Jun 11 00:40 mail
--rw-------  1 root     root        195 Aug 21 00:46 maillog
--rw-------  1 root     root     163203 Aug 22 05:21 messages
-drwxr-xr-x  2 ntp      ntp        4096 May  3 15:36 ntpstats
--rw-------  1 root     root      37534 Aug 22 05:07 secure
--rw-------  1 root     root          0 Jun 11 00:40 spooler
--rw-------  1 root     root          0 Jun 11 00:39 tallylog
--rw-rw-r--  1 root     utmp      45696 Aug 22 05:07 wtmp
--rw-------  1 root     root       2147 Aug 21 01:04 yum.log
-:end:
+*** Logging Directory Setup
+    :properties:
+    :header-args+: :dir /ssh:ec2-user@evan-webapp|sudo:evan-webapp:/var/log
+    :end:
+
+ #+begin_src sh :results output drawer
+   mkdir $dir
+   touch $dir/access.log
+   touch $dir/message.log
+   chown -R $username:$username $dir
+   chmod 755 $dir
+   whoami
+   pwd
+   ls -al $dir
+ #+end_src
+
+ #+RESULTS:
+ :results:
+ root
+ /var/log
+ total 672
+ drwxr-xr-x  7 root     root       4096 Aug 21 02:23 .
+ drwxr-xr-x 19 root     root       4096 Jun 11 00:40 ..
+ drwxr-xr-x  3 root     root       4096 Aug 21 00:46 amazon
+ drwx------  2 root     root       4096 Aug 21 00:46 audit
+ -rw-------  1 root     root          0 Aug 21 00:46 boot.log
+ -rw-------  1 root     utmp       3456 Aug 22 01:43 btmp
+ -rw-r--r--  1 root     root      77008 Aug 21 00:46 cloud-init.log
+ -rw-r--r--  1 root     root      14991 Aug 21 00:46 cloud-init-output.log
+ -rw-------  1 root     root      12045 Aug 22 05:01 cron
+ -rw-r--r--  1 root     root      23774 Aug 21 00:46 dmesg
+ -rw-r--r--  1 root     root      13433 Aug 21 03:07 docker
+ -rw-r--r--  1 root     root     215124 Aug 21 01:00 dracut.log
+ drwxr-xr-x  2 ec2-user ec2-user   4096 Aug 21 02:24 evan-webapp
+ -rw-r--r--  1 root     root     146292 Aug 22 05:07 lastlog
+ drwxr-xr-x  2 root     root       4096 Jun 11 00:40 mail
+ -rw-------  1 root     root        195 Aug 21 00:46 maillog
+ -rw-------  1 root     root     163203 Aug 22 05:21 messages
+ drwxr-xr-x  2 ntp      ntp        4096 May  3 15:36 ntpstats
+ -rw-------  1 root     root      37534 Aug 22 05:07 secure
+ -rw-------  1 root     root          0 Jun 11 00:40 spooler
+ -rw-------  1 root     root          0 Jun 11 00:39 tallylog
+ -rw-rw-r--  1 root     utmp      45696 Aug 22 05:07 wtmp
+ -rw-------  1 root     root       2147 Aug 21 01:04 yum.log
+ :end:
 
 ** Dockerfile Creation and deployment
    :properties:
-   :header-args:
+   :header-args: :var app_name=evan-webapp 
    :end:
 
 *** Generate a Dockerfile for the project
@@ -153,13 +161,13 @@ drwxr-xr-x  2 ntp      ntp        4096 May  3 15:36 ntpstats
 #+name: build-image
 #+BEGIN_SRC sh :results output drawer
    echo "---- Building Docker File -----"
-   docker build -t evan-webapp ./
+   docker build -t $app_name ./
 #+END_SRC
 
 #+RESULTS: build-image
 :results:
 ---- Building Docker File -----
-Sending build context to Docker daemon  98.76MB
+Sending build context to Docker daemon  44.49MB
 Step 1/8 : FROM daewok/sbcl:alpine
  ---> 1a8415706b0e
 Step 2/8 : RUN cd /tmp &&   wget https://beta.quicklisp.org/quicklisp.lisp &&   sbcl --load quicklisp.lisp --quit --eval '(quicklisp-quickstart:install)'
@@ -169,66 +177,78 @@ Step 3/8 : COPY sbclrc /root/.sbclrc
  ---> Using cache
  ---> db6a9b481bc1
 Step 4/8 : COPY ./ /root/prod/
- ---> eeb4cf7811a4
+ ---> 404ae5e35bdc
 Step 5/8 : RUN ln -s /root/prod/prod.asd /root/quicklisp/local-projects/
- ---> Running in f73a902ac80c
-Removing intermediate container f73a902ac80c
- ---> 786675ad174a
+ ---> Running in d68bdf533f7c
+Removing intermediate container d68bdf533f7c
+ ---> f2a620a9a82f
 Step 6/8 : EXPOSE 8080
- ---> Running in 3b42c02cb993
-Removing intermediate container 3b42c02cb993
- ---> fb3232bbec59
+ ---> Running in 20334bf62b19
+Removing intermediate container 20334bf62b19
+ ---> c33f8678c58f
 Step 7/8 : WORKDIR /root
- ---> Running in 5659a4e88eb0
-Removing intermediate container 5659a4e88eb0
- ---> f50e245d8ef0
+ ---> Running in 621f19660378
+Removing intermediate container 621f19660378
+ ---> 95a78e098838
 Step 8/8 : ENTRYPOINT ["sbcl", "--eval", "(ql:quickload 'prod)", "--eval", "(control:start-server)"]
- ---> Running in 082daeb0d2e0
-Removing intermediate container 082daeb0d2e0
- ---> ce4626f21e70
-Successfully built ce4626f21e70
+ ---> Running in 58c324d28993
+Removing intermediate container 58c324d28993
+ ---> debc19366363
+Successfully built debc19366363
 Successfully tagged evan-webapp:latest
 :end:
 
-*** Docker Transporting without Repo
-    Instead of git cloning? Kinda mimicks a build server in a sense... maybe not.
-    [[https://stackoverflow.com/questions/23935141/how-to-copy-docker-images-from-one-host-to-another-without-using-a-repository][stackoverflow link]]
-****  Images
-#+begin_src sh 
-docker save -o <path for generated tar file> <image name>
-docker load -i <path to image tar file>
-docker save -o c:/myfile.tar centos:16
-#+end_src
-**** Containers
-     I don't think I like this 
-     Someone mentioned: This is more for backup purposes
+*** Transport Docker Image to Server 
+    :properties:
+    # :header-args+: :dir ~/Downloads/prod
+    :end:
+
+#+name: save-image-and-send-to-server
 #+begin_src sh
-docker export CONTAINER_ID > my_container.tar
-cat my_container.tar | docker import -
+  docker save -o $app_name.image $app_name
+  tar czf $app_name.tar.gz $app_name.image
+  rm $app_name.image
+  scp $app_name.tar.gz ec2-user@evan-webapp:~
+  rm $app_name.tar.gz
 #+end_src
 
-*** Docker Run
- #+name: run-image
- #+BEGIN_SRC sh :session docker :var application_name="evan-webapp" :dir /ssh:ec2-user@evan-webapp:~/
-   echo "----- Running Docker Container -----"
-   docker run -it -p 8080:8080 \
-          -v ~/.prodrc:/root/.devrc:ro \
-          -v /var/log/$application_name:/var/log/$application_name \
-          $application_name 
- #+END_SRC
+#+RESULTS:
 
- #+RESULTS: run-image
- :results:
- :end:
+*** Deploy to server
+    :properties:
+    :header-args+: :dir /ssh:ec2-user@evan-webapp:~
+    :end:
 
-*** Future Improvemens [0/3]
-**** TODO [#A] How do we want to execute main 
-***** Start in bash
-***** Start with sbcl -eval
-***** Create an executable
-**** TODO Cache the quicklisp dependencies 
-     It would be possilble to link a volume for the dev environment?
-     For production we should probably just install everything fresh? Load time is pretty bad though...
-**** TODO Monitor for time drift 
-     This appears to be a macos problem only.
+#+name: load-and-run-image
+#+begin_src sh
+  tar -xf $app_name.tar.gz
+  docker load -i $app_name.image
+
+  echo "----- Running Docker Container -----"
+  docker stop $app_name
+  docker container rm $app_name
+  docker run -dt --rm=true \
+         -p 8080:8080 \
+         --name $app_name \
+         -v ~/.prodrc:/root/.devrc:ro \
+         -v /var/log/$app_name:/var/log/$app_name \
+         $app_name 
+
+#+end_src
+
+#+RESULTS:
+| [1A[1K[K5f5a836898c0: | Loading | layer              | 458.8kB/44.49MB[1B[1A[1K[K5f5a836898c0: | Loading | layer | 16.06MB/44.49MB[1B[1A[1K[K5f5a836898c0: | Loading | layer              | 30.74MB/44.49MB[1B[1A[1K[K5f5a836898c0: | Loading | layer    | 39.91MB/44.49MB[1B[1A[1K[K5f5a836898c0: | Loading | layer | 40.83MB/44.49MB[1B[1A[1K[K5f5a836898c0: | Loading | layer                                                                   | 41.75MB/44.49MB[1B[1A[1K[K5f5a836898c0: | Loading | layer  | 44.49MB/44.49MB[1B[1A[1K[K5f5a836898c0: | Loading | layer | 44.49MB/44.49MB[1B |
+| [1A[1K[K78e10fd83041: | Loading | layer              | 3.072kB/3.072kB[1B[1A[1K[K78e10fd83041: | Loading | layer | 3.072kB/3.072kB[1BThe                           | image   | evan-webapp:latest | already                                             | exists, | renaming | the                                                 | old     | one   | with                                                | ID      | sha256:b92f610fed5ff8471d338966357fffde5fd48885697d335d2f8fbe8a682c3a53 | to                                                  | empty   | string |                                                     |         |       |                        |
+| Loaded                        | image:  | evan-webapp:latest |                                                     |         |       |                                                     |         |                    |                                                     |         |          |                                                     |         |       |                                                     |         |                                                                         |                                                     |         |        |                                                     |         |       |                        |
+
+** Future Improvemens [0/3]
+*** TODO [#A] How do we want to execute main 
+**** Start in bash
+**** Start with sbcl -eval
+**** Create an executable
+*** TODO Cache the quicklisp dependencies 
+    It would be possilble to link a volume for the dev environment?
+    For production we should probably just install everything fresh? Load time is pretty bad though...
+*** TODO Monitor for time drift 
+    This appears to be a macos problem only.
 
