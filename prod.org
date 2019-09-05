@@ -1,33 +1,4 @@
 * Prod
-** DONE Wire up send message functionality
-   CLOSED: [2019-07-23 Tue 22:34]
-   :LOGBOOK:
-   CLOCK: [2019-07-18 Tue 16:07]--[2019-07-18 Tue 18:54] =>  2:47
-   :END:
-*** DONE (send-email)
-    CLOSED: [2019-07-18 Thu 19:00]
-*** DONE form submit
-    CLOSED: [2019-07-23 Tue 10:46]
-*** DONE jquery post
-    CLOSED: [2019-07-23 Tue 10:46]
-** DONE Validations [1/1]
-   CLOSED: [2019-07-25 Thu 19:52]
-   :LOGBOOK:
-   CLOCK: [2019-07-25 Thu 11:27]--[2019-07-25 Thu 16:00] =>  4:33
-   :END:
-   - [X] client
-     - [X] Name
-     - [X] Email
-     - [X] Messagen
-   - [X] server
-     - [X] Name
-     - [X] Email
-     - [X] Message
-*** DONE Create validation framework
-    CLOSED: [2019-07-26 Fri 19:11]
-    :LOGBOOK:
-    CLOCK: [2019-07-24 Wed 16:30]--[2019-07-24 Wed 21:36] =>  5:06
-    :END:
 ** TODO Pre Deploy Security [4/7]
    - [ ] Don't leak server version +(perhaps migrate to clack or caveman? https://github.com/fukamachi/caveman )+
      - look into hunchentoot reply objects
@@ -57,56 +28,74 @@
     - [X] get requesting IP
     - [X] get requesting GET POST variables
     - [X] make wrapper to apply to all handlers
-** TODO Cleanup control
-   Is threading necessary? 
-   - [ ] Threading
-   - [ ] C-c'ing
-*** Code in question:
-#+begin_src common-lisp
-(defun main ()
-  (print "starting server on port 8080")
-
-  ;; this should be in the thread?
-  (start-server)
-  ;; let the webserver run.
-  ;; warning: hardcoded "hunchentoot".
-  (handler-case (bt:join-thread (find-if (lambda (th)
-                                           (search "hunchentoot" (bt:thread-name th)))
-                                         (bt:all-threads)))
-    ;; catch a user's c-c
-    (#+sbcl sb-sys:interactive-interrupt
-     #+ccl  ccl:interrupt-signal-condition
-     #+clisp system::simple-interrupt-condition
-     #+ecl ext:interactive-interrupt
-     #+allegro excl:interrupt-signal
-     () (progn
-          (format *error-output* "aborting.~&")
-          (stop-server)
-          (uiop:quit)))
-    (error (c) (format t "woops, an unknown error occured:~&~a~&" c))))
-#+end_src
+** TODO Html, js, and css minifying
+** TODO Tree shaking
 ** TODO Post Deploy Security Review [0/6]
    - [ ] Certificate & Signature
    - [ ] DNS
-   - [ ] Database password storage
    - [ ] HTTPS
    - [ ] [[https://www.mailgun.com/blog/domain-reputation-and-dmarc][Mailgun Domain Reputation and DMARC]]
    - [ ] [[https://documentation.mailgun.com/en/latest/best_practices.html#reputation][Mailgun Best Practices]]
 ** TODO Deployable build script
    - [ ] grab vendor dependencies... or store them in the repo...
+*** TODO Cleanup control
+    Is threading necessary? 
+    - [ ] Threading
+    - [ ] C-c'ing
+ #+begin_src common-lisp
+ (defun main ()
+   (print "starting server on port 8080")
+
+   ;; this should be in the thread?
+   (start-server)
+   ;; let the webserver run.
+   ;; warning: hardcoded "hunchentoot".
+   (handler-case (bt:join-thread (find-if (lambda (th)
+                                            (search "hunchentoot" (bt:thread-name th)))
+                                          (bt:all-threads)))
+     ;; catch a user's c-c
+     (#+sbcl sb-sys:interactive-interrupt
+      #+ccl  ccl:interrupt-signal-condition
+      #+clisp system::simple-interrupt-condition
+      #+ecl ext:interactive-interrupt
+      #+allegro excl:interrupt-signal
+      () (progn
+           (format *error-output* "aborting.~&")
+           (stop-server)
+           (uiop:quit)))
+     (error (c) (format t "woops, an unknown error occured:~&~a~&" c))))
+ #+end_src
+** TODO Page Hosting [0/5]
+   - [ ] Domain name
+   - [ ] Rocketmail domain name
+   - [ ] Deployement
+   - [ ] Hosting Provider
+   - [ ] Docker Shenanigans
+** TODO Testing [0/1]
+   - [ ] Unit tests
+   - [ ] End to end integration testing (phantom.js?)
+** TODO Error and other HTTP Status pages
+   - [ ] 404
+   - [ ] 50x
+   - [ ] 40x
+   - [ ] maintenance pages? This might require higher level nginx stuff
+
 ** DONE Home Section [3/3] 3:21:19 
    CLOSED: [2019-07-19 Fri 17:24]
    - [X] Title and Welcome
    - [X] Canvas
    - [X] View button
-** TODO About Section [1/3]
-*** TODO Profile photo
-*** TODO Skills [1/2]
+** DONE About Section [3/3]
+   CLOSED: [2019-08-25 Sun 23:31]
+*** DONE Profile photo
+    CLOSED: [2019-08-25 Sun 23:31]
+*** DONE Skills [3/3]
+    CLOSED: [2019-08-25 Sun 23:31]
     :LOGBOOK:
     CLOCK: [2019-07-23 Tue 15:30]--[2019-07-23 Tue 16:00] =>  0:00
     :END:
-    - [ ] D3 bubble diagram
-    - [ ] Language with project experience and future ambitions
+    - [X] D3 bubble diagram
+    - [X] Language with project experience and future ambitions
     - [X] ...There are no skills
 *** DONE Icon descriptions [4/4]
     CLOSED: [2019-07-23 Tue 22:28]
@@ -121,38 +110,17 @@
    :END:
    - [X] Sizing
    - [X] Scrolling
-** TODO Page Hosting [0/5]
-   - [ ] Domain name
-   - [ ] Rocketmail domain name
-   - [ ] Deployement
-   - [ ] Hosting Provider
-   - [ ] Docker Shenanigans
-** TODO Testing [0/1]
-   - [ ] Unit tests
-   - [ ] End to end integration testing (phantom.js?)
 ** DONE Generic pathnaming
    CLOSED: [2019-08-20 Tue 12:01]
-** TODO Error and other HTTP Status pages
-   - [ ] 404
-   - [ ] 50x
-   - [ ] 40x
-   - [ ] maintenance pages? This might require higher level nginx stuff
-
 ** House Keeping & Goodies [0/7]
-*** TODO Devops [0/3]
+*** TODO Devops [2/3]
     - [ ] CI Server (Gitlab?)
-    - [ ] Automated deploy
-    - [ ] Git repo
-*** TODO UI [0/3]
+    - [X] Automated deploy
+    - [X] Git repo
+*** TODO UI [1/4]
     - [ ] Mobile scrolling with Nav header
-    - [ ] Cleanup colors
-    - [ ] Less blatant copying?
+    - [X] Cleanup colors
     - [ ] Hover over links description?
-*** TODO Macros
-    - [ ] Jquery marco
-    - [ ] onclick macro
-    - [ ] http://lisp-univ-etc.blogspot.com/2009/03/cl-who-macros.html
-    - 
 *** TODO Misc
     - [ ] Code quality and duplication (more macros?)
       - [ ] email-sender cleanup https://github.com/40ants/mailgun/blob/master/src/core.lisp 
@@ -168,6 +136,11 @@
     - [ ] Profile performance
     - [ ] session
 
+*** TODO Macros
+    - [ ] Jquery marco
+    - [ ] onclick macro
+    - [ ] http://lisp-univ-etc.blogspot.com/2009/03/cl-who-macros.html
+    - 
 *** TODO Animations [1/6]
     :LOGBOOK:
     CLOCK: [2019-07-19 Fri 16:25]--[2019-07-19 Fri 17:13] =>  0:48
@@ -179,39 +152,23 @@
     - [ ] Portfolio
     - [ ] Contact
     - [ ] Footer
-*** TODO Browser Support [0/1]
-    - [ ] TODO IE Message
-*** TODO index.txt and robots.txt and sitemaps
-    - types of robots
-    - html <meta> robots directive
-    - http response headers x-robots-tag
-    - .htaccess hunchentoot equivalent?
 *** TODO improve validation logic 
     - check out the design of https://github.com/fisxoj/validate
 
-** Bugs [1/1]
-*** DONE None :)
-    CLOSED: [2019-07-23 Tue 22:34]
+** TODO index.txt and robots.txt and sitemaps
+   - types of robots
+   - html <meta> robots directive
+   - http response headers x-robots-tag
+   - .htaccess hunchentoot equivalent?
+** TODO Browser Support [0/1]
+   - [ ] TODO IE Message
+** Bugs [0/1]
+*** TODO Firefox mobile screen resize jerkiness on address-bar hiding
 ** TODO Rename project
    /Perhaps grab a domain name first?/
    - [ ] What should this project be called?
 ** TODO Handler logging file size growth
    - [ ] use correct directory for storage
-** TODO log4cl
-   *Is this necessary?* Perhaps only for learning purposes...
-   Probably an improvement over hunchentoot's mutex stuff
-#+src 
-;; NOTE eventually upgrade to log4cl from hunchentoot's default logging functionality
-(defun log4cl-setup ()
-  (when (string= "PROD" (get-config "PROFILE"))
-    (log4cl:remove-all-appenders log4cl:*root-logger*)
-    ;; TODO standardized logging file location? /var/log/lisp-application.log
-    (log:config :daily "~/lisp-application.log" :backup t)
-    (setf (log4cl:logger-log-level log4cl:*root-logger*) log4cl:+log-level-info+))
-  (when (string= "DEV" (get-config "PROFILE"))
-    ;; TODO figure out how to setup a default log4cl instance...
-    nil))
-    #+end_src
 ** TODO Server Daemon
    *Do we even need this? What is the benefit?*
 #+BEGIN_SRC common-lisp
@@ -246,5 +203,60 @@
    - [[https://www.vaultproject.io/][Vault]]
 ** TODO Remove cl-fad
    Reason: [[https://stackoverflow.com/a/44687561][According to this]]
-** TODO Dockerfile compatibility for macos, (windows)? 
-   More specifically the location of log files, ie /var/log
+** TODO log4cl
+   *Is this necessary?* Perhaps only for learning purposes...
+   Probably an improvement over hunchentoot's mutex stuff
+#+src 
+;; NOTE eventually upgrade to log4cl from hunchentoot's default logging functionality
+(defun log4cl-setup ()
+  (when (string= "PROD" (get-config "PROFILE"))
+    (log4cl:remove-all-appenders log4cl:*root-logger*)
+    ;; TODO standardized logging file location? /var/log/lisp-application.log
+    (log:config :daily "~/lisp-application.log" :backup t)
+    (setf (log4cl:logger-log-level log4cl:*root-logger*) log4cl:+log-level-info+))
+  (when (string= "DEV" (get-config "PROFILE"))
+    ;; TODO figure out how to setup a default log4cl instance...
+    nil))
+    #+end_src
+** DONE Validations [1/1]
+   CLOSED: [2019-07-25 Thu 19:52]
+   :LOGBOOK:
+   CLOCK: [2019-07-25 Thu 11:27]--[2019-07-25 Thu 16:00] =>  4:33
+   :END:
+   - [X] client
+     - [X] Name
+     - [X] Email
+     - [X] Messagen
+   - [X] server
+     - [X] Name
+     - [X] Email
+     - [X] Message
+*** DONE Create validation framework
+    CLOSED: [2019-07-26 Fri 19:11]
+    :LOGBOOK:
+    CLOCK: [2019-07-24 Wed 16:30]--[2019-07-24 Wed 21:36] =>  5:06
+    :END:
+** DONE Wire up send message functionality
+   CLOSED: [2019-07-23 Tue 22:34]
+   :LOGBOOK:
+   CLOCK: [2019-07-18 Tue 16:07]--[2019-07-18 Tue 18:54] =>  2:47
+   :END:
+*** DONE (send-email)
+    CLOSED: [2019-07-18 Thu 19:00]
+*** DONE form submit
+    CLOSED: [2019-07-23 Tue 10:46]
+*** DONE jquery post
+    CLOSED: [2019-07-23 Tue 10:46]
+** TODO Add d3 skill chart
+* Tomorrow
+** Choose Font
+*** Title size according to screen size so name fits
+** cleanup skills area
+** Deployment cleanup
+** .dockerignore cleanup
+** JS macros and cleanup
+*** Document.ready handler macro
+*** oncall macro
+
+
+
