@@ -1,7 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Raleway');
 
-/* FIXME: Let's have a throwback to a 70's colorscheme instead of swanky chocolate. */
-
+/* Swanky Chocole Color Scheme */
 :root {
     --white: hsla(50, 50%, 98%, 1);
     --black: hsla(50, 50%, 2%, 1);
@@ -9,27 +8,22 @@
     --grey-100: hsla(50, 50%, 90%, 1);
     --grey-200: hsla(50, 35%, 80%, 1);
     --grey-300: hsla(50, 18%, 70%, 1);
-
-    --color1: rgba(117, 193, 234, 1);
-    --color2: rgba(255, 221, 153, 1);
-    --color3: rgba(255, 183, 89, 1);
-    --color4: rgba(186, 134, 55, 1);
+    --grey-400: hsla(50, 8%, 45%, 1);
+    --grey: grey; grey; grey;
+    --grey-900: hsla(30, 60%, 8%, 1);
 
     --home-bg: hsla(28, 20%, 20%, 1);
-    --header-bg: hsla(30, 60%, 8%, 1);
-    /* --about-bg: hsla(194, 53%, 79%, 1); */
-    /* --portfolio-bg: hsla(119, 75%, 75%, 1); */
+    --header-bg: var(--grey-900);
     --about-bg: var(--white);
     --portfolio-bg: var(--white);
+    --contact-bg: var(--home-bg);
 
+    --title-color: hsla(326, 87%, 53%, 1);
     --accent-1: hsla(6, 93%, 71%, 1);
-    --accent-2: hsla(326, 87%, 53%, 1);
-    --header-accent: hsla(201, 75%, 69%, 1);
-    --accent-4: hsla(194, 53%, 79%, 1);
-    --accent-5: hsla(6, 82%, 70%, 1);
-    --accent-6: hsla(119, 75%, 75%, 1);
-
-    --input-bg: #1f242c;
+    --accent-2: hsla(190, 70%, 70%, 1);
+    --accent-3: hsla(145, 96%, 68%, 1);
+    --accent-4: hsla(45, 100%, 51%, 1);
+    --accent-1-alt: hsla(15, 72%, 70%, 1);
 
 }
 
@@ -40,15 +34,39 @@ body {
     background: var(--white);
 }
 
+.btn.btn-primary:not(:disabled):not(.disabled):focus {
+    box-shadow: 0 0 0 2px var(--accent-2);
+    /* box-shadow: 0 0 0 0; */
+}
+
+.btn.btn-primary:not(:disabled):not(.disabled):active {
+    background: var(--accent-2);
+    box-shadow: 0 0 0 2px var(--accent-2);
+    /* box-shadow: 0 0 0 0; */
+    /* transition: none; */
+}
+
+/* Colors for <button> and <a> :selection and :focus */
+
+/* a:not(:disabled):not(.disabled):focus { */
+    /* box-shadow: 0 0 0 5px var(--accent-2); */
+
+/* } */
+
+/* a:not(:disabled):not(.disabled):active { */
+    /* background: var(--accent-2); */
+    /* box-shadow: 0 0 0 5px var(--accent-2); */
+/* } */
+
 /* Header */
 
 header {
-    background: var(--header-bg);
-    color: var(--white);
-    border-bottom: 3px solid var(--header-accent);
+    background: var(--grey-900);
+    border-bottom: 3px solid var(--accent-2);
     z-index: 1;
     max-height: 100px;
     overflow: hidden;
+    top: 0px;
     transition: max-height 1s ease;
 }
 
@@ -59,13 +77,20 @@ header {
 }
 
 .nav-link {
-    background: var(--header-bg);
+    background: var(--grey-900);
     color: var(--white);
     transition: color .5s ease;
 }
 
 a.nav-link:hover {
     color: var(--accent-1);
+}
+
+/* Sections Generic */
+.underline-bar {
+    height: 5px;
+    width: 120px;
+    background: var(--black);
 }
 
 /* Home Section  */
@@ -82,6 +107,9 @@ a.nav-link:hover {
     margin: 0;
     padding: 0;
     border: 0;
+    position: absolute;
+    width: 100%;
+    height: 100vh;
 }
 
 .home .canvas {
@@ -89,6 +117,10 @@ a.nav-link:hover {
     margin: 0;
     padding: 0;
     border: 0;
+}
+
+.my-name {
+    color: var(--title-color);
 }
 
 /* About Section */
@@ -127,15 +159,31 @@ a.nav-link:hover {
 
 .contact {
     color: var(--white);
-    background: var(--home-bg);
+    background: var(--contact-bg);
     border-radius: 0;
+}
+
+.contact .underline-bar {
+    height: 5px;
+    width: 120px;
+    background: var(--white);
 }
 
 .contact input, .contact input:focus, .contact textarea, .contact textarea:focus {
     color: var(--white);
     border-radius: 0;
     border: 0;
-    background: var(--input-bg);
+    background: var(--grey-900);
+}
+
+.contact ::placeholder {
+    color: var(--grey-400);
+}
+
+.contact input:focus,
+.contact textarea:focus
+{
+    box-shadow: 0 0 0 2px var(--accent-2);
 }
 
 .contact button {
@@ -157,11 +205,20 @@ a.nav-link:hover {
     color: var(--white);
 }
 
-/* Components */
-
-.my-name {
-    color: var(--accent-2);
+.footer a {
+    color: var(--white);
 }
+
+
+.top-button {
+    background: var(--accent-1);
+    height: 50px;
+    width: 50px;
+    left: calc(50% - 25px);
+    top: -25px;
+}
+
+/* Components */
 
 .text-accent {
     color: var(--accent-1);
