@@ -1,0 +1,5 @@
+.#*
+*.org
+.git
+*.image
+*.tar*
