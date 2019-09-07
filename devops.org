@@ -108,7 +108,7 @@ scp ~/.prodrc ec2-user@evan-webapp:~/.devrc
 
 ** Dockerfile Creation and deployment
    :properties:
-   :header-args: :var app_name=evan-webapp 
+   :header-args: :var app_name="evan-webapp"
    :end:
 
 *** Generate a Dockerfile for the project
@@ -167,7 +167,7 @@ scp ~/.prodrc ec2-user@evan-webapp:~/.devrc
 #+RESULTS: build-image
 :results:
 ---- Building Docker File -----
-Sending build context to Docker daemon  44.49MB
+Sending build context to Docker daemon  45.04MB
 Step 1/8 : FROM daewok/sbcl:alpine
  ---> 1a8415706b0e
 Step 2/8 : RUN cd /tmp &&   wget https://beta.quicklisp.org/quicklisp.lisp &&   sbcl --load quicklisp.lisp --quit --eval '(quicklisp-quickstart:install)'
@@ -177,30 +177,29 @@ Step 3/8 : COPY sbclrc /root/.sbclrc
  ---> Using cache
  ---> db6a9b481bc1
 Step 4/8 : COPY ./ /root/prod/
- ---> 404ae5e35bdc
+ ---> Using cache
+ ---> 708e7a565dcb
 Step 5/8 : RUN ln -s /root/prod/prod.asd /root/quicklisp/local-projects/
- ---> Running in d68bdf533f7c
-Removing intermediate container d68bdf533f7c
- ---> f2a620a9a82f
+ ---> Using cache
+ ---> 3e95f182eaf8
 Step 6/8 : EXPOSE 8080
- ---> Running in 20334bf62b19
-Removing intermediate container 20334bf62b19
- ---> c33f8678c58f
+ ---> Using cache
+ ---> b5293c5ce6c7
 Step 7/8 : WORKDIR /root
- ---> Running in 621f19660378
-Removing intermediate container 621f19660378
- ---> 95a78e098838
+ ---> Using cache
+ ---> 2d05d18f036b
 Step 8/8 : ENTRYPOINT ["sbcl", "--eval", "(ql:quickload 'prod)", "--eval", "(control:start-server)"]
- ---> Running in 58c324d28993
-Removing intermediate container 58c324d28993
- ---> debc19366363
-Successfully built debc19366363
+ ---> Using cache
+ ---> 34ead26e33a4
+Successfully built 34ead26e33a4
 Successfully tagged evan-webapp:latest
 :end:
 
 *** Transport Docker Image to Server 
     :properties:
     # :header-args+: :dir ~/Downloads/prod
+    # :header-args+: :var destination="ec2-user@evan-webapp:~"
+    # :header-args+: :var destination="~/Downloads/prod"
     :end:
 
 #+name: save-image-and-send-to-server
@@ -210,7 +209,11 @@ Successfully tagged evan-webapp:latest
   rm $app_name.image
   scp $app_name.tar.gz ec2-user@evan-webapp:~
   rm $app_name.tar.gz
+  pwd
 #+end_src
+
+#+RESULTS: save-image-and-send-to-server
+: /home/evan/Downloads/prod
 
 #+RESULTS:
 
@@ -223,6 +226,8 @@ Successfully tagged evan-webapp:latest
 #+begin_src sh
   tar -xf $app_name.tar.gz
   docker load -i $app_name.image
+  rm $app_name.tar.gz
+  rm $app_name.image
 
   echo "----- Running Docker Container -----"
   docker stop $app_name
@@ -236,10 +241,66 @@ Successfully tagged evan-webapp:latest
 
 #+end_src
 
+#+RESULTS: load-and-run-image
+| Loaded                                                           | image:  | evan-webapp:latest |           |       |
+| -----                                                            | Running | Docker             | Container | ----- |
+| evan-webapp                                                      |         |                    |           |       |
+| 1d3db044f2559e30aef752ca4f41648bbde5df00a45685c9dab151a041db6705 |         |                    |           |       |
+
 #+RESULTS:
 | [1A[1K[K5f5a836898c0: | Loading | layer              | 458.8kB/44.49MB[1B[1A[1K[K5f5a836898c0: | Loading | layer | 16.06MB/44.49MB[1B[1A[1K[K5f5a836898c0: | Loading | layer              | 30.74MB/44.49MB[1B[1A[1K[K5f5a836898c0: | Loading | layer    | 39.91MB/44.49MB[1B[1A[1K[K5f5a836898c0: | Loading | layer | 40.83MB/44.49MB[1B[1A[1K[K5f5a836898c0: | Loading | layer                                                                   | 41.75MB/44.49MB[1B[1A[1K[K5f5a836898c0: | Loading | layer  | 44.49MB/44.49MB[1B[1A[1K[K5f5a836898c0: | Loading | layer | 44.49MB/44.49MB[1B |
 | [1A[1K[K78e10fd83041: | Loading | layer              | 3.072kB/3.072kB[1B[1A[1K[K78e10fd83041: | Loading | layer | 3.072kB/3.072kB[1BThe                           | image   | evan-webapp:latest | already                                             | exists, | renaming | the                                                 | old     | one   | with                                                | ID      | sha256:b92f610fed5ff8471d338966357fffde5fd48885697d335d2f8fbe8a682c3a53 | to                                                  | empty   | string |                                                     |         |       |                        |
 | Loaded                        | image:  | evan-webapp:latest |                                                     |         |       |                                                     |         |                    |                                                     |         |          |                                                     |         |       |                                                     |         |                                                                         |                                                     |         |        |                                                     |         |       |                        |
+
+*** Build and Run Local
+#+name: build-and-run-local
+#+BEGIN_SRC sh :results output drawer
+  echo "---- Building Docker File -----"
+  docker build -t $app_name ./
+  echo "----- Running Docker Container -----"
+  docker stop $app_name
+  docker container rm $app_name
+  docker run -dt --rm=true \
+         -p 8080:8080 \
+         --name $app_name \
+         -v ~/.prodrc:/root/.devrc:ro \
+         -v /var/log/$app_name:/var/log/$app_name \
+         $app_name 
+
+#+end_src
+
+#+RESULTS: build-and-run-local
+:results:
+---- Building Docker File -----
+Sending build context to Docker daemon  45.04MB
+Step 1/8 : FROM daewok/sbcl:alpine
+ ---> 1a8415706b0e
+Step 2/8 : RUN cd /tmp &&   wget https://beta.quicklisp.org/quicklisp.lisp &&   sbcl --load quicklisp.lisp --quit --eval '(quicklisp-quickstart:install)'
+ ---> Using cache
+ ---> 92776b95f0b0
+Step 3/8 : COPY sbclrc /root/.sbclrc
+ ---> Using cache
+ ---> db6a9b481bc1
+Step 4/8 : COPY ./ /root/prod/
+ ---> Using cache
+ ---> 708e7a565dcb
+Step 5/8 : RUN ln -s /root/prod/prod.asd /root/quicklisp/local-projects/
+ ---> Using cache
+ ---> 3e95f182eaf8
+Step 6/8 : EXPOSE 8080
+ ---> Using cache
+ ---> b5293c5ce6c7
+Step 7/8 : WORKDIR /root
+ ---> Using cache
+ ---> 2d05d18f036b
+Step 8/8 : ENTRYPOINT ["sbcl", "--eval", "(ql:quickload 'prod)", "--eval", "(control:start-server)"]
+ ---> Using cache
+ ---> 34ead26e33a4
+Successfully built 34ead26e33a4
+Successfully tagged evan-webapp:latest
+----- Running Docker Container -----
+ccfad3ca7598e3a98ca14e51ad25810f22563c87221b0a762a07b43251ab04dd
+:end:
 
 ** Future Improvemens [0/3]
 *** TODO [#A] How do we want to execute main 
