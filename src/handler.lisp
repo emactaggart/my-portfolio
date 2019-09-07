@@ -205,7 +205,8 @@
                       :onclick (ps (smooth-scroll "#about"))
                       (:div :class "align-middle"
                             (:span :class "align-middle" :style "height: 100%;" "See more" )
-                            (:i :class "fa fa-arrow-circle-right rotate-90-animation ml-2 align-middle")))))
+                            (:i :class "fa fa-arrow-circle-right rotate-90-animation ml-2 align-middle"))
+                      )))
 
       (:section :id "about" :class "about py-5"
                 (:div :class "container text-center"
@@ -666,8 +667,8 @@
       (defparameter circle-array (make-array))
 
       (defun resize-canvas ()
-        (setf canvas.width ($$ ".home .canvas-container") (width)))
-        (setf canvas.height ($$ ".home .canvas-container") (height))))
+        (setf canvas.width ($$ ".home .canvas-container" (width)))
+        (setf canvas.height ($$ ".home .canvas-container" (height))))
 
       (defun init ()
         (resize-canvas)
@@ -705,4 +706,6 @@
      ($ document)
      (ready
       (lambda ()
-        (init))))))
+        (init))))
+    ))
+

@@ -178,20 +178,20 @@ Step 3/8 : COPY sbclrc /root/.sbclrc
  ---> db6a9b481bc1
 Step 4/8 : COPY ./ /root/prod/
  ---> Using cache
- ---> 708e7a565dcb
+ ---> a454d3c45801
 Step 5/8 : RUN ln -s /root/prod/prod.asd /root/quicklisp/local-projects/
  ---> Using cache
- ---> 3e95f182eaf8
+ ---> ee1af4d22ec4
 Step 6/8 : EXPOSE 8080
  ---> Using cache
- ---> b5293c5ce6c7
+ ---> 3d099265ff5e
 Step 7/8 : WORKDIR /root
  ---> Using cache
- ---> 2d05d18f036b
+ ---> 2988d6925778
 Step 8/8 : ENTRYPOINT ["sbcl", "--eval", "(ql:quickload 'prod)", "--eval", "(control:start-server)"]
  ---> Using cache
- ---> 34ead26e33a4
-Successfully built 34ead26e33a4
+ ---> 7ce4c502c8f1
+Successfully built 7ce4c502c8f1
 Successfully tagged evan-webapp:latest
 :end:
 
@@ -242,10 +242,12 @@ Successfully tagged evan-webapp:latest
 #+end_src
 
 #+RESULTS: load-and-run-image
-| Loaded                                                           | image:  | evan-webapp:latest |           |       |
-| -----                                                            | Running | Docker             | Container | ----- |
-| evan-webapp                                                      |         |                    |           |       |
-| 1d3db044f2559e30aef752ca4f41648bbde5df00a45685c9dab151a041db6705 |         |                    |           |       |
+| [1A[1K[Kd7ec5f782f63:                                    | Loading | layer              | 458.8kB/45.04MB[1B[1A[1K[Kd7ec5f782f63: | Loading | layer | 14.68MB/45.04MB[1B[1A[1K[Kd7ec5f782f63: | Loading | layer              | 29.36MB/45.04MB[1B[1A[1K[Kd7ec5f782f63: | Loading | layer    | 40.37MB/45.04MB[1B[1A[1K[Kd7ec5f782f63: | Loading | layer | 41.29MB/45.04MB[1B[1A[1K[Kd7ec5f782f63: | Loading | layer                                                                   | 42.21MB/45.04MB[1B[1A[1K[Kd7ec5f782f63: | Loading | layer  | 45.04MB/45.04MB[1B |
+| [1A[1K[Kc3a6c14f8eb7:                                    | Loading | layer              | 3.072kB/3.072kB[1B[1A[1K[Kc3a6c14f8eb7: | Loading | layer | 3.072kB/3.072kB[1BThe                           | image   | evan-webapp:latest | already                                             | exists, | renaming | the                                                 | old     | one   | with                                                | ID      | sha256:34ead26e33a43f383053f0f44a9e5cea6d2b518d4bc9cd5fd28eb914b1f334bd | to                                                  | empty   | string |                        |
+| Loaded                                                           | image:  | evan-webapp:latest |                                                     |         |       |                                                     |         |                    |                                                     |         |          |                                                     |         |       |                                                     |         |                                                                         |                                                     |         |        |                        |
+| -----                                                            | Running | Docker             | Container                                           | -----   |       |                                                     |         |                    |                                                     |         |          |                                                     |         |       |                                                     |         |                                                                         |                                                     |         |        |                        |
+| evan-webapp                                                      |         |                    |                                                     |         |       |                                                     |         |                    |                                                     |         |          |                                                     |         |       |                                                     |         |                                                                         |                                                     |         |        |                        |
+| 1bbf6fe643bd7d8bcdf2c9df7844dfb20946777c6bfeaf3f5efff3f929bf0e8b |         |                    |                                                     |         |       |                                                     |         |                    |                                                     |         |          |                                                     |         |       |                                                     |         |                                                                         |                                                     |         |        |                        |
 
 #+RESULTS:
 | [1A[1K[K5f5a836898c0: | Loading | layer              | 458.8kB/44.49MB[1B[1A[1K[K5f5a836898c0: | Loading | layer | 16.06MB/44.49MB[1B[1A[1K[K5f5a836898c0: | Loading | layer              | 30.74MB/44.49MB[1B[1A[1K[K5f5a836898c0: | Loading | layer    | 39.91MB/44.49MB[1B[1A[1K[K5f5a836898c0: | Loading | layer | 40.83MB/44.49MB[1B[1A[1K[K5f5a836898c0: | Loading | layer                                                                   | 41.75MB/44.49MB[1B[1A[1K[K5f5a836898c0: | Loading | layer  | 44.49MB/44.49MB[1B[1A[1K[K5f5a836898c0: | Loading | layer | 44.49MB/44.49MB[1B |
@@ -283,23 +285,24 @@ Step 3/8 : COPY sbclrc /root/.sbclrc
  ---> db6a9b481bc1
 Step 4/8 : COPY ./ /root/prod/
  ---> Using cache
- ---> 708e7a565dcb
+ ---> a454d3c45801
 Step 5/8 : RUN ln -s /root/prod/prod.asd /root/quicklisp/local-projects/
  ---> Using cache
- ---> 3e95f182eaf8
+ ---> ee1af4d22ec4
 Step 6/8 : EXPOSE 8080
  ---> Using cache
- ---> b5293c5ce6c7
+ ---> 3d099265ff5e
 Step 7/8 : WORKDIR /root
  ---> Using cache
- ---> 2d05d18f036b
+ ---> 2988d6925778
 Step 8/8 : ENTRYPOINT ["sbcl", "--eval", "(ql:quickload 'prod)", "--eval", "(control:start-server)"]
  ---> Using cache
- ---> 34ead26e33a4
-Successfully built 34ead26e33a4
+ ---> 7ce4c502c8f1
+Successfully built 7ce4c502c8f1
 Successfully tagged evan-webapp:latest
 ----- Running Docker Container -----
-ccfad3ca7598e3a98ca14e51ad25810f22563c87221b0a762a07b43251ab04dd
+evan-webapp
+ec0ed95961c10460e30b1306bc2f7dd49bbc2a0e6afe7f411d7cd53d8912fb0b
 :end:
 
 ** Future Improvemens [0/3]
