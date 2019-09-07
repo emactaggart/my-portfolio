@@ -131,7 +131,10 @@
              (:script :type "text/javascript"
                      (str
                       (ps
-                        (let ((navbar-height 51))
+                        (defun get-css-value-from-var (css-var)
+                          (chain (get-computed-style document.document-element)
+                                 (get-property-value css-var)))
+                        (let ((navbar-height (parse-int (get-css-value-from-var "--navbar-height"))))
                           (defun smooth-scroll (location &optional (nav nil))
                             (let ((height (if nav
                                               (- ($$ location (offset) top) navbar-height)
@@ -142,6 +145,8 @@
                                  (create :scroll-top height)
                                  500)))
                             f)
+                          ;; FIXME add callback option to reduce savage accordian scrolling
+                          ;; according collapsing is still broken
                           (defun chunky-scroll (location &optional (nav nil))
                             (let ((height (if nav
                                               (- ($$ location (offset) top) navbar-height)
@@ -180,7 +185,7 @@
                        ($$ window (scroll (lambda ()
                                                    (if (>=
                                                         ($$ window (scroll-top))
-                                                        (- window.inner-height 200))
+                                                        (- (@ window inner-height) 200))
                                                        ($$ "header" (remove-class "squeeze-out"))
                                                        ($$ "header" (add-class "squeeze-out"))))))))))
 
@@ -254,128 +259,99 @@
 
 
                       (let ((professional
-                              '((:name "Java"
-                                 :img "/resources/logos/java.png"
-                                 :desc "With Java I have developed backend services for various applications as well as some internal business facing GUI applications. Various university courses also used Java as a point of focus for OOP."
-                                 :experience 3
-                                 )
-                                ;; (:name "C#"
-                                ;;  :desc "During a couple work terms I had worked with C# on some web services for internal business use. I have also developed a mobile, networked, game with the Unity engine for my final year software engineering project."
-                                ;;  :experience .66
-                                ;;  )
-                                ;; (:name "PHP"
-                                ;;  :desc "Although not a personal favorite, with PHP I was lucky enough to have some experience building a tool and web interface to archive VM images ranging from ~40GBs in size."
-                                ;;  :experience .33
-                                ;;  )
-                                (:name "JavaScript"
-                                 :img "/resources/logos/javascript.png"
-                                 :desc "Javascript is unavoidable at this point. Through school and various work experience I have used Javascript for front end and back end, primarily the former."
-                                 :experience 3.5
-                                 )
-                                ;; (:name "TypeScript"
-                                ;;  :desc "Through the use of Angular 2"
-                                ;;  :experience 2
-                                ;;  )
-                                (:name "SQL"
-                                 :img "/resources/logos/mysql.png"
-                                 :desc "Starting in school but carrying forward to professional experience SQL has been a staple in my DB experience. The majority of projects have had made use of a relational DB."
-                                 :experience 2.5
-                                 )
-                                (:name "Angular"
-                                 :img "/resources/logos/angular.png"
-                                 :desc "My first professional web development experience out of university was Angular. My experience primarily exists with version 2+, but have had a short time with the original. With Angular I have built various single-page web applications, both customer and business facing."
-                                 :experience 2.25
-                                 )
-                                (:name "Spring & Spring Boot"
-                                 :img "/resources/logos/spring.png"
-                                 :desc "The core of my Java experience exists inside the context of Spring. I have developed RESTful services, cron jobs, web applications with spring."
-                                 :experience 2.25
-                                 )
-                                ;; (:name "SAP Hana"
-                                ;;  :desc "On and off I have had some small endeavours into the proprietary world of SAP Hana building and modifying data models for various services."
-                                ;;  :experience 1
-                                ;;  )
-                                ))
+                              '(:id "pro"
+                                :title "Professional"
+                                :desc "The technologies I've used in the majority of my professional experience."
+                                :items (
+                                         (:name "Java"
+                                          :img "/resources/logos/java.png"
+                                          :desc "With Java I have developed backend services for various applications as well as some internal business facing GUI applications. Various university courses also used Java as a point of focus for OOP.")
+                                         (:name "JavaScript"
+                                          :img "/resources/logos/javascript.png"
+                                          :desc "Javascript is unavoidable at this point. Through school and various work experience I have used Javascript for front end and back end, primarily the former.")
+                                         (:name "Spring & Spring Boot"
+                                          :img "/resources/logos/spring.png"
+                                          :desc "The core of my Java experience exists inside the context of Spring. I have developed RESTful services, cron jobs, web applications with spring.")
+                                         (:name "SQL"
+                                          :img "/resources/logos/mysql.png"
+                                          :desc "Starting in school but carrying forward to professional experience SQL has been a staple in my DB experience. The majority of projects I have been involved with have made use of a relational databases.")
+                                         (:name "Angular"
+                                          :img "/resources/logos/angular.png"
+                                          :desc "My first professional web development experience out of university was Angular. My experience primarily exists with version 2+, but have had a short time with the original. With Angular I have built various single-page web applications, both customer and business facing.")
+                                         (:name "Web Development"
+                                          :img "/resources/logos/html-css-js.png"
+                                          :desc "The web being such an incredibly useful medium, web development is likewise a common task. Mobile responsive design is also in the realm of my expertise, as hopefully this page can attest."))))
                             (hobbies
-                              '(
-                                ;; (:name "C & C++"
-                                ;;  :desc "Like most other once-upon-a-time-university-students I have seen the likes of C and C++ primarily through use in school. C++ was my first and ultimately led me to continuing my education in the field of software. Other related areas of interest are that of security and the decompilation of binaries to find vulnerabilities in software."
-                                ;;  :experience 1.5
-                                ;;  )
-
-                                (:name "Python"
-                                 :img "/resources/logos/python.png"
-                                 :desc "My Python experience stems primarily from use for various school projects. One for a cryptography/network security course where I build a program to encrypt/decrypt . I have dabbled in Django and have used various libraries for simple servers and etc. I have ambitions of getting into data analysis using Pandas, NumPy, PyNotebook, and Python's other vetted libraries."
-                                 :experience .66
-                                 )
-                                (:name "Common Lisp"
-                                 :img "/resources/logos/lisp.png"
-                                 :desc "I built this website using Common Lisp, take a look at github to see it's current state 😬. My experience has been short but enlightening and very enjoyable once climbing over some initial hurdles. I have intentions of continuing my exploration through this humble language."
-                                 :experience .25
-                                 )
-                                (:name "Haskell"
-                                 :img "/resources/logos/haskell.svg"
-                                 :desc "Back in the days of FP hype I was intrigued by Haskell and absolutely battered (mentally) by the difference in programming style. Dabbling on and off over a year or so, having not really produced anything of importance, I did gain a solid understanding of what it means to be purely functional. I have a lot of respect for this language and appreciate it's brick wall like embrace into the world of FP"
-                                 :experience .8
-                                 )
-                                (:name "Clojure"
-                                 :img "/resources/logos/clojure.png"
-                                 :desc "After having been shown the light of functional programming from Haskell and having a solid understanding of Java and the JVM, I ventured towards into Rich Hickey's child, Clojure / Clojurescript. Clojure being my first Lisp  was a surprisingly smooth introduction to a more dynamic functional programming language. "
-                                 :experience .5
-                                 )
-                                ))
+                              '(:id "hobbies"
+                                :title "Hobbies"
+                                :desc "Some things I'm currently dabbling in."
+                                :items
+                                ((:name "Common Lisp"
+                                   :img "/resources/logos/lisp.png"
+                                   :desc "I built this website using Common Lisp, take a look at github to see it's current state 😬. My experience has been short but enlightening and very enjoyable once climbing over some initial hurdles. I have intentions of continuing my exploration through this humble language.")
+                                  (:name "Statistics"
+                                   :img "/resources/logos/statistics.png"
+                                   :desc "I'm slowly working at understanding the broad topic of statistics and data analysis and all that they encompass. Likewise model generation and machine learning logically will come afterwards. I intend to make use of Python's Pandas and NumPy libraries, as well as JavaScripts D3 for visual representation.")
+                                  (:name "Emacs"
+                                   :img "/resources/logos/emacs.png"
+                                   :desc "After succumbing to the dark side I transitioned from Vim to Emacs through Spacemacs, which I'm currently still using as my editor of choice. Emacs was the monumental driver towards learning Lisp like languages.")
+                                 (:name "Docker"
+                                  :img "/resources/logos/docker.png"
+                                  :desc "Docker is a technology I have more recently been diving into for the sake of devops and clean working environment purposes."
+                                  ))))
                             (generic-dev
-                              '(
-                                ;; (:name "Vim"
-                                ;;  :desc "As a young soldier in the editor war I eventually found myself having to choose a side, my initial choice being Vim for, perhaps reasons unknown, other than fear of the rumored \"Emac's Pinky\"."
-                                ;;  :experience 3
-                                ;;  )
-                                (:name "Emacs"
-                                 :img "/resources/logos/emacs.png"
-                                 :desc "After succumbing to the dark side I transitioned from Vim to Emacs through spacemacs, which I'm currently still using as my editor of choice. Emacs was the monumental driver towards learning Lisp like languages."
-                                 :experience 3
-                                 )
-
-                                (:name "Linux"
-                                 :img "/resources/logos/linux.png"
-                                 :desc "Since my introduction to using Linux in early university I have gradually transitioned into using it full time as my default OS. At this instant I'm running Fedora but have dabbled in Ubuntu, debian, and CentOS in the past. I have even built my own linux kernel from scratch through various tutorials! I have also dabbled in MacOS, and have a dual boot to Windows for other occasional uses."
-                                 :experience 6
-                                 )
-
-                                ;; (:name "Docker"
-                                ;;  :desc "Docker is a technology I have more recently been diving into for the sake of devops purposes and clean environment purposes."
-                                ;;  :experience .5
-                                ;;  )
-                                (:name "Devops"
-                                 :img "/resources/logos/devops.jpg"
-                                 :desc "Not being totally new to web development, but being relatively new to hosting my own services, devops is an area of interest of mine. Having plenty of linux experience, and now freshly, an understanding docker, I am digging deeper into the processes involed with devops automation and continuous integration, which I have made of plenty use of, in previous work experience."
-                                 :experience 1
-                                 )
-                                ;; (:name "Mobile Development"
-                                ;;  :desc "My mobile dev experience is primarily on Android, seeing as I'm generally not an Apple device owner, but I have also done a couple starter cross platform applications with Cordova through school and dev days."
-                                ;;  :experience 1
-                                ;;  )
-                                (:name "Git"
-                                 :img "/resources/logos/git.png"
-                                 :desc "Since early on in my development career Git has been the primary choice of version control. Being a command line warrior I like to think that I have a intermediate-advanced level of understanding of git, without digging into the sublevel commands git is comprised of. My git client of choice is Magit, an Emacs plugin surprisingly /s. I have also used Mercurial in a professional environment as well."
-                                 :experience 3
-                                 )
-                                (:name "Scrum"
-                                 :img "/resources/logos/scrum.png"
-                                 :desc "Through previous corporate work experience, I had the pleasure of collaborating on a few teams where Scrum was used effectively, dynamically, and autonomously as each team saw fit. This experience goes along with the comprimise and coordination between multiple Scrum teams driven towards a larger, single, and encompassing goal. The teams were sized from 3 to 10 people."
-                                 :experience 2
-                                 )
-                                (:name "Testing"
-                                 :img "/resources/logos/tdd.png"
-                                 :desc "Starting in my student developer work terms testing has been a strong area of interest. I have professional experience with test driven development which ranges from unit tests, to integration tests, to automated UI tests, to building the initialy framework for automated integration testing for a dynamically selected environement."
-                                 :experience 3
-                                 )
-                                ;; (:name "Shell"
-                                ;;  :desc "Having worked on Unix systems for so long I have picked up some solid shell and basic shell scripting experience. "
-                                ;;  :experience 1
-                                ;;  )
-                                ))
-                            )
+                              '(:id "generic"
+                                :title "Generic"
+                                :desc "Various technologies I've used both in and out of my professional experience."
+                                :items
+                                ((:name "Linux"
+                                   :img "/resources/logos/linux.png"
+                                   :desc "Since my introduction to using Linux in early university I have gradually transitioned into using it full time as my default OS. At this instant I'm running Fedora but have dabbled in Ubuntu, debian, and CentOS in the past. I have even built my own linux kernel from scratch through various tutorials! I have also dabbled in MacOS, and have a dual boot to Windows for other occasional uses."
+                                   )
+                                  (:name "Devops"
+                                   :img "/resources/logos/devops.jpg"
+                                   :desc "Not being totally new to web development, but being relatively new to hosting my own services, devops is an area of interest of mine. Having plenty of linux experience, and now freshly, an understanding docker, I am digging deeper into the processes involed with devops automation and continuous integration, which I have made of plenty use of, in previous work experience.")
+                                  (:name "Git"
+                                   :img "/resources/logos/git.png"
+                                   :desc "Since early on in my development career Git has been the primary choice of version control. Being a command line warrior I like to think that I have a intermediate-advanced level of understanding of git, without digging into the sublevel commands git is comprised of. My git client of choice is Magit, an Emacs plugin surprisingly /s. I have also used Mercurial in a professional environment as well.")
+                                  (:name "Scrum"
+                                   :img "/resources/logos/scrum.png"
+                                   :desc "Through previous corporate work experience, I had the pleasure of collaborating on a few teams where Scrum was used effectively, dynamically, and autonomously as each team saw fit. This experience goes along with the comprimise and coordination between multiple Scrum teams driven towards a larger, single, and encompassing goal. The teams were sized from 3 to 10 people.")
+                                  (:name "Testing"
+                                   :img "/resources/logos/tdd.png"
+                                   :desc "Starting in my student developer work terms testing has been a strong area of interest. I have professional experience with test driven development which ranges from unit tests, to integration tests, to automated UI tests, to building the initialy framework for automated integration testing for a dynamically selected environement.")
+                                 (:name "Security"
+                                  :img "/resources/logos/security.svg"
+                                  :desc "I like to think that I'm not as security ignorant as most."))))
+                            (misc
+                              '(:id "misc"
+                                :title "Miscellaneous"
+                                :desc "Stuff I've played around with in the past for various reasons, willingly or not."
+                                :items
+                                ((:name "Haskell"
+                                   ;; :img "/resources/logos/haskell.svg"
+                                   :desc "Back in the days of FP hype I was intrigued by Haskell and absolutely battered (mentally) by the difference in programming style. Dabbling on and off over a year or so, having not really produced anything of importance, I did gain a solid understanding of what it means to be purely functional. I have a lot of respect for this language and appreciate it's brick wall like embrace into the world of FP")
+                                  (:name "Clojure"
+                                   ;; :img "/resources/logos/clojure.png"
+                                   :desc "After having been shown the light of functional programming from Haskell and having a solid understanding of Java and the JVM, I ventured towards into Rich Hickey's child, Clojure / Clojurescript. Clojure being my first Lisp  was a surprisingly smooth introduction to a more dynamic functional programming language. ")
+                                 (:name "Python"
+                                  ;; :img "/resources/logos/python.png"
+                                  :desc "My Python experience stems primarily from use for various school projects. One for a cryptography/network security course where I build a program to encrypt/decrypt. I have dabbled in Django and have used various libraries for simple servers and etc. I have ambitions of getting into data analysis using Pandas, NumPy, PyNotebook, and Python's other vetted libraries.")
+                                  (:name "Vim"
+                                   :img ""
+                                   :desc "As a young soldier in the editor war I eventually found myself having to choose a side, my initial choice being Vim for, perhaps reasons unknown, other than fear of the rumored \"Emac's Pinky\".")
+                                  (:name "C & C++"
+                                   :img ""
+                                   :desc "Like most other once-upon-a-time-university-students I have seen the likes of C and C++ primarily through use in school. C++ was my first and ultimately led me to continuing my education in the field of software. Other related areas of interest are that of security and the decompilation of binaries to find vulnerabilities in software.")
+                                  (:name "SAP Hana"
+                                   :img ""
+                                   :desc "On and off I have had some small endeavours into the proprietary world of SAP Hana building and modifying data models for various services.")
+                                  (:name "C#"
+                                   :img ""
+                                   :desc "During a couple work terms I had worked with C# on some web services for internal business use. I have also developed a mobile, networked, game with the Unity engine for my final year software engineering project.")
+                                  (:name "PHP"
+                                   :img ""
+                                   :desc "Although not a personal favorite, with PHP I was lucky enough to have some experience building a tool and web interface to archive VM images ranging from ~40GBs in size.")))))
 
                         (labels ((card (skill)
                                    (htm
@@ -403,7 +379,7 @@
                                               (:div :class "d-flex row"
                                                     (loop for skill in skills do
                                                       (card skill))))))
-                                 (accordian-item (id title skills)
+                                 (accordian-item (&key id title desc items)
                                    (htm
                                     (:div :class "card"
                                           :style "border: 0; border-bottom: solid black 1px;"
@@ -420,9 +396,11 @@
                                           (:div :id (format nil "collapse-~a" id)
                                                 :class "collapse"
                                                 :data-parent "#skill-accordian"
+                                                (:div :class "pt-2 pb-3 text-left"
+                                                      :style "color: var(--grey-500)"
+                                                      (str desc))
                                                 (:div :class "card-body p-0 p-lg-3"
-                                                      (card-container skills)
-                                                      )
+                                                      (card-container items))
                                                 (:div
                                                  :style "background: var(--grey-100);"
                                                  :data-target (format nil "#collapse-~a" id)
@@ -438,9 +416,10 @@
                           (htm
                            (:div :id "skill-accordian"
                                  :class "m-3"
-                                 (accordian-item "pro" "Professional" professional)
-                                 (accordian-item "hob" "Hobbies" hobbies)
-                                 (accordian-item "gen" "General" generic-dev)))))))
+                                 (apply #'accordian-item professional)
+                                 (apply #'accordian-item hobbies)
+                                 (apply #'accordian-item generic-dev)
+                                 (apply #'accordian-item misc)))))))
 
       (:hr)
 
@@ -466,7 +445,7 @@
 
                                (:a :class "m-2 text-middle"
                                    :href "https://drive.google.com/file/d/1sZk9o56LG1O-f8gmzVKcrvowXqAjBiCU/view"
-                                   (:i :class "fab fa-8x fa-google-drive")))))
+                                   (:i :class "fa fa-8x fa-file-pdf")))))
                        (:div :class "alert alert-warning"
                              (:i :class "fa fa-lg fa-hard-hat")
                              " My projects are underway, come back in the later to check them out! "
@@ -551,7 +530,7 @@
                                                    ($$ "#my-form"
                                                           (submit
                                                            (lambda (event)
-                                                             (event.prevent-default)
+                                                             (@@ event (prevent-default))
 
                                                              (let* (($form ($ this))
                                                                     (url (chain $form (attr "action")))
@@ -616,7 +595,7 @@
       (var mouse (create :x undefined :y undefined))
       (var css-vars (make-array "--accent-1" "--accent-2" "--accent-3" "--accent-4" ))
       (var color-array (chain css-vars
-                              (map get-color-from-css-var)))
+                              (map get-css-value-from-var)))
 
       (window.add-event-listener
        "mousemove"
@@ -691,7 +670,8 @@
               do
                  (i.update)))
 
-      (defun get-color-from-css-var (css-var)
+      ;; TODO put this in a place where whole file can access
+      (defun get-css-value-from-var (css-var)
         (chain (get-computed-style document.document-element)
                (get-property-value css-var)))
 
@@ -706,6 +686,5 @@
      ($ document)
      (ready
       (lambda ()
-        (init))))
-    ))
+        (init))))))
 

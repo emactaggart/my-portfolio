@@ -9,7 +9,7 @@
     --grey-200: hsla(50, 35%, 80%, 1);
     --grey-300: hsla(50, 18%, 70%, 1);
     --grey-400: hsla(50, 8%, 45%, 1);
-    --grey: grey; grey; grey;
+    --grey-500: hsla(50, 7%, 35%, 1);
     --grey-900: hsla(30, 60%, 8%, 1);
 
     --home-bg: hsla(28, 20%, 20%, 1);
@@ -27,6 +27,8 @@
     --accent-2-alt: hsla(190, 45%, 80%, 1);
     --accent-3-alt: hsla(145, 80%, 80%, 1);
     --accent-4-alt: hsla(45, 80%, 80%, 1);
+
+    --navbar-height: 51px;
 }
 
 /* Global */
@@ -59,7 +61,7 @@ body {
     border-bottom: solid var(--grey-200) 1px;
 }
 
-.rotate-icon {
+<.rotate-icon {
     transition: transform 0.5s;
 }
 
@@ -85,7 +87,7 @@ header {
     background: var(--grey-900);
     border-bottom: 3px solid var(--accent-2);
     z-index: 1;
-    max-height: 100px;
+    max-height: var(--navbar-height);
     overflow: hidden;
     top: 0px;
     transition: max-height 1s ease;
