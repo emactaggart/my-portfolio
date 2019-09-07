@@ -9,11 +9,19 @@
 (defmacro+ps @@ (&body body)
     `(chain ,@body))
 
-(defmacro+ps $$ (&body body)
+(defmacro+ps $. (&body body)
   `(chain $ ,@body))
+
+(defmacro+ps $$ (selector &body body)
+  `(chain ($ ,selector) ,@body))
 
 (defmacro+ps \ (args &body body)
   `(lambda ,args ,@body))
+
+;; TODO
+;; on-event macro
+;; on document ready macro
+
 
 (setf cl-who:*attribute-quote-char* #\")
 
@@ -120,6 +128,35 @@
       (:body :class "container-fluid w-100 p-0"
              ,@body
 
+             (:script :type "text/javascript"
+                     (str
+                      (ps
+                        (let ((navbar-height 51))
+                          (defun smooth-scroll (location &optional (nav nil))
+                            (let ((height (if nav
+                                              (- ($$ location (offset) top) navbar-height)
+                                              ($$ location (offset) top)
+                                              )))
+                              ($$ "html, body"
+                                (animate
+                                 (create :scroll-top height)
+                                 500)))
+                            f)
+                          (defun chunky-scroll (location &optional (nav nil))
+                            (let ((height (if nav
+                                              (- ($$ location (offset) top) navbar-height)
+                                              ($$ location (offset) top)
+                                              )))
+                              ($$ "html, body"
+                                (animate
+                                 (create :scroll-top height)
+                                 200)))
+                            f))
+
+                        ($$ document (on "click" "a[href^=\"#\"]"
+                                         (\ (event)
+                                            (@@ event (prevent-default))
+                                            (smooth-scroll ($. (attr this "href")) t)))))))
              (:script :src "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
                       :integrity "sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
                       :crossorigin "anonymous")
@@ -128,19 +165,8 @@
                       :crossorigin "anonymous")))))
 
 (defun profile-handler ()
-  ;; XXX: ...Change the title?
-  (page-template (:title "Evan's Swanky Chocolate Lounge")
+  (page-template (:title "Welcom to the Lounge")
     (with-html-output (*standard-output*)
-      (:script
-       :type "text/javascript"
-       (str
-        (ps
-          (defun smooth-scroll (location)
-            (chain document
-                   (query-selector location)
-                   (scroll-into-view (create :behavior "smooth")))
-            f))))
-
       (:header
        :class "container-fluid sticky-top squeeze-out"
        (:div :class "d-flex flex-row py-1"
@@ -151,13 +177,12 @@
 
        (:script :type "text/javascript"
                 (str (ps
-                       (chain ($ window) (scroll (lambda ()
+                       ($$ window (scroll (lambda ()
                                                    (if (>=
-                                                        (chain ($ window) (scroll-top))
+                                                        ($$ window (scroll-top))
                                                         (- window.inner-height 200))
-                                                       (chain ($ "header") (remove-class "squeeze-out"))
-                                                       (chain ($ "header") (add-class "squeeze-out"))
-                                                       ))))))))
+                                                       ($$ "header" (remove-class "squeeze-out"))
+                                                       ($$ "header" (add-class "squeeze-out"))))))))))
 
       (:section
        :id "home" :class "home d-flex flex-row"
@@ -177,16 +202,10 @@
               "A backpacker and programmer.")
 
              (:button :class "garbage-btn btn btn-primary btn-lg m-3 px-3 text-light"
-                      :onclick
-                      (str (ps
-                             ((lambda ()
-                                (chain document (query-selector "#about")
-                                       (scroll-into-view (create :behavior "smooth")))))))
-
+                      :onclick (ps (smooth-scroll "#about"))
                       (:div :class "align-middle"
                             (:span :class "align-middle" :style "height: 100%;" "See more" )
-                            (:i :class "fa fa-arrow-circle-right rotate-90-animation ml-2 align-middle")
-                            ))))
+                            (:i :class "fa fa-arrow-circle-right rotate-90-animation ml-2 align-middle")))))
 
       (:section :id "about" :class "about py-5"
                 (:div :class "container text-center"
@@ -409,45 +428,18 @@
                                                  :onclick
                                                  (ps
                                                    (let ((el (lisp (format nil "#collapse-~a" id))))
+                                                     (chunky-scroll "#skill-accordian" t)
                                                      (@@
                                                       ($ el)
-                                                      (collapse "hide"))
-                                                     ;; FIXME
-                                                     ;; (smooth-scroll "#skill-accordian")
-                                                     ))
-                                                 (:i :class "ml-auto mt-2 fa fa-2x fa-chevron-up")
-                                                 ))))))
+                                                      (collapse "hide"))))
+                                                 (:i :class "ml-auto mt-2 fa fa-2x fa-chevron-up")))))))
 
                           (htm
                            (:div :id "skill-accordian"
                                  :class "m-3"
-
                                  (accordian-item "pro" "Professional" professional)
                                  (accordian-item "hob" "Hobbies" hobbies)
-                                 (accordian-item "gen" "General" generic-dev)
-                                 ;; FIXME handle scrolling on collapse
-                                 ;; (:script
-                                 ;;  :type "text/javascript"
-                                 ;;  (str
-                                 ;;   (ps
-                                 ;;     (@@ ($ "document")
-                                 ;;         (on "shown.bs.hidden"
-                                 ;;             (\ (event)
-                                 ;;                ;; (@@ event target (scroll-into-view))
-                                 ;;                (var target (@@ document (get-element-by-id "#skill-accordian")
-                                 ;;                                  )
-
-                                 ;;                     )
-                                 ;;                (setf (@ target parent-node
-                                 ;;                                 scroll-top)
-                                 ;;                      (@ target offset-top))
-                                                
-                                 ;;                )))
-                                 ;;     )))
-
-                                 ))))))
-
-
+                                 (accordian-item "gen" "General" generic-dev)))))))
 
       (:hr)
 
@@ -514,7 +506,7 @@
                                                     :style "height: 150px"
                                                     :name "message" :placeholder "Your message."
                                                     :onkeypress (str (ps ((lambda (event)
-                                                                            (chain ($ "#message-count")
+                                                                            ($$ "#message-count"
                                                                                    (text (- (lisp *message-length*)
                                                                                             (@ event target text-length)
                                                                                             1))))
@@ -535,10 +527,10 @@
                                                               ($ document)
                                                               (ready
                                                                (lambda ()
-                                                                 (let ((message-length (chain ($ "#message")
+                                                                 (let ((message-length ($$ "#message"
                                                                                               (val) length))))
 
-                                                                 (chain ($ "#message-count")
+                                                                 ($$ "#message-count"
                                                                         (text (- (lisp *message-length*)
                                                                                  message-length)))))))))))))
 
@@ -555,40 +547,32 @@
 
                                    (:script :type "text/javascript"
                                             (str (ps
-                                                   (chain ($ "#my-form")
+                                                   ($$ "#my-form"
                                                           (submit
                                                            (lambda (event)
                                                              (event.prevent-default)
 
                                                              (let* (($form ($ this))
                                                                     (url (chain $form (attr "action")))
-                                                                    (form-data (create :name (chain ($ "#name") (val))
-                                                                                       :email (chain ($ "#email") (val))
-                                                                                       :message (chain ($ "#message") (val)))))
+                                                                    (form-data (create :name ($$ "#name" (val))
+                                                                                       :email ($$ "#email" (val))
+                                                                                       :message ($$ "#message" (val)))))
 
                                                                (chain $
                                                                       (post
-                                                                       
-                                                                       (funcall (lambda ()
-                                                                                  (if (= (-math.floor (* (-math.random) 2)) 1)
-                                                                                      "error"
-                                                                                      "success"
-                                                                                      )))
-
-
-                                                                       ;; "send-message"
+                                                                       "send-message"
                                                                        form-data
                                                                        (lambda (data)
-                                                                         (chain ($ "#name") (val ""))
-                                                                         (chain ($ "#email") (val ""))
-                                                                         (chain ($ "#message") (val ""))
-                                                                         (chain ($ "#contact-success") (remove-class "d-none"))
-                                                                         (chain ($ "#contact-error") (add-class "d-none"))
+                                                                         ($$ "#name" (val ""))
+                                                                         ($$ "#email" (val ""))
+                                                                         ($$ "#message" (val ""))
+                                                                         ($$ "#contact-success" (remove-class "d-none"))
+                                                                         ($$ "#contact-error" (add-class "d-none"))
                                                                          ))
                                                                       (fail
                                                                        (lambda ()
-                                                                         (chain ($ "#contact-success") (add-class "d-none"))
-                                                                         (chain ($ "#contact-error") (remove-class "d-none"))
+                                                                         ($$ "#contact-success" (add-class "d-none"))
+                                                                         ($$ "#contact-error" (remove-class "d-none"))
                                                                          ))
                                                                       ))
 
@@ -600,6 +584,11 @@
       (:footer :class "footer py-5 position-relative"
 
                (:a :href "#home" :style "color: var(--white)"
+                   :onclick (ps (funcall
+                                 (\ (event)
+                                    (@@ event (prevent-default))
+                                    (smooth-scroll "#home"))
+                                 event))
                    (:div :class "top-button text-center position-absolute"
                          (:i :class "mt-2 fa fa-2x fa-arrow-circle-up")))
 
@@ -677,8 +666,8 @@
       (defparameter circle-array (make-array))
 
       (defun resize-canvas ()
-        (setf canvas.width (chain ($ ".home .canvas-container") (width)))
-        (setf canvas.height (chain ($ ".home .canvas-container") (height))))
+        (setf canvas.width ($$ ".home .canvas-container") (width)))
+        (setf canvas.height ($$ ".home .canvas-container") (height))))
 
       (defun init ()
         (resize-canvas)
