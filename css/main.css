@@ -50,6 +50,25 @@ body {
     /* transition: none; */
 }
 
+.card {
+    background: var(--white);
+    color: var(--black);
+    border-radius: 0;
+    border-color: var(--black);
+}
+
+.card-img-top {
+    border-bottom: solid var(--grey-200) 1px;
+}
+
+.rotate-icon {
+    transition: transform 0.5s;
+}
+
+[data-toggle="collapse"][aria-expanded="true"] .rotate-icon {
+    transform: rotate(-180deg);
+}
+
 /* Colors for <button> and <a> :selection and :focus */
 
 /* a:not(:disabled):not(.disabled):focus { */
@@ -159,6 +178,10 @@ a.nav-link:hover {
     color: var(--accent-1);
 }
 
+#skill-accordian {
+    border-top: solid var(--black) 1px;
+}
+
 /* Contact Section */
 
 .contact {
@@ -248,3 +271,4 @@ a.nav-link:hover {
     transition-duration: 0.5s;
     transform: rotate(90deg);
 }
+
