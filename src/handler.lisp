@@ -189,8 +189,7 @@
                                            ($$ window (scroll-top))
                                            (- (@ window inner-height) 200))
                                           ($$ "header" (remove-class "squeeze-out"))
-                                          ($$ "header" (add-class "squeeze-out")))))))))
-       )
+                                          ($$ "header" (add-class "squeeze-out"))))))))))
 
       (:section
        :id "home" :class "home d-flex flex-row"
@@ -388,7 +387,7 @@
                                           :style "border: 0; border-bottom: solid black 1px;"
                                           (:div :class "card-header d-flex align-items-center"
                                                 :id (format nil "heading-~a" id)
-                                                :style "height: 100px; background: var(--white)"
+                                                :style "height: 100px; background: var(--white); cursor: pointer;"
                                                 :data-toggle "collapse"
                                                 :data-target (format nil "#collapse-~a" id)
                                                 :aria-expanded "false"
