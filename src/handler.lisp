@@ -404,7 +404,7 @@
                                                 (:div :class "card-body p-0 p-lg-3"
                                                       (card-container items))
                                                 (:div
-                                                 :style "background: var(--grey-100);"
+                                                 :style "background: var(--grey-100); cursor: pointer;"
                                                  :data-target (format nil "#collapse-~a" id)
                                                  :onclick
                                                  (ps
