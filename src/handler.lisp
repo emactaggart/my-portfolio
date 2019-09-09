@@ -124,11 +124,7 @@
        (:link :rel "stylesheet" :type "text/css" :href "css/main.css")
        (:title ,@title)
        (:script :src "https://code.jquery.com/jquery-3.2.1.min.js")
-       )
-      (:body :class "container-fluid w-100 p-0"
-             ,@body
-
-             (:script :type "text/javascript"
+       (:script :type "text/javascript"
                      (str
                       (ps
                         (defun get-css-value-from-var (css-var)
@@ -162,6 +158,10 @@
                                          (\ (event)
                                             (@@ event (prevent-default))
                                             (smooth-scroll ($. (attr this "href")) t)))))))
+       )
+      (:body :class "container-fluid w-100 p-0"
+             ,@body
+
              (:script :src "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
                       :integrity "sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
                       :crossorigin "anonymous")
@@ -172,8 +172,9 @@
 (defun profile-handler ()
   (page-template (:title "Welcom to the Lounge")
     (with-html-output (*standard-output*)
+
       (:header
-       :class "container-fluid sticky-top squeeze-out"
+       :class "container-fluid squeeze-out fixed-top"
        (:div :class "d-flex flex-row py-1"
              (:a :class "nav-link offset-lg-2 offset-md-1" :href "#home" "HOME")
              (:a :class "nav-link" :href "#about" "ABOUT")
@@ -182,12 +183,14 @@
 
        (:script :type "text/javascript"
                 (str (ps
-                       ($$ window (scroll (lambda ()
-                                                   (if (>=
-                                                        ($$ window (scroll-top))
-                                                        (- (@ window inner-height) 200))
-                                                       ($$ "header" (remove-class "squeeze-out"))
-                                                       ($$ "header" (add-class "squeeze-out"))))))))))
+                       ($$ window (scroll
+                                   (\ ()
+                                      (if (>=
+                                           ($$ window (scroll-top))
+                                           (- (@ window inner-height) 200))
+                                          ($$ "header" (remove-class "squeeze-out"))
+                                          ($$ "header" (add-class "squeeze-out")))))))))
+       )
 
       (:section
        :id "home" :class "home d-flex flex-row"
@@ -669,11 +672,6 @@
         (loop for i in circle-array
               do
                  (i.update)))
-
-      ;; TODO put this in a place where whole file can access
-      (defun get-css-value-from-var (css-var)
-        (chain (get-computed-style document.document-element)
-               (get-property-value css-var)))
 
       (animate)
 

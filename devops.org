@@ -167,7 +167,7 @@ scp ~/.prodrc ec2-user@evan-webapp:~/.devrc
 #+RESULTS: build-image
 :results:
 ---- Building Docker File -----
-Sending build context to Docker daemon  45.04MB
+Sending build context to Docker daemon  45.08MB
 Step 1/8 : FROM daewok/sbcl:alpine
  ---> 1a8415706b0e
 Step 2/8 : RUN cd /tmp &&   wget https://beta.quicklisp.org/quicklisp.lisp &&   sbcl --load quicklisp.lisp --quit --eval '(quicklisp-quickstart:install)'
@@ -178,20 +178,20 @@ Step 3/8 : COPY sbclrc /root/.sbclrc
  ---> db6a9b481bc1
 Step 4/8 : COPY ./ /root/prod/
  ---> Using cache
- ---> a454d3c45801
+ ---> d2cefed6a3dc
 Step 5/8 : RUN ln -s /root/prod/prod.asd /root/quicklisp/local-projects/
  ---> Using cache
- ---> ee1af4d22ec4
+ ---> 428c89acb05a
 Step 6/8 : EXPOSE 8080
  ---> Using cache
- ---> 3d099265ff5e
+ ---> 27c847069677
 Step 7/8 : WORKDIR /root
  ---> Using cache
- ---> 2988d6925778
+ ---> ffa8060ff524
 Step 8/8 : ENTRYPOINT ["sbcl", "--eval", "(ql:quickload 'prod)", "--eval", "(control:start-server)"]
  ---> Using cache
- ---> 7ce4c502c8f1
-Successfully built 7ce4c502c8f1
+ ---> 06ed10cc6aac
+Successfully built 06ed10cc6aac
 Successfully tagged evan-webapp:latest
 :end:
 
@@ -242,12 +242,12 @@ Successfully tagged evan-webapp:latest
 #+end_src
 
 #+RESULTS: load-and-run-image
-| [1A[1K[Kd7ec5f782f63:                                    | Loading | layer              | 458.8kB/45.04MB[1B[1A[1K[Kd7ec5f782f63: | Loading | layer | 14.68MB/45.04MB[1B[1A[1K[Kd7ec5f782f63: | Loading | layer              | 29.36MB/45.04MB[1B[1A[1K[Kd7ec5f782f63: | Loading | layer    | 40.37MB/45.04MB[1B[1A[1K[Kd7ec5f782f63: | Loading | layer | 41.29MB/45.04MB[1B[1A[1K[Kd7ec5f782f63: | Loading | layer                                                                   | 42.21MB/45.04MB[1B[1A[1K[Kd7ec5f782f63: | Loading | layer  | 45.04MB/45.04MB[1B |
-| [1A[1K[Kc3a6c14f8eb7:                                    | Loading | layer              | 3.072kB/3.072kB[1B[1A[1K[Kc3a6c14f8eb7: | Loading | layer | 3.072kB/3.072kB[1BThe                           | image   | evan-webapp:latest | already                                             | exists, | renaming | the                                                 | old     | one   | with                                                | ID      | sha256:34ead26e33a43f383053f0f44a9e5cea6d2b518d4bc9cd5fd28eb914b1f334bd | to                                                  | empty   | string |                        |
-| Loaded                                                           | image:  | evan-webapp:latest |                                                     |         |       |                                                     |         |                    |                                                     |         |          |                                                     |         |       |                                                     |         |                                                                         |                                                     |         |        |                        |
-| -----                                                            | Running | Docker             | Container                                           | -----   |       |                                                     |         |                    |                                                     |         |          |                                                     |         |       |                                                     |         |                                                                         |                                                     |         |        |                        |
-| evan-webapp                                                      |         |                    |                                                     |         |       |                                                     |         |                    |                                                     |         |          |                                                     |         |       |                                                     |         |                                                                         |                                                     |         |        |                        |
-| 1bbf6fe643bd7d8bcdf2c9df7844dfb20946777c6bfeaf3f5efff3f929bf0e8b |         |                    |                                                     |         |       |                                                     |         |                    |                                                     |         |          |                                                     |         |       |                                                     |         |                                                                         |                                                     |         |        |                        |
+| [1A[1K[Kdf38e7a9c2a0:                                    | Loading | layer              | 458.8kB/45.08MB[1B[1A[1K[Kdf38e7a9c2a0: | Loading | layer | 17.43MB/45.08MB[1B[1A[1K[Kdf38e7a9c2a0: | Loading | layer              | 33.95MB/45.08MB[1B[1A[1K[Kdf38e7a9c2a0: | Loading | layer    | 40.83MB/45.08MB[1B[1A[1K[Kdf38e7a9c2a0: | Loading | layer | 41.75MB/45.08MB[1B[1A[1K[Kdf38e7a9c2a0: | Loading | layer                                                                   | 45.08MB/45.08MB[1B |       |        |
+| [1A[1K[Kf8d9cace8054:                                    | Loading | layer              | 3.072kB/3.072kB[1B[1A[1K[Kf8d9cace8054: | Loading | layer | 3.072kB/3.072kB[1BThe                           | image   | evan-webapp:latest | already                                             | exists, | renaming | the                                                 | old     | one   | with                                                | ID      | sha256:7ce4c502c8f193c2e3c1d4e090bc96f92a68b47ff904c33e954695a4a41efc76 | to                     | empty | string |
+| Loaded                                                           | image:  | evan-webapp:latest |                                                     |         |       |                                                     |         |                    |                                                     |         |          |                                                     |         |       |                                                     |         |                                                                         |                        |       |        |
+| -----                                                            | Running | Docker             | Container                                           | -----   |       |                                                     |         |                    |                                                     |         |          |                                                     |         |       |                                                     |         |                                                                         |                        |       |        |
+| evan-webapp                                                      |         |                    |                                                     |         |       |                                                     |         |                    |                                                     |         |          |                                                     |         |       |                                                     |         |                                                                         |                        |       |        |
+| 52adf5006bbb5c9c4d61175a7ca3ff5a07c5f5360660e23f82293318692deb0c |         |                    |                                                     |         |       |                                                     |         |                    |                                                     |         |          |                                                     |         |       |                                                     |         |                                                                         |                        |       |        |
 
 #+RESULTS:
 | [1A[1K[K5f5a836898c0: | Loading | layer              | 458.8kB/44.49MB[1B[1A[1K[K5f5a836898c0: | Loading | layer | 16.06MB/44.49MB[1B[1A[1K[K5f5a836898c0: | Loading | layer              | 30.74MB/44.49MB[1B[1A[1K[K5f5a836898c0: | Loading | layer    | 39.91MB/44.49MB[1B[1A[1K[K5f5a836898c0: | Loading | layer | 40.83MB/44.49MB[1B[1A[1K[K5f5a836898c0: | Loading | layer                                                                   | 41.75MB/44.49MB[1B[1A[1K[K5f5a836898c0: | Loading | layer  | 44.49MB/44.49MB[1B[1A[1K[K5f5a836898c0: | Loading | layer | 44.49MB/44.49MB[1B |
@@ -274,7 +274,7 @@ Successfully tagged evan-webapp:latest
 #+RESULTS: build-and-run-local
 :results:
 ---- Building Docker File -----
-Sending build context to Docker daemon  45.04MB
+Sending build context to Docker daemon  45.08MB
 Step 1/8 : FROM daewok/sbcl:alpine
  ---> 1a8415706b0e
 Step 2/8 : RUN cd /tmp &&   wget https://beta.quicklisp.org/quicklisp.lisp &&   sbcl --load quicklisp.lisp --quit --eval '(quicklisp-quickstart:install)'
@@ -284,25 +284,27 @@ Step 3/8 : COPY sbclrc /root/.sbclrc
  ---> Using cache
  ---> db6a9b481bc1
 Step 4/8 : COPY ./ /root/prod/
- ---> Using cache
- ---> a454d3c45801
+ ---> d2cefed6a3dc
 Step 5/8 : RUN ln -s /root/prod/prod.asd /root/quicklisp/local-projects/
- ---> Using cache
- ---> ee1af4d22ec4
+ ---> Running in 5b3c942646d1
+Removing intermediate container 5b3c942646d1
+ ---> 428c89acb05a
 Step 6/8 : EXPOSE 8080
- ---> Using cache
- ---> 3d099265ff5e
+ ---> Running in 4ba998309f8d
+Removing intermediate container 4ba998309f8d
+ ---> 27c847069677
 Step 7/8 : WORKDIR /root
- ---> Using cache
- ---> 2988d6925778
+ ---> Running in 5c7245d4a8f9
+Removing intermediate container 5c7245d4a8f9
+ ---> ffa8060ff524
 Step 8/8 : ENTRYPOINT ["sbcl", "--eval", "(ql:quickload 'prod)", "--eval", "(control:start-server)"]
- ---> Using cache
- ---> 7ce4c502c8f1
-Successfully built 7ce4c502c8f1
+ ---> Running in 6ef61395007c
+Removing intermediate container 6ef61395007c
+ ---> 06ed10cc6aac
+Successfully built 06ed10cc6aac
 Successfully tagged evan-webapp:latest
 ----- Running Docker Container -----
-evan-webapp
-ec0ed95961c10460e30b1306bc2f7dd49bbc2a0e6afe7f411d7cd53d8912fb0b
+af1b43bb12a2f01fc2003a1f9af3a7d8ccabb4a399c482f78f6ac66a86c42bf7
 :end:
 
 ** Future Improvemens [0/3]

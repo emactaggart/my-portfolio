@@ -263,4 +263,5 @@
 ** Proper favicon
 ** readme
 ** Database for images
+** email handler tests
 
