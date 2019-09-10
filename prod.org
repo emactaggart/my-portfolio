@@ -252,11 +252,6 @@
 ** TODO Database for images
 ** TODO Travel Section
 * Tomorrow
-** .dockerignore cleanup
-** JS macros and cleanup
-*** Document.ready handler macro
-*** oncall macro
-** Proper favicon
 ** readme
 ** email handler tests
 ** DNS
