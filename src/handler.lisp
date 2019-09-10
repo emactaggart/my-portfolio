@@ -172,7 +172,6 @@
 (defun profile-handler ()
   (page-template (:title "Welcom to the Lounge")
     (with-html-output (*standard-output*)
-
       (:header
        :class "container-fluid squeeze-out fixed-top"
        (:div :class "d-flex flex-row py-1"
@@ -250,11 +249,8 @@
                                    (:h3 "Simplicity"))
                                   (:p "Simplicity is the key to sane development. Likewise I prefer to avoid over-designing and over-engineering things.")))
 
-
-                      (:div :class "d-flex justify-content-center"
-                            (:div :class "portrait-container"
-                                  ;; FIXME clip-path: circle(40%) https://developer.mozilla.org/en-US/docs/Web/CSS/clip-path
-                                  (:img :class "portrait" :src "/resources/profile-photos/cooking-ahh.jpg")))
+                      (:div :class "portrait-container mx-auto"
+                            (:img :class "portrait" :src "/resources/profile-photos/cooking-ahh.jpg"))
 
                       (:div :class "py-3"
                             "I'm a developer comfortable working in a plethora of technologies and environments and not afraid to learn something new. Have a look at some of my skills!")
@@ -276,7 +272,7 @@
                                           :desc "The core of my Java experience exists inside the context of Spring. I have developed RESTful services, cron jobs, web applications with spring.")
                                          (:name "SQL"
                                           :img "/resources/logos/mysql.png"
-                                          :desc "Starting in school but carrying forward to professional experience SQL has been a staple in my DB experience. The majority of projects I have been involved with have made use of a relational databases.")
+                                          :desc "Starting in school but carrying forward to professional experience SQL has been a staple in my DB experience. The majority of projects I have been involved with have made use of relational databases.")
                                          (:name "Angular"
                                           :img "/resources/logos/angular.png"
                                           :desc "My first professional web development experience out of university was Angular. My experience primarily exists with version 2+, but have had a short time with the original. With Angular I have built various single-page web applications, both customer and business facing.")
@@ -293,13 +289,13 @@
                                    :desc "I built this website using Common Lisp, take a look at github to see it's current state 😬. My experience has been short but enlightening and very enjoyable once climbing over some initial hurdles. I have intentions of continuing my exploration through this humble language.")
                                   (:name "Statistics"
                                    :img "/resources/logos/statistics.png"
-                                   :desc "I'm slowly working at understanding the broad topic of statistics and data analysis and all that they encompass. Likewise model generation and machine learning logically will come afterwards. I intend to make use of Python's Pandas and NumPy libraries, as well as JavaScripts D3 for visual representation.")
+                                   :desc "I'm slowly working working my way through various online tutorials to one pursue some foolish endeavours in the area of quantitive analysis. My venture into model generation and machine learning  come somewhere in between. I intend to make use of Python's Pandas and NumPy libraries, as well as JavaScripts D3 for visual representation.")
                                   (:name "Emacs"
                                    :img "/resources/logos/emacs.png"
                                    :desc "After succumbing to the dark side I transitioned from Vim to Emacs through Spacemacs, which I'm currently still using as my editor of choice. Emacs was the monumental driver towards learning Lisp like languages.")
                                  (:name "Docker"
                                   :img "/resources/logos/docker.png"
-                                  :desc "Docker is a technology I have more recently been diving into for the sake of devops and clean working environment purposes."
+                                  :desc "Docker is a technology I have more recently been diving into for the sake of cleaner devops and work environment purposes."
                                   ))))
                             (generic-dev
                               '(:id "generic"
@@ -315,16 +311,16 @@
                                    :desc "Not being totally new to web development, but being relatively new to hosting my own services, devops is an area of interest of mine. Having plenty of linux experience, and now freshly, an understanding docker, I am digging deeper into the processes involed with devops automation and continuous integration, which I have made of plenty use of, in previous work experience.")
                                   (:name "Git"
                                    :img "/resources/logos/git.png"
-                                   :desc "Since early on in my development career Git has been the primary choice of version control. Being a command line warrior I like to think that I have a intermediate-advanced level of understanding of git, without digging into the sublevel commands git is comprised of. My git client of choice is Magit, an Emacs plugin surprisingly /s. I have also used Mercurial in a professional environment as well.")
+                                   :desc "Since early on in my development career Git has been the primary choice of version control. Being a command line warrior I like to think that I have a intermediate-advanced level of understanding of git, without digging into the sublevel commands git is comprised of. My git client of choice is Magit, a lovely Emacs plugin. I have also used Mercurial in a professional environment as well.")
                                   (:name "Scrum"
                                    :img "/resources/logos/scrum.png"
                                    :desc "Through previous corporate work experience, I had the pleasure of collaborating on a few teams where Scrum was used effectively, dynamically, and autonomously as each team saw fit. This experience goes along with the comprimise and coordination between multiple Scrum teams driven towards a larger, single, and encompassing goal. The teams were sized from 3 to 10 people.")
                                   (:name "Testing"
                                    :img "/resources/logos/tdd.png"
-                                   :desc "Starting in my student developer work terms testing has been a strong area of interest. I have professional experience with test driven development which ranges from unit tests, to integration tests, to automated UI tests, to building the initialy framework for automated integration testing for a dynamically selected environement.")
+                                   :desc "Starting in my student developer work terms testing has been a strong area of interest. I have professional experience with building tests ranging from unit tests, to integration tests, to automated UI tests with PhantomJS, to building a framework for automated integration tests on ran by the CI server.")
                                  (:name "Security"
                                   :img "/resources/logos/security.svg"
-                                  :desc "I like to think that I'm not as security ignorant as most."))))
+                                  :desc "I like to think that I'm not as security ignorant as most. However I am not perfect, so I do believe security reviews and security audits are very important."))))
                             (misc
                               '(:id "misc"
                                 :title "Miscellaneous"
@@ -338,16 +334,16 @@
                                    :desc "After having been shown the light of functional programming from Haskell and having a solid understanding of Java and the JVM, I ventured towards into Rich Hickey's child, Clojure / Clojurescript. Clojure being my first Lisp  was a surprisingly smooth introduction to a more dynamic functional programming language. ")
                                  (:name "Python"
                                   ;; :img "/resources/logos/python.png"
-                                  :desc "My Python experience stems primarily from use for various school projects. One for a cryptography/network security course where I build a program to encrypt/decrypt. I have dabbled in Django and have used various libraries for simple servers and etc. I have ambitions of getting into data analysis using Pandas, NumPy, PyNotebook, and Python's other vetted libraries.")
+                                  :desc "My Python experience stems primarily from use for various school projects. One for a cryptography/network security course where I implemented a cipher to encrypt/decrypt. I have dabbled in Django and have used various libraries for simple servers and etc. I have ambitions of getting into data analysis using Pandas, NumPy, PyNotebook, and Python's other vetted libraries.")
                                   (:name "Vim"
                                    :img ""
-                                   :desc "As a young soldier in the editor war I eventually found myself having to choose a side, my initial choice being Vim for, perhaps reasons unknown, other than fear of the rumored \"Emac's Pinky\".")
+                                   :desc "As a young soldier in the editor war I eventually found myself having to choose a side, my initial choice being Vim. My reasoning backing this decision remains forgotten, howver I was fearful of the rumored \"Emac's Pinky\".")
                                   (:name "C & C++"
                                    :img ""
                                    :desc "Like most other once-upon-a-time-university-students I have seen the likes of C and C++ primarily through use in school. C++ was my first and ultimately led me to continuing my education in the field of software. Other related areas of interest are that of security and the decompilation of binaries to find vulnerabilities in software.")
                                   (:name "SAP Hana"
                                    :img ""
-                                   :desc "On and off I have had some small endeavours into the proprietary world of SAP Hana building and modifying data models for various services.")
+                                   :desc "On and off I have had some small endeavours into the proprietary world of SAP Hana building and modifying data models, some disgustingly large, for various backend services to consume.")
                                   (:name "C#"
                                    :img ""
                                    :desc "During a couple work terms I had worked with C# on some web services for internal business use. I have also developed a mobile, networked, game with the Unity engine for my final year software engineering project.")

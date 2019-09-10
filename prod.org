@@ -250,11 +250,7 @@
     CLOSED: [2019-07-23 Tue 10:46]
 ** TODO Add d3 skill chart
 * Tomorrow
-** Proof read skills text
 ** mobile navbar size / hamburger
-** Choose Font
-*** Title size according to screen size so name fits
-** mouse over elements
 ** .dockerignore cleanup
 ** JS macros and cleanup
 *** Document.ready handler macro

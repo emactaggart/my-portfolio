@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css?family=Raleway');
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap');
+
 
 /* Swanky Chocole Color Scheme */
 :root {
@@ -36,6 +37,7 @@
 body {
     color: var(--black);
     background: var(--white);
+    font-family: 'Source Sans Pro', sans-serif;
 }
 
 .btn.btn-primary:not(:disabled):not(.disabled):focus {
@@ -121,7 +123,6 @@ a.nav-link:hover {
 
 .home {
     background: transparent;
-    font-family: Raleway;
     color: var(--white);
     min-height: 100vh;
 }
@@ -154,15 +155,15 @@ a.nav-link:hover {
 }
 
 .portrait-container {
-    width: 300px; height: 300px;
+    width: 300px;
+    height: 300px;
     overflow: hidden;
     border-radius: 50%;
-    border: solid white 3px;
 }
 
 .portrait {
     width: 130%;
-    margin: 0 0 0 -20%;
+    transform: translate(-15%);
 }
 
 /* Portfolio Section */
