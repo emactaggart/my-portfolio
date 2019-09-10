@@ -256,6 +256,7 @@
 *** Document.ready handler macro
 *** oncall macro
 ** Travel section
+** Image sizes
 ** Proper favicon
 ** readme
 ** Database for images

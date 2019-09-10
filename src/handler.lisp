@@ -172,13 +172,28 @@
 (defun profile-handler ()
   (page-template (:title "Welcom to the Lounge")
     (with-html-output (*standard-output*)
-      (:header
-       :class "container-fluid squeeze-out fixed-top"
-       (:div :class "d-flex flex-row py-1"
-             (:a :class "nav-link offset-lg-2 offset-md-1" :href "#home" "Home")
-             (:a :class "nav-link" :href "#about" "About")
-             (:a :class "nav-link" :href "#portfolio" "Portfolio")
-             (:a :class "nav-link" :href "#contact" "Contact"))
+
+      (:div :class "nav-container fixed-top squeeze-out"
+       (:nav :class "navbar navbar-expand-sm navbar-dark"
+             (:a :class "navbar-brand" :href "#home" "Evan MacTaggart" )
+             (:button
+              :class "ml-auto navbar-toggler"
+              :type "button"
+              :data-toggle "collapse"
+              :data-target "#navbarNav"
+              :aria-controls "navbarNav"
+              :aria-expanded "false"
+              :aria-label "Toggle navigation"
+              (:i :class "fa fa-bars"))
+             (:div :class "collapse navbar-collapse"
+                   :id "navbarNav"
+                   (:ul :class "navbar-nav"
+                        (:li :class "nav-item"
+                             (:a :class "nav-link" :href "#about" "About"))
+                        (:li :class "nav-item"
+                             (:a :class "nav-link" :href "#portfolio" "Portfolio"))
+                        (:li :class "nav-item"
+                             (:a :class "nav-link" :href "#contact" "Contact")))))
 
        (:script :type "text/javascript"
                 (str (ps
@@ -187,8 +202,11 @@
                                       (if (>=
                                            ($$ window (scroll-top))
                                            (- (@ window inner-height) 200))
-                                          ($$ "header" (remove-class "squeeze-out"))
-                                          ($$ "header" (add-class "squeeze-out"))))))))))
+                                          ($$ ".nav-container" (remove-class "squeeze-out"))
+                                          (progn
+                                            ($$ ".nav-container" (add-class "squeeze-out"))
+                                            ($$ "#navbarNav"
+                                              (collapse "hide")))))))))))
 
       (:section
        :id "home" :class "home d-flex flex-row"

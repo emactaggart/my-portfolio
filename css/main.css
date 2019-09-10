@@ -29,7 +29,7 @@
     --accent-3-alt: hsla(145, 80%, 80%, 1);
     --accent-4-alt: hsla(45, 80%, 80%, 1);
 
-    --navbar-height: 51px;
+    --navbar-height: 59px;
 }
 
 /* Global */
@@ -85,29 +85,31 @@ body {
 
 /* Header */
 
-header {
-    background: var(--grey-900);
+.nav-container {
     border-bottom: 3px solid var(--accent-2);
-    z-index: 1;
-    max-height: var(--navbar-height);
-    overflow: hidden;
+    background: var(--grey-900);
+
     top: 0px;
-    transition: max-height 1s ease;
+    transition: top 1s;
 }
 
 .squeeze-out {
-    max-height: 0;
-    border: 0;
-    transition: max-height 0.5s ease;
+    /* FIXME navbar height */
+    top: -59px
 }
 
-.nav-link {
-    background: var(--grey-900);
+.navbar-dark .navbar-brand {
     color: var(--white);
     transition: color .5s ease;
 }
 
-a.nav-link:hover {
+.navbar-dark .navbar-nav .nav-link {
+    transition: color .5s ease;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover,
+.navbar-dark .navbar-brand:hover
+{
     color: var(--accent-1);
 }
 
