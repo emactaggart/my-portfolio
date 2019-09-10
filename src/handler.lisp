@@ -175,10 +175,10 @@
       (:header
        :class "container-fluid squeeze-out fixed-top"
        (:div :class "d-flex flex-row py-1"
-             (:a :class "nav-link offset-lg-2 offset-md-1" :href "#home" "HOME")
-             (:a :class "nav-link" :href "#about" "ABOUT")
-             (:a :class "nav-link" :href "#portfolio" "PORTFOLIO")
-             (:a :class "nav-link" :href "#contact" "CONTACT"))
+             (:a :class "nav-link offset-lg-2 offset-md-1" :href "#home" "Home")
+             (:a :class "nav-link" :href "#about" "About")
+             (:a :class "nav-link" :href "#portfolio" "Portfolio")
+             (:a :class "nav-link" :href "#contact" "Contact"))
 
        (:script :type "text/javascript"
                 (str (ps
@@ -218,7 +218,7 @@
                 (:div :class "container text-center"
 
                       (:div :class "flex-row justify-content-center mb-3"
-                            (:h1 (:b "ABOUT"))
+                            (:h1 (:b "About"))
                             (:div :class "d-flex justify-content-center"
                                   (:div :class "underline-bar")))
 
@@ -426,7 +426,7 @@
                 (:div :class "d-flex flex-row justify-content-center"
                       (:div
                        (:div :class "flex-row justify-content-center mb-3"
-                             (:h1 (:b "WORK"))
+                             (:h1 (:b "Work"))
                              (:div :class "d-flex justify-content-center"
                                    (:div :class "underline-bar")))
 
@@ -455,7 +455,7 @@
                 (:div :class "h-100 container d-flex justify-content-center"
                       (:div :class "align-self-center col-12 col-sm-10 col-md-9 text-center"
 
-                            (:h1 (:b "CONTACT"))
+                            (:h1 (:b "Contact"))
                             (:div :class "row justify-content-center"
                                   (:div :class "underline-bar"))
 
