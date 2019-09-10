@@ -249,16 +249,16 @@
 *** DONE jquery post
     CLOSED: [2019-07-23 Tue 10:46]
 ** TODO Add d3 skill chart
+** TODO Database for images
+** TODO Travel Section
 * Tomorrow
-** mobile navbar size / hamburger
 ** .dockerignore cleanup
 ** JS macros and cleanup
 *** Document.ready handler macro
 *** oncall macro
-** Travel section
-** Image sizes
 ** Proper favicon
 ** readme
-** Database for images
 ** email handler tests
+** DNS
+** Nginx for ssl
 

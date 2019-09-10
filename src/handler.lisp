@@ -280,22 +280,22 @@
                                 :desc "The technologies I've used in the majority of my professional experience."
                                 :items (
                                          (:name "Java"
-                                          :img "/resources/logos/java.png"
+                                          :img "/resources/logos/java-logo.png"
                                           :desc "With Java I have developed backend services for various applications as well as some internal business facing GUI applications. Various university courses also used Java as a point of focus for OOP.")
                                          (:name "JavaScript"
-                                          :img "/resources/logos/javascript.png"
+                                          :img "/resources/logos/javascript-logo.png"
                                           :desc "Javascript is unavoidable at this point. Through school and various work experience I have used Javascript for front end and back end, primarily the former.")
                                          (:name "Spring & Spring Boot"
-                                          :img "/resources/logos/spring.png"
+                                          :img "/resources/logos/spring-logo.png"
                                           :desc "The core of my Java experience exists inside the context of Spring. I have developed RESTful services, cron jobs, web applications with spring.")
                                          (:name "SQL"
-                                          :img "/resources/logos/mysql.png"
+                                          :img "/resources/logos/mysql-logo.png"
                                           :desc "Starting in school but carrying forward to professional experience SQL has been a staple in my DB experience. The majority of projects I have been involved with have made use of relational databases.")
                                          (:name "Angular"
-                                          :img "/resources/logos/angular.png"
+                                          :img "/resources/logos/angular-logo.png"
                                           :desc "My first professional web development experience out of university was Angular. My experience primarily exists with version 2+, but have had a short time with the original. With Angular I have built various single-page web applications, both customer and business facing.")
                                          (:name "Web Development"
-                                          :img "/resources/logos/html-css-js.png"
+                                          :img "/resources/logos/html-css-js-logo.png"
                                           :desc "The web being such an incredibly useful medium, web development is likewise a common task. Mobile responsive design is also in the realm of my expertise, as hopefully this page can attest."))))
                             (hobbies
                               '(:id "hobbies"
@@ -303,16 +303,16 @@
                                 :desc "Some things I'm currently dabbling in."
                                 :items
                                 ((:name "Common Lisp"
-                                   :img "/resources/logos/lisp.png"
+                                   :img "/resources/logos/lisp-logo.png"
                                    :desc "I built this website using Common Lisp, take a look at github to see it's current state 😬. My experience has been short but enlightening and very enjoyable once climbing over some initial hurdles. I have intentions of continuing my exploration through this humble language.")
                                   (:name "Statistics"
-                                   :img "/resources/logos/statistics.png"
+                                   :img "/resources/logos/panda-stats-logo.png"
                                    :desc "I'm slowly working working my way through various online tutorials to one pursue some foolish endeavours in the area of quantitive analysis. My venture into model generation and machine learning  come somewhere in between. I intend to make use of Python's Pandas and NumPy libraries, as well as JavaScripts D3 for visual representation.")
                                   (:name "Emacs"
-                                   :img "/resources/logos/emacs.png"
+                                   :img "/resources/logos/emacs-logo.png"
                                    :desc "After succumbing to the dark side I transitioned from Vim to Emacs through Spacemacs, which I'm currently still using as my editor of choice. Emacs was the monumental driver towards learning Lisp like languages.")
                                  (:name "Docker"
-                                  :img "/resources/logos/docker.png"
+                                  :img "/resources/logos/docker-logo.png"
                                   :desc "Docker is a technology I have more recently been diving into for the sake of cleaner devops and work environment purposes."
                                   ))))
                             (generic-dev
@@ -321,23 +321,23 @@
                                 :desc "Various technologies I've used both in and out of my professional experience."
                                 :items
                                 ((:name "Linux"
-                                   :img "/resources/logos/linux.png"
+                                   :img "/resources/logos/linux-logo.png"
                                    :desc "Since my introduction to using Linux in early university I have gradually transitioned into using it full time as my default OS. At this instant I'm running Fedora but have dabbled in Ubuntu, debian, and CentOS in the past. I have even built my own linux kernel from scratch through various tutorials! I have also dabbled in MacOS, and have a dual boot to Windows for other occasional uses."
                                    )
                                   (:name "Devops"
-                                   :img "/resources/logos/devops.jpg"
+                                   :img "/resources/logos/devops-logo.png"
                                    :desc "Not being totally new to web development, but being relatively new to hosting my own services, devops is an area of interest of mine. Having plenty of linux experience, and now freshly, an understanding docker, I am digging deeper into the processes involed with devops automation and continuous integration, which I have made of plenty use of, in previous work experience.")
                                   (:name "Git"
-                                   :img "/resources/logos/git.png"
+                                   :img "/resources/logos/git-logo.png"
                                    :desc "Since early on in my development career Git has been the primary choice of version control. Being a command line warrior I like to think that I have a intermediate-advanced level of understanding of git, without digging into the sublevel commands git is comprised of. My git client of choice is Magit, a lovely Emacs plugin. I have also used Mercurial in a professional environment as well.")
                                   (:name "Scrum"
-                                   :img "/resources/logos/scrum.png"
+                                   :img "/resources/logos/scrum-logo.png"
                                    :desc "Through previous corporate work experience, I had the pleasure of collaborating on a few teams where Scrum was used effectively, dynamically, and autonomously as each team saw fit. This experience goes along with the comprimise and coordination between multiple Scrum teams driven towards a larger, single, and encompassing goal. The teams were sized from 3 to 10 people.")
                                   (:name "Testing"
-                                   :img "/resources/logos/tdd.png"
+                                   :img "/resources/logos/testing-logo.png"
                                    :desc "Starting in my student developer work terms testing has been a strong area of interest. I have professional experience with building tests ranging from unit tests, to integration tests, to automated UI tests with PhantomJS, to building a framework for automated integration tests on ran by the CI server.")
                                  (:name "Security"
-                                  :img "/resources/logos/security.svg"
+                                  :img "/resources/logos/google-security-logo.png"
                                   :desc "I like to think that I'm not as security ignorant as most. However I am not perfect, so I do believe security reviews and security audits are very important."))))
                             (misc
                               '(:id "misc"
@@ -345,13 +345,13 @@
                                 :desc "Stuff I've played around with in the past for various reasons, willingly or not."
                                 :items
                                 ((:name "Haskell"
-                                   ;; :img "/resources/logos/haskell.svg"
+                                  :img ""
                                    :desc "Back in the days of FP hype I was intrigued by Haskell and absolutely battered (mentally) by the difference in programming style. Dabbling on and off over a year or so, having not really produced anything of importance, I did gain a solid understanding of what it means to be purely functional. I have a lot of respect for this language and appreciate it's brick wall like embrace into the world of FP")
-                                  (:name "Clojure"
-                                   ;; :img "/resources/logos/clojure.png"
+                                 (:name "Clojure"
+                                  :img ""
                                    :desc "After having been shown the light of functional programming from Haskell and having a solid understanding of Java and the JVM, I ventured towards into Rich Hickey's child, Clojure / Clojurescript. Clojure being my first Lisp  was a surprisingly smooth introduction to a more dynamic functional programming language. ")
                                  (:name "Python"
-                                  ;; :img "/resources/logos/python.png"
+                                  :img ""
                                   :desc "My Python experience stems primarily from use for various school projects. One for a cryptography/network security course where I implemented a cipher to encrypt/decrypt. I have dabbled in Django and have used various libraries for simple servers and etc. I have ambitions of getting into data analysis using Pandas, NumPy, PyNotebook, and Python's other vetted libraries.")
                                   (:name "Vim"
                                    :img ""
