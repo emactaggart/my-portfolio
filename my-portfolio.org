@@ -1,17 +1,19 @@
 * My-Portfolio
+** TODO Nginx wrapper
+** TODO Letsencrypt Certificate
 ** TODO Pre Deploy Security [4/7]
    - [ ] Don't leak server version +(perhaps migrate to clack or caveman? https://github.com/fukamachi/caveman )+
      - look into hunchentoot reply objects
-   - [X] Improved logging... 
+   - [X] Improved logging
 *** TODO Pen test and Security Review
    - [ ] Security Review https://www.google.com/search?ei=3o44XdpO2Na1BpXIsvAH&q=hunchentoot+security+review&oq=hunchentoot+security+review&gs_l=psy-ab.3..33i160.106483.107725..107897...0.0..0.216.930.0j6j1......0....1..gws-wiz.......0i71j33i21.g_mCbXDATCI&ved=0ahUKEwjateyPhM7jAhVYa80KHRWkDH4Q4dUDCAo&uact=5
    - [ ] https://zaries.wordpress.com/2010/11/09/lisp-web-server-from-scratch-using-hunchentoot-and-nginx/
    - [ ] https://zaries.wordpress.com/2010/12/22/hunchentoot-webserver-and-application-security/
+*** TODO Find better Lisp code formatter
 *** DONE Cleanup Endpoints [2/2]
     CLOSED: [2019-08-18 Sun 16:22]
     - [X] deal with acceptors and other schnazz
     - [X] verify default hunchentoot 404s and other statuses working
-*** TODO Find better Lisp code formatter
 *** DONE API key storage
     CLOSED: [2019-07-25 Thu 22:29]
     :LOGBOOK:
@@ -30,7 +32,8 @@
     - [X] make wrapper to apply to all handlers
 ** TODO Html, js, and css minifying
 ** TODO Tree shaking
-** TODO /resources Image sizes
+** DONE /resources Image sizes
+   CLOSED: [2019-09-10 Tue 22:53]
 ** TODO Post Deploy Security Review [0/6]
    - [ ] Certificate & Signature
    - [ ] HTTPS
@@ -110,66 +113,38 @@
    :END:
    - [X] Sizing
    - [X] Scrolling
-** DONE Generic pathnaming
-   CLOSED: [2019-08-20 Tue 12:01]
-** House Keeping & Goodies [1/6]
-*** TODO Devops [2/3]
-    - [ ] CI Server (Gitlab?)
-    - [X] Automated deploy
-    - [X] Git repo
-*** DONE UI [2/2]
-    CLOSED: [2019-09-06 Fri 18:20]
-    - [X] Mobile scrolling with Nav header
-    - [X] Cleanup colors
-*** TODO Misc [1/13]
-    - [ ] Code quality and duplication (more macros?)
-    - [X] email-sender cleanup https://github.com/40ants/mailgun/blob/master/src/core.lisp 
-    - [ ] Cleanup junk code & create junk project
-    - [ ] Create project template
-    - [ ] Cookies
-    - [ ] performance
-    - [ ] load times
-    - [ ] email server
-    - [ ] server controls and startup
-    - [ ] D3 Bubble Plot
-    - [ ] Google analytics
-    - [ ] Profile performance
-    - [ ] session
-
-*** TODO Macros [0/3]
-    - [ ] Jquery marco
-    - [ ] onclick macro
-    - [ ] http://lisp-univ-etc.blogspot.com/2009/03/cl-who-macros.html
-    - 
-*** TODO Animations [0/6]
-    :LOGBOOK:
-    CLOCK: [2019-07-19 Fri 16:25]--[2019-07-19 Fri 17:13] =>  0:48
-    CLOCK: [2019-07-19 Fri 14:30]--[2019-07-19 Fri 15:32] =>  1:02
-    :END:
-    - [ ] Nav bar
-    - [ ] Home
-    - [ ] About
-    - [ ] Portfolio
-    - [ ] Contact
-    - [ ] Footer
-*** TODO improve validation logic 
-    - check out the design of https://github.com/fisxoj/validate
-
+** TODO Create Web project template Library
+** TODO Performance Profiling
+** DONE Devops initialization [2/2]
+   CLOSED: [2019-09-10 Tue 22:59]
+   - [X] Automated deploy
+   - [X] Git repo
+** DONE UI [2/2]
+   CLOSED: [2019-09-06 Fri 18:20]
+   - [X] Mobile scrolling with Nav header
+   - [X] Cleanup colors
+   - [ ] http://lisp-univ-etc.blogspot.com/2009/03/cl-who-macros.html
+** TODO CI Server (Gitlab)
 ** TODO index.txt and robots.txt and sitemaps
-   - types of robots
-   - html <meta> robots directive
-   - http response headers x-robots-tag
-   - .htaccess hunchentoot equivalent?
-** TODO Browser Support [0/1]
-   - [ ] TODO IE Message
-   - [ ] Safari
-** Bugs [0/1]
-*** TODO Firefox mobile screen resize jerkiness on address-bar hiding
-** TODO Rename project
-   /Perhaps grab a domain name first?/
-   - [ ] What should this project be called?
+   - [X] robots.txt
+   - [ ] html <meta> robots directive
+   - [ ] http response headers x-robots-tag
+** DONE Browser Support [3/3]
+   CLOSED: [2019-09-10 Tue 22:58]
+   - [X] IE Message
+   - [X] Safari
+   - [X] Safari IOs
+** Bugs [1/1]
+*** DONE Firefox mobile screen resize jerkiness on address-bar hiding :notmyproblem:
+    CLOSED: [2019-09-10 Tue 23:07]
+
+** DONE Rename project
+   CLOSED: [2019-09-10 Tue 22:57]
+   - [X] What should this project be called?
 ** TODO Handler logging file size growth
-   - [ ] use correct directory for storage
+   - [X] use correct directory for storage
+   - [ ] cleanup cronjob?
+   - [ ] configure in an automated way
 ** TODO Server Daemon
    *Do we even need this? What is the benefit?*
 #+BEGIN_SRC common-lisp
@@ -201,9 +176,8 @@
 ** TODO Improve handling of application secrets
    *Avoid creating a development environment nightmare*
    - [[https://docs.docker.com/engine/swarm/secrets/][Docker Secrets]]
+   - [[https://kubernetes.io/docs/concepts/configuration/secret/][Kubernetes Secrets]]
    - [[https://www.vaultproject.io/][Vault]]
-** TODO Remove cl-fad
-   Reason: [[https://stackoverflow.com/a/44687561][According to this]]
 ** TODO log4cl
    *Is this necessary?* Perhaps only for learning purposes...
    Probably an improvement over hunchentoot's mutex stuff
@@ -219,6 +193,14 @@
     ;; TODO figure out how to setup a default log4cl instance...
     nil))
     #+end_src
+** TODO Add d3 skill chart
+** TODO Database for images
+** TODO Travel Section
+** TODO Certificates
+*** [[https://itnext.io/using-letsencrypt-ssl-certificates-in-aws-certificate-manager-c2bc3c6ae10][Lets Encrypt & AWS]]
+*** [[https://medium.com/@pentacent/nginx-and-lets-encrypt-with-docker-in-less-than-5-minutes-b4b8a60d3a71][Nginx & Docker]]
+** DONE Generic pathnaming
+   CLOSED: [2019-08-20 Tue 12:01]
 ** DONE Validations [1/1]
    CLOSED: [2019-07-25 Thu 19:52]
    :LOGBOOK:
@@ -248,16 +230,14 @@
     CLOSED: [2019-07-23 Tue 10:46]
 *** DONE jquery post
     CLOSED: [2019-07-23 Tue 10:46]
-** TODO Add d3 skill chart
-** TODO Database for images
-** TODO Travel Section
-** TODO Certificates
-*** [[https://itnext.io/using-letsencrypt-ssl-certificates-in-aws-certificate-manager-c2bc3c6ae10][Lets Encrypt & AWS]]
-*** [[https://medium.com/@pentacent/nginx-and-lets-encrypt-with-docker-in-less-than-5-minutes-b4b8a60d3a71][Nginx & Docker]]
+** DONE Remove cl-fad
+   CLOSED: [2019-09-10 Tue 22:56]
+   Reason: [[https://stackoverflow.com/a/44687561][According to this]]
 * Tomorrow
+** sitemap? robots.txt 
 ** email handler tests
 ** DNS
 ** rename everything
 ** readme
 ** Nginx for ssl
-
+** static file directory

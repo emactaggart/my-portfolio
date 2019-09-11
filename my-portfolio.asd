@@ -5,7 +5,6 @@
   :depends-on (:alexandria
                :bordeaux-threads
                :cl-arrows
-               :cl-fad
                :cl-ppcre
                :cl-who
                :dexador

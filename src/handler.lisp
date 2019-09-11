@@ -1,5 +1,5 @@
 (defpackage #:handler
-  (:use #:cl #:hunchentoot #:parenscript #:cl-fad #:cl-who))
+  (:use #:cl #:hunchentoot #:parenscript #:cl-who))
 
 (in-package #:handler)
 
