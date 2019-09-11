@@ -30,11 +30,11 @@ RUN cd /tmp && \
   sbcl --load quicklisp.lisp --quit --eval '(quicklisp-quickstart:install)'
 
 COPY sbclrc /root/.sbclrc
-COPY ./ /root/prod/
-RUN ln -s /root/prod/prod.asd /root/quicklisp/local-projects/
+COPY ./ /root/my-portfolio/
+RUN ln -s /root/my-portfolio/my-portfolio.asd /root/quicklisp/local-projects/
 
 EXPOSE 8080
 
 WORKDIR /root
 
-ENTRYPOINT ["sbcl", "--eval", "(ql:quickload 'prod)", "--eval", "(control:start-server)"]
+ENTRYPOINT ["sbcl", "--eval", "(ql:quickload 'my-portfolio)", "--eval", "(control:start-server)"]

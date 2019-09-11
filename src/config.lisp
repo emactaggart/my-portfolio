@@ -4,7 +4,7 @@
 
 (in-package #:config)
 
-(defvar configuration-file-pathname (truename #p"~/.devrc"))
+(defvar configuration-file-pathname (truename #p"~/.prod-taggrc"))
 (defvar configs (make-hash-table :test 'equal))
 
 (defun load-configs ()

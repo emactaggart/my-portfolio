@@ -1,10 +1,10 @@
-(defpackage prod/tests/main
+(defpackage my-portfolio/tests/main
   (:use :cl
-        :prod
+        :my-portfolio
         :rove))
-(in-package :prod/tests/main)
+(in-package :my-portfolio/tests/main)
 
-;; NOTE: To run this test file, execute `(asdf:test-system :prod)' in your Lisp.
+;; NOTE: To run this test file, execute `(asdf:test-system :my-portfolio)' in your Lisp.
 
 (deftest test-target-1
   (testing "should (= 1 1) to be true"

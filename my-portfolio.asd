@@ -1,4 +1,4 @@
-(defsystem "prod"
+(defsystem "my-portfolio"
   :version "0.0.0"
   :author ""
   :license ""
@@ -25,15 +25,15 @@
                  (:file "control"
                   :depends-on ("config" "handler")))))
   :description ""
-  :in-order-to ((test-op (test-op "prod/tests"))))
+  :in-order-to ((test-op (test-op "my-portfolio/tests"))))
 
-(defsystem "prod/tests"
+(defsystem "my-portfolio/tests"
   :author ""
   :license ""
-  :depends-on ("prod"
+  :depends-on ("my-portfolio"
                "rove")
   :components ((:module "tests"
                 :components
                 ((:file "main"))))
-  :description "Test system for prod"
+  :description "Test system for my-portfolio"
   :perform (test-op (op c) (symbol-call :rove :run c)))

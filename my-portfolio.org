@@ -1,4 +1,4 @@
-* Prod
+* My-Portfolio
 ** TODO Pre Deploy Security [4/7]
    - [ ] Don't leak server version +(perhaps migrate to clack or caveman? https://github.com/fukamachi/caveman )+
      - look into hunchentoot reply objects
@@ -251,9 +251,13 @@
 ** TODO Add d3 skill chart
 ** TODO Database for images
 ** TODO Travel Section
+** TODO Certificates
+*** [[https://itnext.io/using-letsencrypt-ssl-certificates-in-aws-certificate-manager-c2bc3c6ae10][Lets Encrypt & AWS]]
+*** [[https://medium.com/@pentacent/nginx-and-lets-encrypt-with-docker-in-less-than-5-minutes-b4b8a60d3a71][Nginx & Docker]]
 * Tomorrow
-** readme
 ** email handler tests
 ** DNS
+** rename everything
+** readme
 ** Nginx for ssl
 
