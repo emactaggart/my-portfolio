@@ -235,9 +235,19 @@
    CLOSED: [2019-09-10 Tue 22:56]
    Reason: [[https://stackoverflow.com/a/44687561][According to this]]
 * Tomorrow
-** nginx config
+** glitchy contact fields safari mobile
+** travel section
 ** email handler tests
 ** readme
 ** static file directory
-** SSL
-** Mime types and content types
+** restart on death
+** alert emails
+** randomized message of the day
+** dev environement
+*** docker
+*** docker-compose
+** more nginx config
+*** nginx certbot plugin
+** character count mobile
+*** and on paste
+

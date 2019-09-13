@@ -1,0 +1,12 @@
+version: '3'
+services:
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - ./nginx:/etc/nginx
+      - ./letsencrypt:/var/log/letsencrypt
+    ports:
+      - 80:80
+      - 443:443

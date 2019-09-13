@@ -6,41 +6,31 @@
   Special thanks to [[https://github.com/wrightmikea/simple-docker-tangle][wrightmikea]]!
   This file is an attempt at *Literate Devops*
 ** Setup
-   :properties:
-   :header-args+: :var app_name="my-portfolio" username="ec2-user"
-   :end:
 
 *** Logging Directory Setup
-    :properties:
-    :header-args+: :dir /ssh:tagg|sudo:tagg:/var/log
-    :end:
-
- #+begin_src sh :results none
+#+name: logging-dir-setup
+#+begin_src sh :var app_name="" username=""
    mkdir $app_name
    touch $app_name/access.log
    touch $app_name/message.log
    chown -R $username:$username $app_name
    chmod 755 $app_name
-   whoami
-   pwd
-   ls -al $app_name
+
+   mkdir nginx
+   touch nginx/error.log
+   touch nginx/access.log
+   chown -R $username:$username nginx
+   chmod 755 nginx
+
+   ls -l
+   ls -l $app_name
+   ls -l nginx
  #+end_src
 
-**** Local Setup
-    :properties:
-    :header-args+: :dir /sudo::/var/log
-    :end:
-
- #+begin_src sh
-   mkdir $app_name
-   touch $app_name/access.log
-   touch $app_name/message.log
-   chown -R $(whoami):$(whoami) $app_name
-   chmod 755 $app_name
-   whoami
-   pwd
-   ls -al $app_name
- #+end_src
+**** Server
+#+call: logging-dir-setup[:dir /scp:tagg|sudo:tagg:/var/log](app_name="my-portfolio", username="ec2-user")
+**** Local
+#+call: logging-dir-setup[:dir /sudo::/var/log](app_name="my-portfolio", username=(user-login-name))
 
 *** TODO Docker setup
 *** TODO Docker Compose Setup
@@ -111,10 +101,13 @@ APPLICATION_NAME=my-portfolio
        image: nginx:alpine
        container_name: nginx
        volumes:
-         - ./nginx.conf:/etc/nginx/nginx.conf
+         - ./nginx.conf:/etc/nginx/nginx.conf:ro
+         - /etc/letsencrypt:/etc/letsencrypt:ro
+         - /var/log/nginx:/var/log/nginx
        ports:
          - 80:80
-     portfolio:
+         - 443:443
+     my-portfolio:
        image: emactaggart/my-portfolio
        container_name: my-portfolio
        ports:
@@ -124,30 +117,87 @@ APPLICATION_NAME=my-portfolio
          - /var/log/my-portfolio:/var/log/my-portfolio
        # stdin_open: true
        tty: true
-
   #+end_src
  
 *** nginx.conf
 
  #+name: nginx-configuration
  #+begin_src nginx :tangle nginx.conf
- events {
+ user nginx;
+ worker_processes 1;
 
+ events {
+     worker_connections 512;
  }
 
  http {
+     server_tokens off;
+     # include /etc/nginx/mime.types;
+
+     default_type application/octet-stream;
+     log_format main '$remote_addr - $remote_user [$time_local]  $status '
+     '"$request" $body_bytes_sent "$http_referer" '
+     '"$http_user_agent" "$http_x_forwarded_for"';
+     access_log /var/log/nginx/access.log main;
+     error_log /var/log/nginx/error.log;
+
+
+
      server {
-         listen 80;
          server_name mactagg.art;
+         listen 80;
+         listen 443 ssl;
+
+         ssl_certificate /etc/letsencrypt/live/mactagg.art/fullchain.pem;
+         ssl_certificate_key /etc/letsencrypt/live/mactagg.art/privkey.pem;
 
          location / {
              proxy_pass http://my-portfolio:8080;
+             proxy_set_header Host $host;
+             proxy_set_header X-Real_IP $remote_addr;
+             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
          }
+
+         gzip on;
+         gzip_proxied any;
+         gzip_comp_level 3;
+         gzip_types text/css text/javascript text/xml text/plain application/javascript application/x-javascript application/json image/*; 
+
      }
  }
  #+end_src
 
-*** TODO Letsencrypt
+#+name: nginx-reload-conf
+#+begin_src sh :var container_name="nginx" :dir /scp:tagg:~
+docker container exec $container_name nginx -s reload 
+#+end_src
+
+*** Letsencrypt
+
+#+name: run-cert-bot
+#+begin_src 
+
+docker-compose -f docker-compose.certbot.yml run -p 80:80 -p 443:443 certbot certonly
+
+#+end_src
+
+#+name: certbot-docker-compose
+#+begin_src yaml :tangle docker-compose.certbot.yml
+version: '3'
+services:
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - ./nginx:/etc/nginx
+    ports:
+      - 80:80
+      - 443:443
+#+end_src
+
+
+
 
 ** Deployment
 *** Send Configurations To Server
@@ -201,6 +251,16 @@ docker-compose up -d --force-recreate
 #+BEGIN_SRC sh
   docker push $repo/$app_name:latest 
 #+END_SRC
+
+*** docker-compose.dev.yml
+#+begin_src yaml :tangle docker-compose.dev.yml
+  services:
+    portfolio:
+      build: .
+  # add volume for code
+  # add env for profile
+  # add env for the location of configs?
+#+end_src
 
 ** Future Improvemens [0/3]
 *** TODO [#A] How do we want to execute main 
