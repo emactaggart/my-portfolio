@@ -1,71 +1,19 @@
 * Devops  
+  :properties:
+  :header-args: :results none
+  :end:
+
   Special thanks to [[https://github.com/wrightmikea/simple-docker-tangle][wrightmikea]]!
   This file is an attempt at *Literate Devops*
-** Docker setup                                            :dev:docker:setup:
-*** Setup env variables
-#+name: setup
-#+BEGIN_SRC sh :results output verbatim :session docker
-eval "$(docker-machine env default)"
-#+END_SRC
-
-#+RESULTS: setup
-: Docker machine "default" does not exist. Use "docker-machine ls" to list machines. Use "docker-machine create" to add a new one.
-
-*** Verify Docker works                                    :dev:docker:setup:
-#+name: verify-docker
-#+BEGIN_SRC sh :results output verbatim replace :session docker
-echo "show docker env"
-env | grep DOC
-docker run --name my-container hello-world
-echo "\n"
-docker container rm my-container
-echo "\n"
-#+END_SRC
-
-#+RESULTS: verify-docker
-#+begin_example
-show docker env
-sh-5.0$ 
-Hello from Docker!
-This message shows that your installation appears to be working correctly.
-
-To generate this message, Docker took the following steps:
- 1. The Docker client contacted the Docker daemon.
- 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
-    (amd64)
- 3. The Docker daemon created a new container from that image which runs the
-    executable that produces the output you are currently reading.
- 4. The Docker daemon streamed that output to the Docker client, which sent it
-    to your terminal.
-
-To try something more ambitious, you can run an Ubuntu container with:
-docker run -it ubuntu bash
-
-Share images, automate workflows, and more with a free Docker ID:
- https://hub.docker.com/
-
-For more examples and ideas, visit:
- https://docs.docker.com/get-started/
-\n
-my-container
-\n
-#+end_example
-
-** Server Setup
+** Setup
    :properties:
-   :header-args: :var app_name="my-portfolio" username="ec2-user"
+   :header-args+: :var app_name="my-portfolio" username="ec2-user"
    :end:
-*** Send Configurations To Server
-#+name: send-configurations-to-server
-#+begin_src sh :results none
-scp ~/.prod-taggrc tagg:~/.taggrc
-#+end_src
 
 *** Logging Directory Setup
     :properties:
     :header-args+: :dir /ssh:tagg|sudo:tagg:/var/log
     :end:
-
 
  #+begin_src sh :results none
    mkdir $app_name
@@ -77,211 +25,184 @@ scp ~/.prod-taggrc tagg:~/.taggrc
    pwd
    ls -al $app_name
  #+end_src
- 
-** Dockerfile Creation and deployment
-   :properties:
-   :header-args: :var app_name="my-portfolio"
-   :end:
 
-*** Generate a Dockerfile for the project
-#+name: generate-dockerfile
-#+BEGIN_SRC dockerfile :tangle Dockerfile
-  FROM daewok/sbcl:alpine
-
-  # COPY ./ /usr/src/app/
-
-  ## TODO Securer install of quicklisp (needs to be updated for alpine (no apt-get))
-  # RUN set -x \
-  #   && apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt \
-  #   && curl "https://beta.quicklisp.org/release-key.txt" > /tmp/quicklisp-release-key.txt \
-  #   && curl "https://beta.quicklisp.org/quicklisp.lisp" > /tmp/quicklisp.lisp \
-  #   && curl "https://beta.quicklisp.org/quicklisp.lisp.asc" > /tmp/quicklisp.lisp.asc \
-  #   && export GNUPGHOME="$(mktemp -d)" \
-  #   && gpg --batch --import /tmp/quicklisp-release-key.txt \
-  #   && gpg --batch --verify /tmp/quicklisp.lisp.asc /tmp/quicklisp.lisp \
-  #   && sync \
-  #   && sleep 2 \
-  #   && rm -rf "$GNUPGHOME" /tmp/quicklisp.lisp.asc \
-  #   && export HOME=/home/lisp \
-  #   && sbcl --no-sysinit --no-userinit --non-interactive \
-  #   --load /tmp/quicklisp.lisp \
-  #   --eval "(quicklisp-quickstart:install)" \
-  #   --eval "(ql::without-prompting (dolist (imp '(:sbcl :ccl :abcl :ecl)) (ql:add-to-init-file imp)))" \
-  #   && rm -rf /tmp/*
-
-  # FIXME remove this for production (but make available in development?)
-  # RUN apk add --no-cache bash
-
-  # FIXME improve security and fingerprinting for quicklisp install...
-  RUN cd /tmp && \
-    wget https://beta.quicklisp.org/quicklisp.lisp && \
-    sbcl --load quicklisp.lisp --quit --eval '(quicklisp-quickstart:install)'
-
-  COPY sbclrc /root/.sbclrc
-  COPY ./ /root/my-portfolio/
-  RUN ln -s /root/my-portfolio/my-portfolio.asd /root/quicklisp/local-projects/
-
-  EXPOSE 8080
-
-  WORKDIR /root
-
-  ENTRYPOINT ["sbcl", "--eval", "(ql:quickload 'my-portfolio)", "--eval", "(control:start-server)"]
-
-#+END_SRC
-
-*** Docker Build
-#+name: build-image
-#+BEGIN_SRC sh :results none
-   echo "---- Building Docker File -----"
-   docker build -t $app_name ./
-#+END_SRC
-
-*** Transport Docker Image to Server 
-#+name: save-image-and-send-to-server
-#+begin_src sh
-  docker save -o $app_name.image $app_name
-  tar czf $app_name.tar.gz $app_name.image
-  rm $app_name.image
-  scp $app_name.tar.gz tagg:~
-  rm $app_name.tar.gz
-  pwd
-#+end_src
-
-#+RESULTS: save-image-and-send-to-server
-: /home/evan/Downloads/my-portfolio
-
-#+RESULTS:
-
-*** Deploy to server
-    :properties:
-    :header-args+: :dir /ssh:tagg:~
-    :end:
-
-#+name: load-and-run-image
-#+begin_src sh :results none
-  tar -xf $app_name.tar.gz
-  docker load -i $app_name.image
-  rm $app_name.tar.gz
-  rm $app_name.image
-
-  echo "----- Running Docker Container -----"
-  docker stop $app_name
-  docker container rm $app_name
-  docker run -dt --rm=true \
-         -p 8080:8080 \
-         --name $app_name \
-         -v ~/.prod-taggrc:/root/.taggrc:ro \
-         -v /var/log/$app_name:/var/log/$app_name \
-         $app_name 
-
-#+end_src
-
-** Local Setup
-   :properties:
-   :header-args: :var app_name="my-portfolio" username="evan"
-   :end:
-*** Local Logging Directory Setup
+**** Local Setup
     :properties:
     :header-args+: :dir /sudo::/var/log
     :end:
 
- #+begin_src sh :results output drawer
+ #+begin_src sh
    mkdir $app_name
    touch $app_name/access.log
    touch $app_name/message.log
-   chown -R $username:$username $app_name
+   chown -R $(whoami):$(whoami) $app_name
    chmod 755 $app_name
    whoami
    pwd
    ls -al $app_name
  #+end_src
 
- #+RESULTS:
- :results:
- root
- /var/log
- total 20
- drwxr-xr-x.  2 evan evan 4096 Sep 10 19:44 .
- drwxr-xr-x. 21 root root 4096 Sep 10 19:29 ..
- -rw-r--r--.  1 evan evan 4307 Sep 10 19:52 access.log
- -rw-r--r--.  1 evan evan  119 Sep 10 19:52 message.log
- :end:
+*** TODO Docker setup
+*** TODO Docker Compose Setup
+** Project Configuration
+*** .taggrc
 
-*** Build and Run Local
-#+name: build-and-run-local
-#+BEGIN_SRC sh :results none
-  docker stop $app_name
-  docker container rm $app_name
-  echo "---- Building Docker File -----"
-  docker build -t $app_name ./
-  echo "----- Running Docker Container -----"
-  docker run -dt --rm=true \
-         -p 8080:8080 \
-         --name $app_name \
-         -v ~/.taggrc:/root/.taggrc:ro \
-         -v /var/log/$app_name:/var/log/$app_name \
-         $app_name 
-
+#+name: example-taggrc
+#+begin_src txt
+PROFILE=DEV
+MAILGUN_API_KEY=YOUR-MAILGUN-KEY
+APPLICATION_ROOT=~/Downloads/my-portfolio
+APPLICATION_NAME=my-portfolio
 #+end_src
 
-** Nginx
+*** Dockerfile
+ #+name: generate-dockerfile
+ #+BEGIN_SRC dockerfile :tangle Dockerfile
+   FROM daewok/sbcl:alpine
 
-# TODO add environment variables
+   # COPY ./ /usr/src/app/
 
-#+begin_src sh :session test :results none
-docker-compose up
+   ## TODO Securer install of quicklisp (needs to be updated for alpine (no apt-get))
+   # RUN set -x \
+   #   && apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt \
+   #   && curl "https://beta.quicklisp.org/release-key.txt" > /tmp/quicklisp-release-key.txt \
+   #   && curl "https://beta.quicklisp.org/quicklisp.lisp" > /tmp/quicklisp.lisp \
+   #   && curl "https://beta.quicklisp.org/quicklisp.lisp.asc" > /tmp/quicklisp.lisp.asc \
+   #   && export GNUPGHOME="$(mktemp -d)" \
+   #   && gpg --batch --import /tmp/quicklisp-release-key.txt \
+   #   && gpg --batch --verify /tmp/quicklisp.lisp.asc /tmp/quicklisp.lisp \
+   #   && sync \
+   #   && sleep 2 \
+   #   && rm -rf "$GNUPGHOME" /tmp/quicklisp.lisp.asc \
+   #   && export HOME=/home/lisp \
+   #   && sbcl --no-sysinit --no-userinit --non-interactive \
+   #   --load /tmp/quicklisp.lisp \
+   #   --eval "(quicklisp-quickstart:install)" \
+   #   --eval "(ql::without-prompting (dolist (imp '(:sbcl :ccl :abcl :ecl)) (ql:add-to-init-file imp)))" \
+   #   && rm -rf /tmp/*
+
+   # FIXME remove this for production (but make available in development?)
+   # RUN apk add --no-cache bash
+
+   # FIXME improve security and fingerprinting for quicklisp install...
+   RUN cd /tmp && \
+     wget https://beta.quicklisp.org/quicklisp.lisp && \
+     sbcl --load quicklisp.lisp --quit --eval '(quicklisp-quickstart:install)'
+
+   COPY sbclrc /root/.sbclrc
+   COPY ./ /root/my-portfolio/
+   RUN ln -s /root/my-portfolio/my-portfolio.asd /root/quicklisp/local-projects/
+
+   EXPOSE 8080
+
+   WORKDIR /root
+
+   ENTRYPOINT ["sbcl", "--eval", "(ql:quickload 'my-portfolio)", "--eval", "(control:start-server)"]
+
+ #+END_SRC
+
+*** docker-compose.yml
+
+ #+name: docker-compose
+  #+begin_src yaml :tangle docker-compose.yml
+   version: '3'
+   services:
+     nginx:
+       image: nginx:alpine
+       container_name: nginx
+       volumes:
+         - ./nginx.conf:/etc/nginx/nginx.conf
+       ports:
+         - 80:80
+     portfolio:
+       image: emactaggart/my-portfolio
+       container_name: my-portfolio
+       ports:
+         - 8080:8080
+       volumes:
+         - ~/.prod-taggrc:/root/.taggrc:ro
+         - /var/log/my-portfolio:/var/log/my-portfolio
+       # stdin_open: true
+       tty: true
+
+  #+end_src
+
+ #+name: docker-compose-prod
+ #+begin_src yaml :tangle docker-compose.prod.yml
+
+ #+end_src
+
+*** nginx.conf
+
+ #+name: nginx-configuration
+ #+begin_src nginx :tangle nginx.conf
+ events {
+
+ }
+
+ http {
+     server {
+         listen 80;
+         server_name mactagg.art;
+
+         location / {
+             proxy_pass http://my-portfolio:8080;
+         }
+     }
+ }
+ #+end_src
+
+*** TODO Letsencrypt
+
+** Deployment
+*** Send Configurations To Server
+
+#+name: send-configurations-to-server
+#+begin_src sh :results none
+  scp ~/.prod-taggrc tagg:~/.taggrc
+  scp $(pwd)/docker-compose.yml tagg:~/
+  scp $(pwd)/nginx.conf tagg:~/
 #+end_src
 
-#+begin_src sh :session test :results none
-docker-compose down
+*** Deploy to server
+    :properties:
+    :header-args+: :dir /ssh:tagg:~
+    :end:
+
+#+name: deploy-webapp
+#+begin_src sh
+docker-compose up -d my-portfolio
 #+end_src
 
-
-# TODO generic naming
-
-#+name: docker-compose
-#+begin_src yaml :tangle docker-compose.yml
-  version: '3'
-  services:
-    nginx:
-      image: nginx:alpine
-      container_name: nginx
-      volumes:
-        - ./nginx.conf:/etc/nginx/nginx.conf
-      ports:
-        - 80:80
-    web:
-      build: .
-      container_name: my-portfolio
-      ports:
-        - 8080:8080
-      volumes:
-        - ~/.prod-taggrc:/root/.taggrc:ro
-        - /var/log/my-portfolio:/var/log/my-portfolio
-      # stdin_open: true
-      tty: true
-
+#+name: deploy-all
+#+begin_src sh
+docker-compose up -d
 #+end_src
 
-#+name: nginx-configuration
-#+begin_src nginx :tangle nginx.conf
-events {
-
-}
-
-http {
-    server {
-        listen 80;
-        server_name mactagg.art;
-
-        location / {
-            proxy_pass http://web:8080;
-        }
-    }
-}
+#+name: fresh-deploy-all
+#+begin_src sh
+docker-compose up -d --force-recreate
+#+end_src
+ 
+** Local Deployment
+   :properties:
+   :header-args+: :var app_name="my-portfolio" repo="emactaggart"
+   :end:
+*** Run Local
+# TODO create local docker-compose.yml to run local builds instead of having to push
+#+name docker-compose-local
+#+begin_src sh
+docker-compose up -d --force-recreate
 #+end_src
 
+*** Docker push
 
+#+name: build-image
+#+BEGIN_SRC sh
+   echo "---- Building Docker File -----"
+   docker build -t $repo/$app_name:latest ./
+   docker push $repo/$app_name:latest 
+#+END_SRC
 
 ** Future Improvemens [0/3]
 *** TODO [#A] How do we want to execute main 
@@ -291,6 +212,3 @@ http {
 *** TODO Cache the quicklisp dependencies 
     It would be possilble to link a volume for the dev environment?
     For production we should probably just install everything fresh? Load time is pretty bad though...
-*** TODO Monitor for time drift 
-    This appears to be a macos problem only.
-

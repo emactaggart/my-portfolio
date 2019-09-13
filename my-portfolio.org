@@ -1,5 +1,6 @@
 * My-Portfolio
-** TODO Nginx wrapper
+** DONE Nginx wrapper
+   CLOSED: [2019-09-12 Thu 19:27]
 ** TODO Letsencrypt Certificate
 ** TODO Pre Deploy Security [4/7]
    - [ ] Don't leak server version +(perhaps migrate to clack or caveman? https://github.com/fukamachi/caveman )+
@@ -68,12 +69,12 @@
            (uiop:quit)))
      (error (c) (format t "woops, an unknown error occured:~&~a~&" c))))
  #+end_src
-** TODO Page Hosting [0/5]
-   - [ ] Domain name
-   - [ ] Rocketmail domain name
-   - [ ] Deployement
-   - [ ] Hosting Provider
-   - [ ] Docker Shenanigans
+** DONE Page Hosting [5/5]
+   CLOSED: [2019-09-12 Thu 19:28]
+   - [X] Domain name
+   - [X] Deployement
+   - [X] Hosting Provider
+   - [X] Docker Shenanigans
 ** TODO Testing [0/1]
    - [ ] Unit tests
    - [ ] email-sender tests
@@ -234,10 +235,9 @@
    CLOSED: [2019-09-10 Tue 22:56]
    Reason: [[https://stackoverflow.com/a/44687561][According to this]]
 * Tomorrow
-** sitemap? robots.txt 
+** nginx config
 ** email handler tests
-** DNS
-** rename everything
 ** readme
-** Nginx for ssl
 ** static file directory
+** SSL
+** Mime types and content types
