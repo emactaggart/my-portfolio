@@ -4,6 +4,7 @@
 
 (in-package #:config)
 
+;; FIXME cleaner error when .taggrc is a folder / doesn't exist
 (defvar configuration-file-pathname (truename #p"~/.taggrc"))
 (defvar configs (make-hash-table :test 'equal))
 

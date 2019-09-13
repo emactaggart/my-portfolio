@@ -13,7 +13,7 @@ services:
     ports:
       - 8080:8080
     volumes:
-      - ~/.prod-taggrc:/root/.taggrc:ro
+      - ~/prod.taggrc:/root/.taggrc:ro
       - /var/log/my-portfolio:/var/log/my-portfolio
     # stdin_open: true
     tty: true

@@ -120,18 +120,13 @@ APPLICATION_NAME=my-portfolio
        ports:
          - 8080:8080
        volumes:
-         - ~/.prod-taggrc:/root/.taggrc:ro
+         - ~/prod.taggrc:/root/.taggrc:ro
          - /var/log/my-portfolio:/var/log/my-portfolio
        # stdin_open: true
        tty: true
 
   #+end_src
-
- #+name: docker-compose-prod
- #+begin_src yaml :tangle docker-compose.prod.yml
-
- #+end_src
-
+ 
 *** nginx.conf
 
  #+name: nginx-configuration
@@ -159,7 +154,7 @@ APPLICATION_NAME=my-portfolio
 
 #+name: send-configurations-to-server
 #+begin_src sh :results none
-  scp ~/.prod-taggrc tagg:~/.taggrc
+  scp ~/prod.taggrc tagg:~/prod.taggrc
   scp $(pwd)/docker-compose.yml tagg:~/
   scp $(pwd)/nginx.conf tagg:~/
 #+end_src
@@ -198,10 +193,13 @@ docker-compose up -d --force-recreate
 *** Docker push
 
 #+name: build-image
+#+begin_src sh
+  docker build -t $repo/$app_name:latest ./
+#+end_src
+
+#+name: push-image
 #+BEGIN_SRC sh
-   echo "---- Building Docker File -----"
-   docker build -t $repo/$app_name:latest ./
-   docker push $repo/$app_name:latest 
+  docker push $repo/$app_name:latest 
 #+END_SRC
 
 ** Future Improvemens [0/3]
