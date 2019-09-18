@@ -5,10 +5,12 @@ services:
     container_name: nginx
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
       - /var/log/nginx:/var/log/nginx
     ports:
       - 80:80
-  portfolio:
+      - 443:443
+  my-portfolio:
     image: emactaggart/my-portfolio
     container_name: my-portfolio
     ports:

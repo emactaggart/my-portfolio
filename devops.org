@@ -204,9 +204,9 @@ services:
 
 #+name: send-configurations-to-server
 #+begin_src sh :results none
-  scp ~/prod.taggrc tagg:~/prod.taggrc
-  scp $(pwd)/docker-compose.yml tagg:~/
-  scp $(pwd)/nginx.conf tagg:~/
+scp ~/prod.taggrc tagg:~/prod.taggrc
+scp $(pwd)/docker-compose.yml tagg:~/
+scp $(pwd)/nginx.conf tagg:~/
 #+end_src
 
 *** Deploy to server
