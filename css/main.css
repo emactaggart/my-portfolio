@@ -63,7 +63,7 @@ body {
     border-bottom: solid var(--grey-200) 1px;
 }
 
-<.rotate-icon {
+.rotate-icon {
     transition: transform 0.5s;
 }
 
