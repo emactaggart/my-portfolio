@@ -247,7 +247,7 @@
                                    (:div
                                     (:i :class "fa fa-5x fa-hamburger"))
                                    (:h3 "Full Stack"))
-                                  (:p "From UX design to data modeling I'm stacked when it comes to full stack capabilities."))
+                                  (:p "From UX design to data modeling I'm capable of delivering the entire stack, to order."))
 
                             (:div :class "col-lg-3 col-md-6 col-xs-12"
                                   (:div
@@ -304,7 +304,7 @@
                                 :items
                                 ((:name "Common Lisp"
                                   :img "/resources/logos/lisp-logo.png"
-                                  :desc "I built this website using Common Lisp, take a look at github to see it's current state 😬. My experience has been short but enlightening and very enjoyable once climbing over some initial hurdles. I have intentions of continuing my exploration through this humble language.")
+                                  :desc "I built this website using Common Lisp, take a look at github to see it's current state. My experience has been short but enlightening and very enjoyable once climbing over some initial hurdles. I have intentions of continuing my exploration through this humble language.")
                                  (:name "Statistics"
                                   :img "/resources/logos/panda-stats-logo.png"
                                   :desc "I'm slowly working working my way through various online tutorials to one pursue some foolish endeavours in the area of quantitive analysis. My venture into model generation and machine learning  come somewhere in between. I intend to make use of Python's Pandas and NumPy libraries, as well as JavaScripts D3 for visual representation.")

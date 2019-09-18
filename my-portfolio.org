@@ -250,4 +250,5 @@
 *** nginx certbot plugin
 ** character count mobile
 *** and on paste
+** collapse scrolling on close
 
