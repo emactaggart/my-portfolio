@@ -405,6 +405,13 @@
                                                 :data-toggle "collapse"
                                                 :data-target (format nil "#collapse-~a" id)
                                                 :aria-expanded "false"
+                                                :onclick
+                                                (ps
+                                                  (let ((el (lisp (format nil "#collapse-~a" id))))
+                                                    (chunky-scroll "#skill-accordian" t)
+                                                    (@@
+                                                     ($ el)
+                                                     (collapse "hide"))))
                                                 (:h3 :class "mb-0"
                                                      (str title))
                                                 (:i :class "ml-auto mt-2 fa fa-2x fa-chevron-down rotate-icon"))
