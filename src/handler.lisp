@@ -18,6 +18,9 @@
 (defmacro+ps \ (args &body body)
   `(lambda ,args ,@body))
 
+;; TODO create a lispy/programatic way for inline css
+;; '(:background "red" :color "blue") -> "background: red; color: blue;"
+
 ;; TODO
 ;; on-event macro
 ;; on document ready macro
@@ -117,7 +120,7 @@
        (:meta :charset "utf-8")
        (:meta :name "viewport" :content "width=device-width, initial-scale=1, shrink-to-fit=no")
        (:link :rel "stylesheet"
-              :href "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+              :href ht"tps://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
               :integrity "sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
               :crossorigin "anonymous")
 
@@ -158,10 +161,12 @@
                             200)))
                        f))
 
-                   ($$ document (on "click" "a[href^=\"#\"]"
-                                    (\ (event)
-                                       (@@ event (prevent-default))
-                                       (smooth-scroll ($. (attr this "href")) t)))))))
+                   ;; FIXME smooth scrolling across website for all anchors
+                   ;; ($$ document (on "click" "a[href^=\"#\"]"
+                   ;;                  (\ (event)
+                   ;;                     (@@ event (prevent-default))
+                   ;;                     (smooth-scroll ($. (attr this "href")) t))))
+                   )))
        )
       (:body :class "container-fluid w-100 p-0"
              ,@body
@@ -474,6 +479,291 @@
                              " My projects are underway, come back in the later to check them out! "
                              (:i :class "fa fa-lg fa-tools")))
                       ))
+
+      (:hr)
+
+      (:section
+       :id "travel"
+       :class "travel py-5 text-center"
+
+       (let ((travels
+               '((:name "Thailand"
+                  :duration "2.5 Months"
+                  :date ""
+                  :desc "Thailand is cool")
+                 (:name "Laos"
+                  :duration "3 Weeks"
+                  :desc "Laos is cool")
+                 (:name "Cambodia"
+                  :duration "2 Months"
+                  :desc "Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool."
+                  :stories
+                  ((:name "Bangkok")
+                   (:name "Tropical Cyclone")
+                   (:name "Pai Hole")
+                   (:name "Wonderfruit")
+                   (:name "Eden Garden")
+                   (:name "Christmas on Koh Phi Phi")
+                   (:name "New Years on Koh Phangan")
+                   )
+
+
+                  )
+                 (:name "Vietnam"
+                  :duration "1 Month"
+                  :desc "Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool.")
+                 ))
+             (vietnam-img-1 "/resources/travel-photos/vietnam-flag.png")
+             (vietnam-img-2 "/resources/travel-photos/vietnam-1.jpg")
+             (vietnam-img-3 "/resources/travel-photos/vietnam-2.jpg")
+             (thailand-img-1 "/resources/travel-photos/thailand-1.jpg")
+             (thailand-img-2 "/resources/travel-photos/thailand-2.jpg")
+             (thailand-img-3 "/resources/travel-photos/thailand-3.jpg")
+             (laos-img-1 "/resources/travel-photos/laos-1.jpg")
+
+             (images '(:id "" :title "" :desc "" :img ""))
+             )
+         (htm
+          (:div
+           :class "container text-center"
+           (:div :class "flex-row justify-content-center mb-3"
+                 (:h1 (:b "Travels"))
+                 (:div :class "d-flex justify-content-center"
+                       (:div :class "underline-bar")))
+
+           (:p "So far my backpacking travels have given me a beautiful glimps of South East Asia")
+
+
+           (:div
+            
+
+            )
+
+           ;; (:div :style "display: flex;" :class "justify-content-center"
+           ;;       (:div :class "m-2" :style "background: rgba(255,0,0,0.25);" "1")
+           ;;       (:div :class "m-2" :style "background: rgba(255,0,0,0.25);" "2")
+           ;;       (:div :class "m-2" :style "background: rgba(255,0,0,0.25);" "3")
+           ;;       )
+
+           ;; (htm
+
+           ;;  (:div :style "height: 600px; width: 600px; background: lightblue;"
+           ;;        :class "d-flex justify-content-center align-items-center"
+                  
+
+           ;;        (:div :style "height: 200px;  width: 200px; background: blue; display: flex; justify-content: center; align-items: center;"
+
+           ;;              (:div :style "height: 400px; width: 400px; background: rgba(255,0,0,0.25); flex-shrink: 0")))
+
+           ;;  )
+
+
+
+           ;; (labels ((my-img (src)
+           ;;            (htm
+           ;;             (:img :src src
+           ;;                   :style "max-height: 100%; max-width: 100%;")))
+
+           ;;          (my-img-container (img-src)
+           ;;            (htm
+           ;;             (:div :style "height: 400px; width: 400px; background: grey;"
+           ;;                   :class "d-flex justify-content-center align-items-center"
+           ;;                   (my-img img-src)
+           ;;                   )
+           ;;                 )
+           ;;            )
+           ;;          ;; (my-car (images)
+           ;;          ;;   (htm
+           ;;          ;;    (:div ))
+           ;;          ;;   )
+
+           ;;          )
+
+           ;;   (htm
+
+           ;;    (:div :class "overflow-hidden"
+           ;;          :style "height: 80%; width: 80%;"
+
+           ;;          (my-img-container vietnam-img-2)
+           ;;          (my-img-container vietnam-img-3)
+
+
+           ;;          )
+           ;;    (:div :class "d-flex"
+
+           ;;          ))
+           ;;   )
+           ;; (:div :style "height: 500px;")
+
+           ;; (:div
+           ;;  :id "my-view"
+           ;;  :class "d-flex  align-items-center"
+           ;;  :style "height: 100px; width: 100px; background: black;"
+
+           ;;  (:div
+           ;;   :id "my-slider"
+           ;;   :style "background: rgba(100,100,100,0.5); transform: translateX(-300px)"
+           ;;   :class "d-flex justify-content-center align-items-center"
+           ;;   (:div :class "flex-shrink-0" :style "height: 100px; width: 100px; background: rgba(255,255,0,0.5);")
+           ;;   (:div :class "flex-shrink-0" :style "height: 200px; width: 100px; background: rgba(255,0,0,0.5);")
+           ;;   (:div :class "flex-shrink-0" :style "height: 300px; width: 100px; background: rgba(0,0,255,0.5);")
+           ;;   (:div :class "flex-shrink-0" :style "height: 100px; width: 100px; background: rgba(0,255,0,0.5);")
+           ;;   )
+
+           ;;  (:input :id "my-range" :type "range" :min "0" :max "400")
+           ;;  (:h1 "Points: " (:h1 :id "points" "0"))
+
+           ;;  (:button :id "left" :class "btn btn-info"
+           ;;   :onclick (ps (funcall (\ ()
+           ;;                   ;; ($$ "#my-slider" (css "transform" (+ "translateX(-" (@@ event target value) "px)")))
+           ;;                   (clog "hello")
+           ;;                   (let ((prev-val ($$ "#my-range" (val))))
+           ;;                     ($$ "#my-range" (val (+ prev-val -100)))
+           ;;                     )
+           ;;                   (values)
+           ;;                   )))
+
+           ;;   "Left"
+           ;;           )
+           ;;  (:button :id "right" :class "btn btn-info" "Right")
+
+           ;;  (:script
+           ;;   :type "text/javascript"
+           ;;   (str (ps
+           ;;          ($$ "#my-range" (on "input" (\ (event)
+           ;;                                         ($$ "#my-slider" (css "transform" (+ "translateX(-" (@@ event target value) "px)")))
+           ;;                                         ($$ "#points" (text (@@ event target value)))
+           ;;                                         )))
+
+
+           ;;          )))
+           ;;  )
+           
+
+
+           
+
+           ;; (let ((img-styles "max-height: 100%; max-width: 100%;")
+           ;;       (mobile-container "background: grey; height: 400px; width: 200px;")
+           ;;       (desktop-container "background: lightgrey; height: 200px; width: 400px;"))
+           ;;   (htm
+           ;;    (:div :style "height: 400px; width: 400px; background: blue;"
+           ;;          :class "d-flex justify-content-center align-items-center"
+                    
+           ;;          (:div :style "height: 200px; width: 200px; background: red;" ))
+
+           ;;    (:div :style "height: 400px; width: 400px; background: green;"
+           ;;          :class "d-flex justify-content-center align-items-center"
+           ;;          (:img :src vietnam-img-2
+           ;;                :style img-styles)
+           ;;          )
+           ;;    (:div :style "height: 400px; width: 400px; background: red;"
+           ;;          :class "d-flex justify-content-center align-items-center"
+           ;;          (:img :src vietnam-img-3
+           ;;                :style img-styles)
+           ;;          )
+
+           ;;    )
+
+
+           ;;   )
+
+
+           ;;; Object Fit
+
+           ;; (:div :style "width: 100%; height: 80vh; background: lightblue"
+           ;;       (:img :style "height: 100%; width: 100%;object-fit: contain;" :src vietnam-img-2)
+           ;;       )
+
+           ;; (:div :style "width: 100%; height: 80vh; background: lightgreen"
+           ;;       (:img :style "height: 100%; width: 100%;object-fit: cover;" :src vietnam-img-2)
+           ;;       )
+
+
+           ;; Carousel V2.0
+           (:div :id "travel-carousel"
+                 :style "height: 80vh; width: 100%; background: pink; overflow:hidden;"
+                 :class "carousel slide d-flex align-items-center"
+                 :data-ride "false"
+                 :data-pause "false"
+                 ;; (:ol :class "carousel-indicators"
+                      ;; (:li :data-target "#travel-carousel" :data-slide-to "0" :class "active")
+                      ;; (:li :data-target "#travel-carousel" :data-slide-to "1"))
+                 (:div :class "carousel-inner d-flex"
+                       :style "background: rgba(0,255,0,0.25); height: 100%; width: 100%;"
+                       (:div :class "carousel-item active"
+                             (:img
+                              :style "height: 100%; width: 100%; object-fit: cover;"
+                              ;; :style "height: 100%; width: 100%; object-fit: cover;"
+                              :src vietnam-img-2)
+                             )
+
+                       (:div :class "carousel-item"
+                             (:img
+                              :style "height: 100%; width: 100%; object-fit: cover;"
+                              :src vietnam-img-3))
+
+                       )
+                 (:a :class "carousel-control-prev" :href "#travel-carousel" :role "button" :data-slide "prev"
+                     (:span :class "carousel-control-prev-icon" :aria-hidden "true")
+                     (:span :class "sr-only" "Previous")
+                     )
+                 (:a :class "carousel-control-next" :href "#travel-carousel" :role "button" :data-slide "next"
+                     (:span :class "carousel-control-next-icon" :aria-hidden "true")
+                     (:span :class "sr-only" "Next")
+                     )
+                 )
+
+
+
+
+
+
+
+
+
+           (:div :style "height: 300px")
+
+           ;;; Carousel V1.0
+
+           (:div :id "travel-carousel"
+                 :style "height: 80vh; max-width: 100%; background: pink; overflow:hidden;"
+                 :class "carousel slide d-flex align-items-center"
+                 :data-ride "false"
+                 :data-pause "false"
+                 ;; (:ol :class "carousel-indicators"
+                      ;; (:li :data-target "#travel-carousel" :data-slide-to "0" :class "active")
+                      ;; (:li :data-target "#travel-carousel" :data-slide-to "1"))
+                 (:div :class "carousel-inner d-flex align-items-center"
+                       :style "background: rgba(0,255,0,0.25)"
+                       (:div :class "carousel-item active"
+                             
+                             (:div
+                              ;; :class "d-flex justfiy-content-center align-items-center"
+                                   (:img
+                                   :style "max-height: 100%; min-width: 100%; max-width: 100%;"
+                                         :src vietnam-img-2)))
+
+                       (:div :class "carousel-item"
+                             (:div
+                              ;; :class "d-flex justfiy-content-center align-items-center"
+                                   (:img
+                                    :style "max-height: 100%; max-width: 100%;"
+                                         :src vietnam-img-3)))
+
+                       )
+                 (:a :class "carousel-control-prev" :href "#travel-carousel" :role "button" :data-slide "prev"
+                     (:span :class "carousel-control-prev-icon" :aria-hidden "true")
+                     (:span :class "sr-only" "Previous")
+                     )
+                 (:a :class "carousel-control-next" :href "#travel-carousel" :role "button" :data-slide "next"
+                     (:span :class "carousel-control-next-icon" :aria-hidden "true")
+                     (:span :class "sr-only" "Next")
+                     )
+                 )
+
+
+           ))))
 
       (:section :id "contact" :class "contact py-5 h-100"
 
