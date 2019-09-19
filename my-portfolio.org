@@ -1,40 +1,12 @@
 * My-Portfolio
-** DONE Nginx wrapper
-   CLOSED: [2019-09-12 Thu 19:27]
-** TODO Letsencrypt Certificate
-** TODO Pre Deploy Security [4/7]
-   - [ ] Don't leak server version +(perhaps migrate to clack or caveman? https://github.com/fukamachi/caveman )+
-     - look into hunchentoot reply objects
-   - [X] Improved logging
-*** TODO Pen test and Security Review
-   - [ ] Security Review https://www.google.com/search?ei=3o44XdpO2Na1BpXIsvAH&q=hunchentoot+security+review&oq=hunchentoot+security+review&gs_l=psy-ab.3..33i160.106483.107725..107897...0.0..0.216.930.0j6j1......0....1..gws-wiz.......0i71j33i21.g_mCbXDATCI&ved=0ahUKEwjateyPhM7jAhVYa80KHRWkDH4Q4dUDCAo&uact=5
-   - [ ] https://zaries.wordpress.com/2010/11/09/lisp-web-server-from-scratch-using-hunchentoot-and-nginx/
-   - [ ] https://zaries.wordpress.com/2010/12/22/hunchentoot-webserver-and-application-security/
-*** TODO Find better Lisp code formatter
-*** DONE Cleanup Endpoints [2/2]
-    CLOSED: [2019-08-18 Sun 16:22]
-    - [X] deal with acceptors and other schnazz
-    - [X] verify default hunchentoot 404s and other statuses working
-*** DONE API key storage
-    CLOSED: [2019-07-25 Thu 22:29]
-    :LOGBOOK:
-    CLOCK: [2019-07-25 Thu 20:29]--[2019-07-25 Thu 22:29] =>  2:00
-    :END:
-*** DONE Basic Logging
-    CLOSED: [2019-07-26 Fri 19:06]
-    - [X] Requests
-    - [X] Emails
-*** DONE Improve logging functionality [4/4]
-    CLOSED: [2019-08-18 Sun 16:21]
-    - [X] log hunchentoot:*request* objects with slots
-      # using default hunchentoot logging so close enough
-    - [X] get requesting IP
-    - [X] get requesting GET POST variables
-    - [X] make wrapper to apply to all handlers
+** TODO Don't leak server version, both nginx and hunchentoot
+** TODO Pen test and Security Review
+  - [ ] Security Review https://www.google.com/search?ei=3o44XdpO2Na1BpXIsvAH&q=hunchentoot+security+review&oq=hunchentoot+security+review&gs_l=psy-ab.3..33i160.106483.107725..107897...0.0..0.216.930.0j6j1......0....1..gws-wiz.......0i71j33i21.g_mCbXDATCI&ved=0ahUKEwjateyPhM7jAhVYa80KHRWkDH4Q4dUDCAo&uact=5
+  - [ ] https://zaries.wordpress.com/2010/11/09/lisp-web-server-from-scratch-using-hunchentoot-and-nginx/
+  - [ ] https://zaries.wordpress.com/2010/12/22/hunchentoot-webserver-and-application-security/
+** TODO Find better Lisp code formatter
 ** TODO Html, js, and css minifying
 ** TODO Tree shaking
-** DONE /resources Image sizes
-   CLOSED: [2019-09-10 Tue 22:53]
 ** TODO Post Deploy Security Review [0/6]
    - [ ] Certificate & Signature
    - [ ] HTTPS
@@ -69,12 +41,6 @@
            (uiop:quit)))
      (error (c) (format t "woops, an unknown error occured:~&~a~&" c))))
  #+end_src
-** DONE Page Hosting [5/5]
-   CLOSED: [2019-09-12 Thu 19:28]
-   - [X] Domain name
-   - [X] Deployement
-   - [X] Hosting Provider
-   - [X] Docker Shenanigans
 ** TODO Testing [0/1]
    - [ ] Unit tests
    - [ ] email-sender tests
@@ -84,64 +50,13 @@
    - [ ] 50x
    - [ ] 40x
    - [ ] maintenance pages? This might require higher level nginx stuff
-** DONE Home Section [3/3] 3:21:19 
-   CLOSED: [2019-07-19 Fri 17:24]
-   - [X] Title and Welcome
-   - [X] Canvas
-   - [X] View button
-** DONE About Section [3/3]
-   CLOSED: [2019-08-25 Sun 23:31]
-*** DONE Profile photo
-    CLOSED: [2019-08-25 Sun 23:31]
-*** DONE Skills [3/3]
-    CLOSED: [2019-08-25 Sun 23:31]
-    :LOGBOOK:
-    CLOCK: [2019-07-23 Tue 15:30]--[2019-07-23 Tue 16:00] =>  0:00
-    :END:
-    - [X] D3 bubble diagram
-    - [X] Language with project experience and future ambitions
-    - [X] ...There are no skills
-*** DONE Icon descriptions [4/4]
-    CLOSED: [2019-07-23 Tue 22:28]
-    - [X] Full Stack - From UI design to data modeling I am capable of working full stack.
-    - [X] Devops - I'm not afraid to get my hands dirty in bashy build scripts.
-    - [X] Imperfections - I'm only human but willing am working towards attaining wizard status!
-    - [X] Functional - Functions for first class citizens! Funcations are Dataers Too!
-** DONE Mobile Responsive [2/2]
-   CLOSED: [2019-07-23 Tue 22:28]
-   :LOGBOOK:
-   CLOCK: [2019-07-23 Tue 16:00]--[2019-07-23 Tue 20:30] =>  4:30
-   :END:
-   - [X] Sizing
-   - [X] Scrolling
 ** TODO Create Web project template Library
 ** TODO Performance Profiling
-** DONE Devops initialization [2/2]
-   CLOSED: [2019-09-10 Tue 22:59]
-   - [X] Automated deploy
-   - [X] Git repo
-** DONE UI [2/2]
-   CLOSED: [2019-09-06 Fri 18:20]
-   - [X] Mobile scrolling with Nav header
-   - [X] Cleanup colors
-   - [ ] http://lisp-univ-etc.blogspot.com/2009/03/cl-who-macros.html
 ** TODO CI Server (Gitlab)
 ** TODO index.txt and robots.txt and sitemaps
    - [X] robots.txt
    - [ ] html <meta> robots directive
    - [ ] http response headers x-robots-tag
-** DONE Browser Support [3/3]
-   CLOSED: [2019-09-10 Tue 22:58]
-   - [X] IE Message
-   - [X] Safari
-   - [X] Safari IOs
-** Bugs [1/1]
-*** DONE Firefox mobile screen resize jerkiness on address-bar hiding :notmyproblem:
-    CLOSED: [2019-09-10 Tue 23:07]
-
-** DONE Rename project
-   CLOSED: [2019-09-10 Tue 22:57]
-   - [X] What should this project be called?
 ** TODO Handler logging file size growth
    - [X] use correct directory for storage
    - [ ] cleanup cronjob?
@@ -200,46 +115,11 @@
 ** TODO Certificates
 *** [[https://itnext.io/using-letsencrypt-ssl-certificates-in-aws-certificate-manager-c2bc3c6ae10][Lets Encrypt & AWS]]
 *** [[https://medium.com/@pentacent/nginx-and-lets-encrypt-with-docker-in-less-than-5-minutes-b4b8a60d3a71][Nginx & Docker]]
-** DONE Generic pathnaming
-   CLOSED: [2019-08-20 Tue 12:01]
-** DONE Validations [1/1]
-   CLOSED: [2019-07-25 Thu 19:52]
-   :LOGBOOK:
-   CLOCK: [2019-07-25 Thu 11:27]--[2019-07-25 Thu 16:00] =>  4:33
-   :END:
-   - [X] client
-     - [X] Name
-     - [X] Email
-     - [X] Messagen
-   - [X] server
-     - [X] Name
-     - [X] Email
-     - [X] Message
-*** DONE Create validation framework
-    CLOSED: [2019-07-26 Fri 19:11]
-    :LOGBOOK:
-    CLOCK: [2019-07-24 Wed 16:30]--[2019-07-24 Wed 21:36] =>  5:06
-    :END:
-** DONE Wire up send message functionality
-   CLOSED: [2019-07-23 Tue 22:34]
-   :LOGBOOK:
-   CLOCK: [2019-07-18 Tue 16:07]--[2019-07-18 Tue 18:54] =>  2:47
-   :END:
-*** DONE (send-email)
-    CLOSED: [2019-07-18 Thu 19:00]
-*** DONE form submit
-    CLOSED: [2019-07-23 Tue 10:46]
-*** DONE jquery post
-    CLOSED: [2019-07-23 Tue 10:46]
-** DONE Remove cl-fad
-   CLOSED: [2019-09-10 Tue 22:56]
-   Reason: [[https://stackoverflow.com/a/44687561][According to this]]
-* Tomorrow
+* Priority
+** static file directory
 ** glitchy contact fields safari mobile
-** travel section
 ** email handler tests
 ** readme
-** static file directory
 ** restart on death
 ** alert emails
 ** randomized message of the day
