@@ -161,11 +161,10 @@
                             200)))
                        f))
 
-                   ;; FIXME smooth scrolling across website for all anchors
-                   ;; ($$ document (on "click" "a[href^=\"#\"]"
-                   ;;                  (\ (event)
-                   ;;                     (@@ event (prevent-default))
-                   ;;                     (smooth-scroll ($. (attr this "href")) t))))
+                   ($$ document (on "click" "a[href^=\"#\"]"
+                                    (\ (event)
+                                       (@@ event (prevent-default))
+                                       (smooth-scroll ($. (attr this "href")) t))))
                    )))
        )
       (:body :class "container-fluid w-100 p-0"
@@ -198,6 +197,8 @@
                                   (:a :class "nav-link" :href "#about" "About"))
                              (:li :class "nav-item"
                                   (:a :class "nav-link" :href "#portfolio" "Portfolio"))
+                             (:li :class "nav-item"
+                                  (:a :class "nav-link" :href "#travels" "Travels"))
                              (:li :class "nav-item"
                                   (:a :class "nav-link" :href "#contact" "Contact")))))
 
@@ -484,7 +485,7 @@
       (:hr)
 
       (:section
-       :id "travel"
+       :id "travels"
        :class "travel py-5 text-center"
 
        (let ((travels
