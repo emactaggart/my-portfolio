@@ -115,7 +115,7 @@
 ** TODO Certificates
 *** [[https://itnext.io/using-letsencrypt-ssl-certificates-in-aws-certificate-manager-c2bc3c6ae10][Lets Encrypt & AWS]]
 *** [[https://medium.com/@pentacent/nginx-and-lets-encrypt-with-docker-in-less-than-5-minutes-b4b8a60d3a71][Nginx & Docker]]
-* Priority
+* [#A] Priority 
 ** static file directory
 ** glitchy contact fields safari mobile
 ** email handler tests
@@ -130,5 +130,6 @@
 *** nginx certbot plugin
 ** character count mobile
 *** and on paste
-** perfect collapsable scrolling
+** github release versions? dockerhub release versions?
+** travel photos and descriptions
 

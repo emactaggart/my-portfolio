@@ -110,11 +110,7 @@
 ;; HANDLERS
 
 (defmacro page-template ((&key title) &body body)
-  `(with-html-output-to-string (*standard-output*
-                                nil
-                                :prologue t
-                                :indent nil
-                                )
+  `(with-html-output-to-string (*standard-output* nil :prologue t :indent nil)
      (:html
       (:head
        (:meta :charset "utf-8")
@@ -164,9 +160,30 @@
                    ($$ document (on "click" "a[href^=\"#\"]"
                                     (\ (event)
                                        (@@ event (prevent-default))
-                                       (smooth-scroll ($. (attr this "href")) t))))
-                   )))
-       )
+                                       (smooth-scroll ($. (attr this "href")) t)
+                                       (setf (@ window location hash) ($. (attr this "href"))))))
+                   ($$ document (on "scroll"
+                                    (\ (event)
+                                       ($$ "section" (each (\ ()
+
+                                                              (let* ((section-top ($$ this (offset) top))
+                                                                     (section-bottom (+ section-top ($$ this (height))))
+                                                                     (window-top (@@ window page-y-offset))
+                                                                     (section-hash ($$ this (attr "id"))))
+                                                                (flet ((set-urlbar-hash (hash)
+                                                                         ;; (setf (@ window location hash) hash)
+                                                                         (@@ history (replace-state nil nil (+ "#" hash)))
+                                                                         )
+                                                                       (activate-nav-link (hash)
+                                                                         ($$ ".nav-link" (each (\ () ($$ this (remove-class "active")))) )
+                                                                         ($$ (+ ".nav-link[href='#" hash "']") (add-class "active")))
+                                                                       (window-within-section-p () (and (< (- section-top 80)
+                                                                                                         window-top)
+                                                                                                      (< window-top
+                                                                                                         (- section-bottom 80)))))
+                                                                  (when (window-within-section-p)
+                                                                    (set-urlbar-hash section-hash)
+                                                                    (activate-nav-link section-hash))))))))))))))
       (:body :class "container-fluid w-100 p-0"
              ,@body
 
@@ -177,7 +194,6 @@
 (defun profile-handler ()
   (page-template (:title "Welcom to the Lounge")
     (with-html-output (*standard-output*)
-
       (:div :class "nav-container fixed-top squeeze-out"
             (:nav :class "navbar navbar-expand-sm navbar-dark"
                   (:a :class "navbar-brand" :href "#home" "Evan MacTaggart" )
@@ -185,20 +201,20 @@
                    :class "ml-auto navbar-toggler"
                    :type "button"
                    :data-toggle "collapse"
-                   :data-target "#navbarNav"
-                   :aria-controls "navbarNav"
+                   :data-target "#van"
+                   :aria-controls "van"
                    :aria-expanded "false"
                    :aria-label "Toggle navigation"
                    (:i :class "fa fa-bars"))
                   (:div :class "collapse navbar-collapse"
-                        :id "navbarNav"
+                        :id "van"
                         (:ul :class "navbar-nav"
                              (:li :class "nav-item"
-                                  (:a :class "nav-link" :href "#about" "About"))
+                                  (:a :class "nav-link active" :href "#about" "About"))
                              (:li :class "nav-item"
                                   (:a :class "nav-link" :href "#portfolio" "Portfolio"))
                              (:li :class "nav-item"
-                                  (:a :class "nav-link" :href "#travels" "Travels"))
+                                  (:a :class "nav-link" :href "#travel" "Travel"))
                              (:li :class "nav-item"
                                   (:a :class "nav-link" :href "#contact" "Contact")))))
 
@@ -212,8 +228,10 @@
                                                ($$ ".nav-container" (remove-class "squeeze-out"))
                                                (progn
                                                  ($$ ".nav-container" (add-class "squeeze-out"))
-                                                 ($$ "#navbarNav"
-                                                   (collapse "hide")))))))))))
+                                                 ($$ "#van"
+                                                   (collapse "hide")))))))
+                            ($$ ".nav-link" (click (\ ()
+                                                     ($$ ".navbar-collapse" (collapse "hide")))))))))
 
       (:section
        :id "home" :class "home d-flex flex-row"
@@ -232,8 +250,8 @@
               :style "font-size: 2.5rem"
               "A backpacker and programmer.")
 
-             (:button :class "garbage-btn btn btn-primary btn-lg m-3 px-3 text-light"
-                      :onclick (ps (smooth-scroll "#about"))
+             (:a :class "garbage-btn btn btn-primary btn-lg m-3 px-3 text-light"
+                      :href "#about"
                       (:div :class "align-middle"
                             (:span :class "align-middle" :style "height: 100%;" "See more" )
                             (:i :class "fa fa-arrow-circle-right rotate-90-animation ml-2 align-middle"))
@@ -485,7 +503,7 @@
       (:hr)
 
       (:section
-       :id "travels"
+       :id "travel"
        :class "travel py-5 text-center"
 
        (let ((travels
@@ -529,7 +547,7 @@
           (:div
            :class "container text-center"
            (:div :class "flex-row justify-content-center mb-3"
-                 (:h1 (:b "Travels"))
+                 (:h1 (:b "Travel"))
                  (:div :class "d-flex justify-content-center"
                        (:div :class "underline-bar")))
 
