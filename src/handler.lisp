@@ -506,43 +506,41 @@
        :id "travel"
        :class "travel py-5 text-center"
 
-       (let ((travels
-               '((:name "Thailand"
-                  :duration "2.5 Months"
-                  :date ""
-                  :desc "Thailand is cool")
-                 (:name "Laos"
-                  :duration "3 Weeks"
-                  :desc "Laos is cool")
-                 (:name "Cambodia"
-                  :duration "2 Months"
-                  :desc "Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool. Cambodia is cool."
-                  :stories
-                  ((:name "Bangkok")
-                   (:name "Tropical Cyclone")
-                   (:name "Pai Hole")
-                   (:name "Wonderfruit")
-                   (:name "Eden Garden")
-                   (:name "Christmas on Koh Phi Phi")
-                   (:name "New Years on Koh Phangan")
-                   )
-
-
-                  )
-                 (:name "Vietnam"
-                  :duration "1 Month"
-                  :desc "Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool. Vietnam is cool.")
-                 ))
-             (vietnam-img-1 "/resources/travel-photos/vietnam-flag.png")
-             (vietnam-img-2 "/resources/travel-photos/vietnam-1.jpg")
-             (vietnam-img-3 "/resources/travel-photos/vietnam-2.jpg")
-             (thailand-img-1 "/resources/travel-photos/thailand-1.jpg")
-             (thailand-img-2 "/resources/travel-photos/thailand-2.jpg")
-             (thailand-img-3 "/resources/travel-photos/thailand-3.jpg")
-             (laos-img-1 "/resources/travel-photos/laos-1.jpg")
-
-             (images '(:id "" :title "" :desc "" :img ""))
+       (let ((images
+               '((:name "bangkok-graffiti"
+                  :img "/resources/travel-photos/bkk-graffiti.jpg"
+                  :desc "")
+                 (:name "kerfuffle.jpg"
+                  :img "/resources/travel-photos/kerfuffle.jpg")
+                 (:name "cambodian-new-year-party.jpg"
+                  :img "/resources/travel-photos/cambodian-new-year-party.jpg")
+                 (:name "khao-sok-smoking.jpg"
+                  :img "/resources/travel-photos/khao-sok-smoking.jpg")
+                 (:name "cao-bang-to-ba-be-lake.jpg"
+                  :img "/resources/travel-photos/cao-bang-to-ba-be-lake.jpg")
+                 (:name "koh-lanta-sunset.jpg"
+                  :img "/resources/travel-photos/koh-lanta-sunset.jpg")
+                 (:name "cat-ba-national-park-peace.jpg"
+                  :img "/resources/travel-photos/cat-ba-national-park-peace.jpg")
+                 (:name "laos-bamboo-raft-river-crossing.jpg"
+                  :img "/resources/travel-photos/laos-bamboo-raft-river-crossing.jpg")
+                 (:name "hai-van-pass-tower.jpg"
+                  :img "/resources/travel-photos/hai-van-pass-tower.jpg")
+                 (:name "otres-beach-easy-panda.jpg"
+                  :img "/resources/travel-photos/otres-beach-easy-panda.jpg")
+                 (:name "hue-abandoned-water-park.jpg"
+                  :img "/resources/travel-photos/hue-abandoned-water-park.jpg")
+                 (:name "thakhek-valley-view-near-konglor-cave.jpg"
+                  :img "/resources/travel-photos/thakhek-valley-view-near-konglor-cave.jpg")
+                 (:name "kampot-sunset.jpg"
+                  :img "/resources/travel-photos/kampot-sunset.jpg")
+                 (:name "vang-vieng-pha-ngern-viewpoint-2.jpg"
+                  :img "/resources/travel-photos/vang-vieng-pha-ngern-viewpoint-2.jpg")
+                 )
+               )
              )
+
+         
          (htm
           (:div
            :class "container text-center"
@@ -554,36 +552,43 @@
            (:p "So far my backpacking travels have given me a beautiful glimps of South East Asia")
 
            (:div :id "travel-carousel"
-                 :style "height: 80vh; width: 100%; background: pink; overflow:hidden;"
+                 :style "height: 80vh; width: 100%; overflow:hidden;"
                  :class "carousel slide d-flex align-items-center"
                  :data-ride "false"
                  :data-pause "false"
-                 ;; (:ol :class "carousel-indicators"
-                      ;; (:li :data-target "#travel-carousel" :data-slide-to "0" :class "active")
-                      ;; (:li :data-target "#travel-carousel" :data-slide-to "1"))
+                 (:ol :class "carousel-indicators"
+                      (loop for img in images
+                            for index from 0 do
+                              (htm
+                               (:li :data-target "#travel-carousel"
+                                    :data-slide-to (format nil "~a" index)
+                                    :class (if (= index 0)
+                                               "active"
+                                               "")))))
                  (:div :class "carousel-inner d-flex"
-                       :style "background: rgba(0,255,0,0.25); height: 100%; width: 100%;"
-                       (:div :class "carousel-item active"
-                             (:img
-                              :style "height: 100%; width: 100%; object-fit: cover;"
-                              ;; :style "height: 100%; width: 100%; object-fit: cover;"
-                              :src vietnam-img-2)
-                             )
+                       :style "height: 100%; width: 100%; background: var(--grey-100)"
+                       (loop for img in images
+                             for index from 0 do
+                               (htm
+                                (:div
+                                 :class (if (= index 0)
+                                            "carousel-item active"
+                                            "carousel-item")
+                                 (:img
+                                  :style "height: 100%; width: 100%; object-fit: contain;"
+                                  :src (getf img :img)))))
 
-                       (:div :class "carousel-item"
-                             (:img
-                              :style "height: 100%; width: 100%; object-fit: cover;"
-                              :src vietnam-img-3))
+
 
                        )
                  (:div :class "carousel-control-prev" :href "#travel-carousel" :role "button" :data-slide "prev"
-                     (:span :class "carousel-control-prev-icon" :aria-hidden "true")
-                     (:span :class "sr-only" "Previous")
-                     )
+                       (:span :class "carousel-control-prev-icon" :aria-hidden "true")
+                       (:span :class "sr-only" "Previous")
+                       )
                  (:div :class "carousel-control-next" :href "#travel-carousel" :role "button" :data-slide "next"
-                     (:span :class "carousel-control-next-icon" :aria-hidden "true")
-                     (:span :class "sr-only" "Next")
-                     )
+                       (:span :class "carousel-control-next-icon" :aria-hidden "true")
+                       (:span :class "sr-only" "Next")
+                       )
                  )
 
            ))))
