@@ -558,11 +558,11 @@
                               :src vietnam-img-3))
 
                        )
-                 (:a :class "carousel-control-prev" :href "#travel-carousel" :role "button" :data-slide "prev"
+                 (:div :class "carousel-control-prev" :href "#travel-carousel" :role "button" :data-slide "prev"
                      (:span :class "carousel-control-prev-icon" :aria-hidden "true")
                      (:span :class "sr-only" "Previous")
                      )
-                 (:a :class "carousel-control-next" :href "#travel-carousel" :role "button" :data-slide "next"
+                 (:div :class "carousel-control-next" :href "#travel-carousel" :role "button" :data-slide "next"
                      (:span :class "carousel-control-next-icon" :aria-hidden "true")
                      (:span :class "sr-only" "Next")
                      )
