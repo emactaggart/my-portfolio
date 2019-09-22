@@ -507,40 +507,50 @@
        :class "travel py-5 text-center"
 
        (let ((images
-               '((:name "bangkok-graffiti"
-                  :img "/resources/travel-photos/bkk-graffiti.jpg"
-                  :desc "")
-                 (:name "kerfuffle.jpg"
-                  :img "/resources/travel-photos/kerfuffle.jpg")
-                 (:name "cambodian-new-year-party.jpg"
-                  :img "/resources/travel-photos/cambodian-new-year-party.jpg")
-                 (:name "khao-sok-smoking.jpg"
-                  :img "/resources/travel-photos/khao-sok-smoking.jpg")
-                 (:name "cao-bang-to-ba-be-lake.jpg"
+               '((:desc "Being half lost makes for some half decent views."
+                  :location "A wrong turn somewhere between Cao Bang and Ba Bể National Park, Vietnam"
                   :img "/resources/travel-photos/cao-bang-to-ba-be-lake.jpg")
-                 (:name "koh-lanta-sunset.jpg"
-                  :img "/resources/travel-photos/koh-lanta-sunset.jpg")
-                 (:name "cat-ba-national-park-peace.jpg"
-                  :img "/resources/travel-photos/cat-ba-national-park-peace.jpg")
-                 (:name "laos-bamboo-raft-river-crossing.jpg"
-                  :img "/resources/travel-photos/laos-bamboo-raft-river-crossing.jpg")
-                 (:name "hai-van-pass-tower.jpg"
+                 (:desc "Realistically a mountain can only get you so high."
+                  :location "Hải Vân Pass, between Hội An and Huế, Vietnam"
                   :img "/resources/travel-photos/hai-van-pass-tower.jpg")
-                 (:name "otres-beach-easy-panda.jpg"
-                  :img "/resources/travel-photos/otres-beach-easy-panda.jpg")
-                 (:name "hue-abandoned-water-park.jpg"
-                  :img "/resources/travel-photos/hue-abandoned-water-park.jpg")
-                 (:name "thakhek-valley-view-near-konglor-cave.jpg"
-                  :img "/resources/travel-photos/thakhek-valley-view-near-konglor-cave.jpg")
-                 (:name "kampot-sunset.jpg"
-                  :img "/resources/travel-photos/kampot-sunset.jpg")
-                 (:name "vang-vieng-pha-ngern-viewpoint-2.jpg"
+                 (:desc "The endless beaches of Koh Lanta provide some pretty-not-too-bad sunsets."
+                  :location "Phra Ae Beach, Koh Lanta, Thailand"
+                  :img "/resources/travel-photos/koh-lanta-sunset.jpg")
+                 (:desc "Escaping the concrete jungle."
+                  :location "Bangkok, Thailand"
+                  :img "/resources/travel-photos/bkk-graffiti.jpg")
+                 (:desc "Using Google maps in Laos leads to sweaty sunsets."
+                  :location "Pha Ngern Viewpoint 2, Vang Vieng, Laos"
                   :img "/resources/travel-photos/vang-vieng-pha-ngern-viewpoint-2.jpg")
-                 )
-               )
-             )
+                 (:desc "Kerfuffle Cambodia, and yes that is a moped-powered-ferris-wheel."
+                  :location "Somewhere near Otres Beach 3, Sihanoukville, Cambodia"
+                  :img "/resources/travel-photos/kerfuffle.jpg")
+                 (:desc "Picking up some fresh threads for the Khmer New Year."
+                  :location "Kampot, Cambodia"
+                  :img "/resources/travel-photos/cambodian-new-year-party.jpg")
+                 (:desc "A sunset signalling that you probably find a place to sleep soon."
+                  :location "Near Kong Lor Cave on the Thakhek Loop, Laos"
+                  :img "/resources/travel-photos/thakhek-valley-view-near-konglor-cave.jpg")
+                 (:desc "Do as the locals do and cross the river using the motorbike ferry."
+                  :location "Xe Bangfai River Crossing, somewhere between Bualapha and Ban Xoang, Laos"
+                  :img "/resources/travel-photos/laos-bamboo-raft-river-crossing.jpg")
+                 (:desc "Lovely views and relaxing vibes."
+                  :location "Otres Beach, Cambodia"
+                  :img "/resources/travel-photos/otres-beach-easy-panda.jpg")
+                 (:desc "Picking up a smoking habit while in Thailand."
+                  :location "Khao Sok National Park, Thailand"
+                  :img "/resources/travel-photos/khao-sok-smoking.jpg")
+                 (:desc "In the dragon's mouth."
+                  :location "A \"well guarded\" Abandoned Water Park near Huế, Vietnam"
+                  :img "/resources/travel-photos/hue-abandoned-water-park.jpg")
+                 (:desc "An average Kampot sunset shadowed by Bokor Mountain."
+                  :location "Kampot, Cambodia"
+                  :img "/resources/travel-photos/kampot-sunset.jpg")
+                 (:desc "A sweaty and steady climb up some limbstone mountains."
+                  :location "Cát Bà National Park, Cát Bà Island, Vietnam"
+                  :img "/resources/travel-photos/cat-ba-national-park-peace.jpg")
+                 )))
 
-         
          (htm
           (:div
            :class "container text-center"
@@ -549,14 +559,14 @@
                  (:div :class "d-flex justify-content-center"
                        (:div :class "underline-bar")))
 
-           (:p "So far my backpacking travels have given me a beautiful glimps of South East Asia")
+           (:p "My short 7 month journey through part of South East Asia made for some incredible experiences. Here's just a glimpse.")
 
            (:div :id "travel-carousel"
                  :style "height: 80vh; width: 100%; overflow:hidden;"
                  :class "carousel slide d-flex align-items-center"
                  :data-ride "false"
                  :data-pause "false"
-                 (:ol :class "carousel-indicators"
+                 (:ol :class "carousel-indicators mb-1"
                       (loop for img in images
                             for index from 0 do
                               (htm
@@ -576,12 +586,13 @@
                                             "carousel-item")
                                  (:img
                                   :style "height: 100%; width: 100%; object-fit: contain;"
-                                  :src (getf img :img)))))
-
-
-
-                       )
-                 (:div :class "carousel-control-prev" :href "#travel-carousel" :role "button" :data-slide "prev"
+                                  :src (getf img :img)
+                                  (:div :class "carousel-caption text-wrap p-2"
+                                        :style "background: rgba(0,0,0,0.5); width: 100%; left: 0%; right: 0%; bottom: 0%;"
+                                        (:h5 (str (getf img :desc)))
+                                        (:p (str (getf img :location)))))))))
+                 (:div :class "carousel-control-prev"
+                       :href "#travel-carousel" :role "button" :data-slide "prev"
                        (:span :class "carousel-control-prev-icon" :aria-hidden "true")
                        (:span :class "sr-only" "Previous")
                        )
