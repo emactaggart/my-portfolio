@@ -591,18 +591,14 @@
                                         :style "background: rgba(0,0,0,0.5); width: 100%; left: 0%; right: 0%; bottom: 0%;"
                                         (:h5 (str (getf img :desc)))
                                         (:p (str (getf img :location)))))))))
-                 (:div :class "carousel-control-prev"
+                 (:div :class "carousel-control-prev" :style "cursor: pointer;"
                        :href "#travel-carousel" :role "button" :data-slide "prev"
                        (:span :class "carousel-control-prev-icon" :aria-hidden "true")
-                       (:span :class "sr-only" "Previous")
-                       )
-                 (:div :class "carousel-control-next" :href "#travel-carousel" :role "button" :data-slide "next"
+                       (:span :class "sr-only" "Previous"))
+                 (:div :class "carousel-control-next" :style "cursor: pointer;"
+                       :href "#travel-carousel" :role "button" :data-slide "next"
                        (:span :class "carousel-control-next-icon" :aria-hidden "true")
-                       (:span :class "sr-only" "Next")
-                       )
-                 )
-
-           ))))
+                       (:span :class "sr-only" "Next")))))))
 
       (:section :id "contact" :class "contact py-5 h-100"
 
