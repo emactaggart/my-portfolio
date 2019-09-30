@@ -117,19 +117,26 @@
 *** [[https://medium.com/@pentacent/nginx-and-lets-encrypt-with-docker-in-less-than-5-minutes-b4b8a60d3a71][Nginx & Docker]]
 * [#A] Priority 
 ** static file directory
-** glitchy contact fields safari mobile
 ** email handler tests
-** readme
 ** restart on death
-** alert emails
 ** randomized message of the day
 ** dev environement
 *** docker
 *** docker-compose
 ** more nginx config
 *** nginx certbot plugin
+*** dev config
+*** rate limits
+*** alert emails
 ** character count mobile
 *** and on paste
 ** github release versions? dockerhub release versions?
-** travel photos and descriptions
+** spinner on submit message
+** minor config from [[https://gitlab.onnix.io/root/pr0nage/blob/9fa3f5d837cdd00f65e9d2c944b11b7de7e42440/init.lisp][Some Gitlab Repo]]
+*** (setf (html-mode) :html5)?
+*** *html-no-indent-tags
+*** print-object / print-unreadable-obect
+** Loading Spinner
+*** contact submit
+*** entire site?
 

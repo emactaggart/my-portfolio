@@ -44,11 +44,11 @@
         (log-message* :error "Something blew up when calling: ~a with ~s" fn args)
         c))))
 
-(push (create-folder-dispatcher-and-handler "/css/" (merge-pathnames "css/" config:*application-root*)) *dispatch-table*)
-(push (create-folder-dispatcher-and-handler "/webfonts/" (merge-pathnames "vendor/fontawesome-free-5.9.0-web/webfonts/" config:*application-root*)) *dispatch-table*)
-(push (create-folder-dispatcher-and-handler "/resources/" (merge-pathnames "resources/" config:*application-root*)) *dispatch-table*)
-(push (create-static-file-dispatcher-and-handler "/favicon.ico" (merge-pathnames "resources/favicon.ico" config:*application-root*)) *dispatch-table*)
-(push (create-static-file-dispatcher-and-handler "/robots.txt" (merge-pathnames "resources/robots.txt" config:*application-root*)) *dispatch-table*)
+(push (create-folder-dispatcher-and-handler "/styles/" (merge-pathnames "static/styles/" config:*application-root*)) *dispatch-table*)
+(push (create-folder-dispatcher-and-handler "/webfonts/" (merge-pathnames "static/webfonts/" config:*application-root*)) *dispatch-table*)
+(push (create-folder-dispatcher-and-handler "/static/" (merge-pathnames "static/" config:*application-root*)) *dispatch-table*)
+(push (create-static-file-dispatcher-and-handler "/favicon.ico" (merge-pathnames "static/favicon.ico" config:*application-root*)) *dispatch-table*)
+(push (create-static-file-dispatcher-and-handler "/robots.txt" (merge-pathnames "static/robots.txt" config:*application-root*)) *dispatch-table*)
 
 (push (create-regex-dispatcher "^/$" (log-handler-wrapper 'profile-handler)) *dispatch-table*)
 
@@ -120,11 +120,11 @@
               :integrity "sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
               :crossorigin "anonymous")
 
-       (:link :rel "stylesheet" :href "/css/fontawesome-all.css")
+       (:link :rel "stylesheet" :href "/styles/fontawesome-all.css")
        ;; Cheers Conrad! http://www.lisperati.com/logo.html
        (:link :rel "icon" :type "image/png" :href "favicon.ico")
 
-       (:link :rel "stylesheet" :type "text/css" :href "css/main.css")
+       (:link :rel "stylesheet" :type "text/css" :href "/styles/main.css")
        (:title ,@title)
        (:script :src "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js")
 
@@ -293,7 +293,7 @@
                                   (:p "Simplicity is the key to sane development. Likewise I prefer to avoid over-designing and over-engineering things.")))
 
                       (:div :class "portrait-container mx-auto"
-                            (:img :class "portrait" :src "/resources/profile-photos/cooking-ahh.jpg"))
+                            (:img :class "portrait" :src "/static/profile-photos/cooking-ahh.jpg"))
 
                       (:div :class "py-3"
                             "I'm a developer comfortable working in a plethora of technologies and environments and not afraid to learn something new. Have a look at some of my skills!")
@@ -305,22 +305,22 @@
                                 :desc "The technologies I've used in the majority of my professional experience."
                                 :items (
                                         (:name "Java"
-                                         :img "/resources/logos/java-logo.png"
+                                         :img "/static/logos/java-logo.png"
                                          :desc "With Java I have developed backend services for various applications as well as some internal business facing GUI applications. A handlful university courses also used Java as a point of focus for OOP.")
                                         (:name "JavaScript"
-                                         :img "/resources/logos/javascript-logo.png"
+                                         :img "/static/logos/javascript-logo.png"
                                          :desc "Javascript is unavoidable at this point. Through school and the majority of my work experience I have used Javascript for front end and back end, primarily the former.")
                                         (:name "Spring & Spring Boot"
-                                         :img "/resources/logos/spring-logo.png"
+                                         :img "/static/logos/spring-logo.png"
                                          :desc "The core of my Java experience exists inside the context of Spring. I have developed RESTful services, cron jobs, web applications with spring.")
                                         (:name "SQL"
-                                         :img "/resources/logos/mysql-logo.png"
+                                         :img "/static/logos/mysql-logo.png"
                                          :desc "Starting in school but carrying forward to professional experience SQL has been a staple in my DB experience. The majority of projects I have been involved with have made use of relational databases.")
                                         (:name "Angular"
-                                         :img "/resources/logos/angular-logo.png"
+                                         :img "/static/logos/angular-logo.png"
                                          :desc "My first professional web development experience out of university was Angular. My experience primarily exists with version 2+, but have had a short time with the original. With Angular I have built various single-page web applications, both customer and business facing.")
                                         (:name "Web Development"
-                                         :img "/resources/logos/html-css-js-logo.png"
+                                         :img "/static/logos/html-css-js-logo.png"
                                          :desc "The web being such an incredibly useful medium, web development is likewise a common task. Mobile responsive design is also in the realm of my expertise, as hopefully this page can attest."))))
                             (hobbies
                               '(:id "hobbies"
@@ -328,16 +328,16 @@
                                 :desc "Some things I'm currently dabbling in."
                                 :items
                                 ((:name "Common Lisp"
-                                  :img "/resources/logos/lisp-logo.png"
+                                  :img "/static/logos/lisp-logo.png"
                                   :desc "I built this website using Common Lisp, take a look at github to see it's current state. My experience has been short but enlightening and very enjoyable once climbing over some initial hurdles. I have intentions of continuing my exploration through this humble language.")
                                  (:name "Statistics"
-                                  :img "/resources/logos/panda-stats-logo.png"
+                                  :img "/static/logos/panda-stats-logo.png"
                                   :desc "I'm slowly working working my way through various online tutorials to eventually pursue some foolish endeavours in the area of quantitive analysis. My venture into model generation and machine learning  come somewhere in between. I intend to make use of Python's Pandas and NumPy libraries, as well as JavaScripts D3 for visual representation.")
                                  (:name "Emacs"
-                                  :img "/resources/logos/emacs-logo.png"
+                                  :img "/static/logos/emacs-logo.png"
                                   :desc "After succumbing to the dark side I transitioned from Vim to Emacs through Spacemacs, which I'm currently still using as my editor of choice. Emacs was the monumental driver towards learning Lisp like languages.")
                                  (:name "Docker"
-                                  :img "/resources/logos/docker-logo.png"
+                                  :img "/static/logos/docker-logo.png"
                                   :desc "Docker is a technology I have more recently been diving into for the sake of cleaner devops and work environment purposes."
                                   ))))
                             (generic-dev
@@ -346,23 +346,23 @@
                                 :desc "Various technologies I've used both in and out of my professional experience."
                                 :items
                                 ((:name "Linux"
-                                  :img "/resources/logos/linux-logo.png"
+                                  :img "/static/logos/linux-logo.png"
                                   :desc "Since my introduction to using Linux in early university I have gradually transitioned into using it full time as my go-to OS. At this instant I'm running Fedora but have dabbled in Ubuntu, debian, and CentOS in the past. I have even built my own linux kernel from scratch through various tutorials! I have also dabbled in MacOS, and have a dual boot to Windows for other occasional uses."
                                   )
                                  (:name "Devops"
-                                  :img "/resources/logos/devops-logo.png"
+                                  :img "/static/logos/devops-logo.png"
                                   :desc "Not being totally new to web development, but being relatively new to hosting my own services, devops is an area of interest of mine. Having plenty of linux experience, and now freshly, an understanding docker, I am digging deeper into the processes involed with devops automation and continuous integration, with which I have made use of in previous work experience.")
                                  (:name "Git"
-                                  :img "/resources/logos/git-logo.png"
+                                  :img "/static/logos/git-logo.png"
                                   :desc "Since early on in my development career Git has been the primary choice of version control. Being a command line warrior I like to think that I have a intermediate-advanced level of understanding of git, without digging into the sublevel commands git is comprised of. My git client of choice is Magit, a lovely Emacs plugin. I have also used Mercurial in a professional environment as well.")
                                  (:name "Scrum"
-                                  :img "/resources/logos/scrum-logo.png"
+                                  :img "/static/logos/scrum-logo.png"
                                   :desc "Through previous corporate work experience, I had the pleasure of collaborating on a few teams where Scrum was used effectively, dynamically, and autonomously as each team saw fit. I have also collaborated with teams on larger scale projects where by each team would coordinate and comprimise when driven towards a large, single, encompassing goal. The teams ranged from 3 to 10 people.")
                                  (:name "Testing"
-                                  :img "/resources/logos/testing-logo.png"
+                                  :img "/static/logos/testing-logo.png"
                                   :desc "Starting in my student developer work terms testing has been a strong area of interest. I have professional experience with building tests ranging from unit tests, to integration tests, to automated UI tests with PhantomJS, to building a framework for automated integration tests on ran by the CI server.")
                                  (:name "Security"
-                                  :img "/resources/logos/google-security-logo.png"
+                                  :img "/static/logos/google-security-logo.png"
                                   :desc "I like to think that I'm not as security ignorant as most. However I am not perfect, so I do believe security reviews and security audits are very important."))))
                             (misc
                               '(:id "misc"
@@ -509,46 +509,46 @@
        (let ((images
                '((:desc "Being half lost makes for some half decent views."
                   :location "A wrong turn somewhere between Cao Bang and Ba Bể National Park, Vietnam"
-                  :img "/resources/travel-photos/cao-bang-to-ba-be-lake.jpg")
+                  :img "/static/travel-photos/cao-bang-to-ba-be-lake.jpg")
                  (:desc "Realistically a mountain can only get you so high."
                   :location "Hải Vân Pass, between Hội An and Huế, Vietnam"
-                  :img "/resources/travel-photos/hai-van-pass-tower.jpg")
+                  :img "/static/travel-photos/hai-van-pass-tower.jpg")
                  (:desc "The endless beaches of Koh Lanta provide some pretty-not-too-bad sunsets."
                   :location "Phra Ae Beach, Koh Lanta, Thailand"
-                  :img "/resources/travel-photos/koh-lanta-sunset.jpg")
+                  :img "/static/travel-photos/koh-lanta-sunset.jpg")
                  (:desc "Escaping the concrete jungle."
                   :location "Bangkok, Thailand"
-                  :img "/resources/travel-photos/bkk-graffiti.jpg")
+                  :img "/static/travel-photos/bkk-graffiti.jpg")
                  (:desc "Using Google maps in Laos leads to sweaty sunsets."
                   :location "Pha Ngern Viewpoint 2, Vang Vieng, Laos"
-                  :img "/resources/travel-photos/vang-vieng-pha-ngern-viewpoint-2.jpg")
+                  :img "/static/travel-photos/vang-vieng-pha-ngern-viewpoint-2.jpg")
                  (:desc "Kerfuffle Cambodia, and yes that is a moped-powered-ferris-wheel."
                   :location "Somewhere near Otres Beach 3, Sihanoukville, Cambodia"
-                  :img "/resources/travel-photos/kerfuffle.jpg")
+                  :img "/static/travel-photos/kerfuffle.jpg")
                  (:desc "Picking up some fresh threads for the Khmer New Year."
                   :location "Kampot, Cambodia"
-                  :img "/resources/travel-photos/cambodian-new-year-party.jpg")
+                  :img "/static/travel-photos/cambodian-new-year-party.jpg")
                  (:desc "A sunset signalling that you probably find a place to sleep soon."
                   :location "Near Kong Lor Cave on the Thakhek Loop, Laos"
-                  :img "/resources/travel-photos/thakhek-valley-view-near-konglor-cave.jpg")
+                  :img "/static/travel-photos/thakhek-valley-view-near-konglor-cave.jpg")
                  (:desc "Do as the locals do and cross the river using the motorbike ferry."
                   :location "Xe Bangfai River Crossing, somewhere between Bualapha and Ban Xoang, Laos"
-                  :img "/resources/travel-photos/laos-bamboo-raft-river-crossing.jpg")
+                  :img "/static/travel-photos/laos-bamboo-raft-river-crossing.jpg")
                  (:desc "Lovely views and relaxing vibes."
                   :location "Otres Beach, Cambodia"
-                  :img "/resources/travel-photos/otres-beach-easy-panda.jpg")
+                  :img "/static/travel-photos/otres-beach-easy-panda.jpg")
                  (:desc "Picking up a smoking habit while in Thailand."
                   :location "Khao Sok National Park, Thailand"
-                  :img "/resources/travel-photos/khao-sok-smoking.jpg")
+                  :img "/static/travel-photos/khao-sok-smoking.jpg")
                  (:desc "In the dragon's mouth."
                   :location "A \"well guarded\" Abandoned Water Park near Huế, Vietnam"
-                  :img "/resources/travel-photos/hue-abandoned-water-park.jpg")
+                  :img "/static/travel-photos/hue-abandoned-water-park.jpg")
                  (:desc "An average Kampot sunset shadowed by Bokor Mountain."
                   :location "Kampot, Cambodia"
-                  :img "/resources/travel-photos/kampot-sunset.jpg")
+                  :img "/static/travel-photos/kampot-sunset.jpg")
                  (:desc "A sweaty and steady climb up some limbstone mountains."
                   :location "Cát Bà National Park, Cát Bà Island, Vietnam"
-                  :img "/resources/travel-photos/cat-ba-national-park-peace.jpg")
+                  :img "/static/travel-photos/cat-ba-national-park-peace.jpg")
                  )))
 
          (htm
