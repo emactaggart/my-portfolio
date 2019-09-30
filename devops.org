@@ -216,6 +216,7 @@ scp $(pwd)/nginx.conf tagg:~/
 
 #+name: deploy-webapp
 #+begin_src sh
+docker pull emactaggart/my-portfolio
 docker-compose up -d my-portfolio
 #+end_src
 
@@ -236,7 +237,7 @@ docker-compose up -d --force-recreate
 *** Run Local
 # TODO create local docker-compose.yml to run local builds instead of having to push
 #+name docker-compose-local
-#+begin_src sh
+#+begin_src sh :session local-deploy
 docker-compose up -d --force-recreate
 #+end_src
 
