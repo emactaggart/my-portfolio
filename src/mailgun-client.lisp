@@ -1,8 +1,8 @@
-(defpackage #:email-sender
+(defpackage #:mailgun-client
   (:use #:cl)
   (:export #:send-to-self))
 
-(in-package #:email-sender)
+(in-package #:mailgun-client)
 
 (defvar *api-key* (config:get-config "MAILGUN_API_KEY"))
 (defvar *domain* "sandbox61d987eb88cd452eace1c7584ca34ec0.mailgun.org")

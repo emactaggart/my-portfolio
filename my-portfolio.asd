@@ -17,10 +17,10 @@
   :components ((:module "src"
                 :components
                 ((:file "config")
-                 (:file "email-sender"
+                 (:file "mailgun-client"
                   :depends-on ("config"))
                  (:file "handler"
-                  :depends-on ("email-sender"))
+                  :depends-on ("mailgun-client"))
                  (:file "control"
                   :depends-on ("config" "handler")))))
   :description ""

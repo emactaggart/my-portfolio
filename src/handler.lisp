@@ -77,7 +77,7 @@
              (validate-all `(:name ,name :email ,email :message ,message) *message-handler-validations*)))
       (if (alexandria:emptyp error-messages)
           (progn
-            (email-sender:send-to-self name email message)
+            (mailgun-client:send-to-self name email message)
             (jsown:to-json '(:obj (:message . "good job"))))
           (progn
             (log-message* :warn "Bad inputs: " error-messages "~%")

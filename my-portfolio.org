@@ -51,7 +51,7 @@ Oh, and it's a personal website now I guess!
  #+end_src
 ** TODO Testing [0/1]
    - [ ] Unit tests
-   - [ ] email-sender tests
+   - [ ] mailgun-client tests
    - [ ] End to end integration testing (phantom.js?)
 ** TODO Error and other HTTP Status pages
    - [ ] 404
@@ -124,13 +124,14 @@ Oh, and it's a personal website now I guess!
 *** [[https://itnext.io/using-letsencrypt-ssl-certificates-in-aws-certificate-manager-c2bc3c6ae10][Lets Encrypt & AWS]]
 *** [[https://medium.com/@pentacent/nginx-and-lets-encrypt-with-docker-in-less-than-5-minutes-b4b8a60d3a71][Nginx & Docker]]
 * [#A] Priority 
-** email handler tests
-** dynamically load webfonts and boostrap maybe?
+** dynamically load webfonts? and boostrap?
 ** restart on death
 ** randomized message of the day
 ** dev environement
 *** docker
 *** docker-compose
+*** nginx
+*** certs
 ** more nginx config
 *** nginx certbot plugin
 *** dev config
@@ -147,4 +148,12 @@ Oh, and it's a personal website now I guess!
 ** Loading Spinner
 *** contact submit
 *** entire site?
+** TODO email handler tests
+** TODO docker dev
+** TODO docker test
+** force running docker test prior to deploy?
+*** construct a prod build from the test code? 
+**** might just have to strip out test code
+
+
 
