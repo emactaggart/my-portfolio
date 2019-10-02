@@ -29,10 +29,14 @@
 (defsystem "my-portfolio/tests"
   :author ""
   :license ""
-  :depends-on ("my-portfolio"
-               "rove")
+  :depends-on (:my-portfolio
+               :fiveam)
   :components ((:module "tests"
+                :serial t
                 :components
                 ((:file "main"))))
+  :components ((:file "main"))
   :description "Test system for my-portfolio"
-  :perform (test-op (op c) (symbol-call :rove :run c)))
+  :perform (test-op (op system)
+                    (symbol-call :fiveam :run-all-tests)))
+

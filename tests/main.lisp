@@ -1,11 +1,15 @@
-(defpackage my-portfolio/tests/main
-  (:use :cl
-        :my-portfolio
-        :rove))
-(in-package :my-portfolio/tests/main)
+(defpackage :my-portfolio-tests
+  (:use :cl :fiveam))
 
-;; NOTE: To run this test file, execute `(asdf:test-system :my-portfolio)' in your Lisp.
+(in-package :my-portfolio-tests)
 
-(deftest test-target-1
-  (testing "should (= 1 1) to be true"
-    (ok (= 1 1))))
+(def-suite all-tests
+  :description "Thpe master suite of all tests.")
+
+(in-suite all-tests)
+
+(test dummy-tests
+  "A Placeholder"
+  (is (listp (list 1 2)))
+  (is (= 5 (+ 2 3))))
+
