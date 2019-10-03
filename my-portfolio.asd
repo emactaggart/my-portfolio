@@ -2,18 +2,21 @@
   :version "0.0.0"
   :author ""
   :license ""
-  :depends-on (:alexandria
-               :bordeaux-threads
-               :cl-arrows
-               :cl-ppcre
-               :cl-who
-               :dexador
-               :hunchentoot
-               :jsown
-               ;; :log4cl ;; implement this later and replace hunchentoot's default logging
-               :parenscript
-               :prove
-               :uiop)
+  :build-operation "program-op"
+  :build-pathname "my-portfolio.exe"
+  :entry-point "control:start-server"
+  :depends-on ("alexandria"
+               "bordeaux-threads"
+               "cl-arrows"
+               "cl-ppcre"
+               "cl-who"
+               "dexador"
+               "hunchentoot"
+               "jsown"
+               ;; "log4cl" ;; implement this later and replace hunchentoot's default logging
+               "parenscript"
+               "prove"
+               "uiop")
   :components ((:module "src"
                 :components
                 ((:file "config")
@@ -40,3 +43,6 @@
   :perform (test-op (op system)
                     (symbol-call :fiveam :run-all-tests)))
 
+#+sb-core-compression
+(defmethod asdf:perform ((op asdf:image-op) (system asdf:system))
+  (uiop:dump-image (asdf:output-file op system) :executable t :compression t))

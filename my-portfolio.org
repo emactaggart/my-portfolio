@@ -154,6 +154,5 @@ Oh, and it's a personal website now I guess!
 ** force running docker test prior to deploy?
 *** construct a prod build from the test code? 
 **** might just have to strip out test code
-
-
+** solidify endpoints, only allow minimum number of request-methods
 
