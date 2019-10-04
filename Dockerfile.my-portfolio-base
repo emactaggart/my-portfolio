@@ -6,14 +6,10 @@ RUN ln -s /root/my-portfolio/my-portfolio.asd /root/quicklisp/local-projects/
 EXPOSE 8080
 
 WORKDIR /root/my-portfolio
-# TODO handle install of quicklisp dependencies?
-RUN sbcl --non-interactive --eval "(ql:quickload :my-portfolio)"
 
+# Esentially caches the project and test dependencies in this docker image
+RUN sbcl --non-interactive \
+  --eval "(ql:quickload :my-portfolio)" \
+  --eval "(ql:quickload :my-portfolio/tests)"
 
-# TODO what is the correct ENTRYPOINT and CMD?
-# the base is used for testing a building, not necessarily development and running sbcl immediately,
-# perhaps we will change this for dev...
-# make dev start up a dev docker env and link a slime to swank?....
-ENTRYPOINT ["sh", "-c"] # used to override 
-# ENTRYPOINT ["sbcl", "--eval", "(ql:quickload :my-portfolio)"]
-# ENTRYPOINT ["sbcl", "--eval", "(ql:quickload :my-portfolio)", "--eval", "(control:start-server)"]
+ENTRYPOINT ["sh", "-c"]
