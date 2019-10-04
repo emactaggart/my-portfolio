@@ -1,6 +1,0 @@
-services:
-  portfolio:
-    build: .
-# add volume for code
-# add env for profile
-# add env for the location of configs?

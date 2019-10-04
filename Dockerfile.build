@@ -1,0 +1,9 @@
+FROM emactaggart/my-portfolio-base:latest
+
+# test first
+# essentially, build and bundle executable in another docker container
+# bundle personal configs and env variables as well...
+
+RUN make build
+
+
