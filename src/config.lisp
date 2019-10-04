@@ -1,17 +1,15 @@
-(defpackage #:config
-  (:use #:cl)
-  (:export #:get-config #:get-config-or-error #:*application-root* #:*application-name*))
+(defpackage :config
+  (:use :cl)
+  (:export :get-config :get-config-or-error :load-configs))
 
-(in-package #:config)
+(in-package :config)
 
-;; FIXME cleaner error when .taggrc is a folder / doesn't exist
-(defvar configuration-file-pathname (truename #p"~/.taggrc"))
 (defvar configs (make-hash-table :test 'equal))
 
-(defun load-configs ()
-  (when (not (uiop:file-exists-p configuration-file-pathname))
-    (error "~a" (concatenate 'string "Cannot find configuration file: " configuration-file-pathname)))
-  (with-open-file (stream configuration-file-pathname)
+(defun load-configs (config-file)
+  (when (not (uiop:file-exists-p config-file))
+    (error "~a" (concatenate 'string "Cannot find configuration file: " config-file)))
+  (with-open-file (stream config-file)
     (loop for line = (read-line stream nil)
           while line
           do
@@ -26,8 +24,3 @@
     (if config
         config
         (error (format nil "Could not find configuration ~s" config-name)))))
-
-(load-configs)
-(defvar *application-root* (truename (get-config-or-error "APPLICATION_ROOT")))
-(defvar *application-name* (get-config-or-error "APPLICATION_NAME"))
-

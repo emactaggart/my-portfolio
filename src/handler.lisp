@@ -1,7 +1,8 @@
-(defpackage #:handler
-  (:use #:cl #:hunchentoot #:parenscript #:cl-who))
+(defpackage :handler
+  (:use :cl :hunchentoot :parenscript :cl-who)
+  (:export :configure-handlers))
 
-(in-package #:handler)
+(in-package :handler)
 
 (defmacro+ps clog (&body body)
   `(chain console (log ,@body)))
@@ -44,15 +45,16 @@
         (log-message* :error "Something blew up when calling: ~a with ~s" fn args)
         c))))
 
-(push (create-folder-dispatcher-and-handler "/styles/" (merge-pathnames "static/styles/" config:*application-root*)) *dispatch-table*)
-(push (create-folder-dispatcher-and-handler "/webfonts/" (merge-pathnames "static/webfonts/" config:*application-root*)) *dispatch-table*)
-(push (create-folder-dispatcher-and-handler "/static/" (merge-pathnames "static/" config:*application-root*)) *dispatch-table*)
-(push (create-static-file-dispatcher-and-handler "/favicon.ico" (merge-pathnames "static/favicon.ico" config:*application-root*)) *dispatch-table*)
-(push (create-static-file-dispatcher-and-handler "/robots.txt" (merge-pathnames "static/robots.txt" config:*application-root*)) *dispatch-table*)
+(defun configure-handlers (application-root)
+  (push (create-folder-dispatcher-and-handler "/styles/" (merge-pathnames "static/styles/" application-root)) *dispatch-table*)
+  (push (create-folder-dispatcher-and-handler "/webfonts/" (merge-pathnames "static/webfonts/" application-root)) *dispatch-table*)
+  (push (create-folder-dispatcher-and-handler "/static/" (merge-pathnames "static/" application-root)) *dispatch-table*)
+  (push (create-static-file-dispatcher-and-handler "/favicon.ico" (merge-pathnames "static/favicon.ico" application-root)) *dispatch-table*)
+  (push (create-static-file-dispatcher-and-handler "/robots.txt" (merge-pathnames "static/robots.txt" application-root)) *dispatch-table*)
 
-(push (create-regex-dispatcher "^/$" (log-handler-wrapper 'profile-handler)) *dispatch-table*)
+  (push (create-regex-dispatcher "^/$" (log-handler-wrapper 'profile-handler)) *dispatch-table*)
 
-(push (create-regex-dispatcher "/send-message" (log-handler-wrapper 'message-handler :log-response-body t)) *dispatch-table*)
+  (push (create-regex-dispatcher "/send-message" (log-handler-wrapper 'message-handler :log-response-body t)) *dispatch-table*))
 
 (defvar *email-address-regex* "\\A([\\w+\\-].?)+@[a-z\\d\\-]+(\\.[a-z]+)*\\.[a-z]+\\z")
 (defvar *name-length* 50)

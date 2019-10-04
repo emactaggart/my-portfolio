@@ -18,14 +18,12 @@
                "prove"
                "uiop")
   :components ((:module "src"
+                :serial t
                 :components
                 ((:file "config")
-                 (:file "mailgun-client"
-                  :depends-on ("config"))
-                 (:file "handler"
-                  :depends-on ("mailgun-client"))
-                 (:file "control"
-                  :depends-on ("config" "handler")))))
+                 (:file "mailgun-client")
+                 (:file "handler")
+                 (:file "control"))))
   :description ""
   :in-order-to ((test-op (test-op "my-portfolio/tests"))))
 

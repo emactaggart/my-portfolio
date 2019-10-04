@@ -1,6 +1,6 @@
 (defpackage :my-portfolio-tests
   (:use :cl :fiveam)
-  (:export #:run-all-tests-and-fail))
+  (:export :run-all-tests-and-fail))
 
 (define-condition tests-failed (error) ())
 
