@@ -20,13 +20,22 @@ docker-test:
 docker-test-clean-build: _portfolio-base docker-test
 
 # Produces a production ready docker image containing a webserver executable and static files
-docker-build-prod: docker-test-clean-build
+docker-build: docker-build-my-portfolio
+
+docker-build-my-portfolio: docker-test-clean-build
 	docker-compose -f docker-compose.util.yml up make-prod-executable \
 	&& 	docker-compose -f docker-compose.util.yml build build-prod
 
+# FIXME shouldn't have to build prod exe... take a look in docker-compose.util.yml
+run-dev:
+	docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --force-recreate my-portfolio
+
+run-dev-full:
+	docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d --force-recreate
+
 # Runs our current local version of our production ready webapp
 run-prod:
-	docker-compose up my-portfolio
+	docker-compose up -d --force-recreate my-portfolio
 
 # Runs a fresh prod build on our local machine
 run-prod-clean-build: docker-build-prod run-prod

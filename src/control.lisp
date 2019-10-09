@@ -25,14 +25,18 @@
 
 ;; FIXME should the configuration start here? perhaps pull out into a separate function
 ;; FIXME due to the async the repl now freezes when the app is started
+;; FIXME killing seems not as simple...
 (defun start-server ()
   (let ((config-file (truename #p"~/.taggrc")))
     (load-configs config-file)
 
     ;; FIXME is this the default logging directory we're after? perhaps we can specify ourselves?
-    (let* ((application-root (truename (get-config-or-error "APPLICATION_ROOT")))
+    (let* ((profile (config:get-config "PROFILE"))
+           (application-root (truename (get-config-or-error "APPLICATION_ROOT")))
            (application-name (get-config-or-error "APPLICATION_NAME"))
            (log-directory (truename (merge-pathnames application-name #p"/var/log/"))))
+      ;; FIXME how do we abstract this out of here
+      (configure-test-handlers profile)
       (configure-handlers application-root)
       (setf **acceptor**
             (start (make-instance 'easy-acceptor
@@ -55,22 +59,19 @@
   (when (not (hunchentoot::acceptor-shutdown-p **acceptor**))
     (stop **acceptor**)))
 
-
-
-;; FIXME put this somewhere else...
-(when (string= (config:get-config "PROFILE") "DEV")
-  (defun test-handler ()
-    (who:with-html-output (*standard-output* nil :prologue t :indent nil)
-      (:html
-       (:body
-        (:div "hello world")))))
-  (defun always-success-handler ()
-    nil)
-  (defun always-error-handler ()
-    (setf (hunchentoot:return-code*) 400)
-    nil)
-  (push (create-regex-dispatcher "^/test$" 'test-handler) *dispatch-table*)
-  (push (create-regex-dispatcher "^/success$" 'always-success-handler) *dispatch-table*)
-  (push (create-regex-dispatcher "^/error$" 'always-error-handler) *dispatch-table*)
-  )
-
+;; FIXME put this somewhere else?...
+(defun configure-test-handlers (profile)
+  (when (string= profile "DEV")
+    (defun test-handler ()
+      (who:with-html-output (*standard-output* nil :prologue t :indent nil)
+        (:html
+         (:body
+          (:div "hello world")))))
+    (defun always-success-handler ()
+      nil)
+    (defun always-error-handler ()
+      (setf (hunchentoot:return-code*) 400)
+      nil)
+    (push (create-regex-dispatcher "^/test$" 'test-handler) *dispatch-table*)
+    (push (create-regex-dispatcher "^/success$" 'always-success-handler) *dispatch-table*)
+    (push (create-regex-dispatcher "^/error$" 'always-error-handler) *dispatch-table*)))
