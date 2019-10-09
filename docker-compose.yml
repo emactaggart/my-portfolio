@@ -18,5 +18,3 @@ services:
     volumes:
       - ~/prod.taggrc:/root/.taggrc:ro
       - /var/log/my-portfolio:/var/log/my-portfolio
-    # stdin_open: true
-    tty: true

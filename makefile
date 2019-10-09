@@ -36,25 +36,19 @@ dockerhub-publish: docker-test-clean-build
 	docker push emactaggart/my-portfolio:latest
 
 # Does a full deploy to our hosting server # Does this even blong in a make file?
-full-deploy: dockerhub-publish
-	scp ~/prod.taggrc tagg:~/prod.taggrc \
-	&& scp ./nginx.conf tagg:~/nginx.conf \
-	&& scp docker-compose.yml tagg:~/docker-compose.yml \
-	&& docker-compose pull \
-	&& docker-compose up -d
+full-deploy: dockerhub-publish _my-portfolio-configs _nginx-configs
+	ssh tagg "docker-compose pull" \
+	&& ssh tagg "docker-compose up -d --force-recreate"
 
 # Does an nginx deploy on our hosting server
-nginx-deploy:
-	scp ./nginx.conf tagg:~/nginx.conf \
-	&& docker-compose pull nginx \
-	&& docker-compose up -d nginx
+nginx-deploy: _nginx-configs
+	ssh tagg "docker-compose pull nginx" \
+	&& ssh tagg "docker-compose up -d --force-recreate nginx"
 
 # Does an webapp deploy on our webserver
-my-portfolio-deploy: docker-test-clean-build
-	scp ~/prod.taggrc tagg:~/prod.taggrc \
-	&& scp docker-compose.yml tagg:~/docker-compose.yml \
-	&& docker-compose pull my-portfolio \
-	&& docker-compose up -d my-portfolio
+my-portfolio-deploy: dockerhub-publish _my-portfolio-configs
+	ssh tagg "docker-compose pull my-portfolio" \
+	&& ssh tagg "docker-compose up -d --force-recreate my-portfolio"
 
 # TODO
 # run stack locally
@@ -73,7 +67,19 @@ integration-test:
 clean:
 	echo "Not yet implemented"
 
-# Some helpers for building docker images
+## Helpers for preparing the prod server configs
+
+_nginx-configs:
+	ssh tagg 'mv ~/nginx.conf{,.bak}' \
+	&& scp {./,tagg:~/}nginx.conf
+
+_my-portfolio-configs:
+	ssh tagg 'mv ~/prod.taggrc{,.bak}' \
+	&& ssh tagg 'mv ~/docker-compose.yml{,.bak}' \
+	&& scp {~/,tagg:~/}prod.taggrc \
+	&& scp {./,tagg:~/}docker-compose.yml
+
+# Helpers for building docker images
 
 _portfolio-base: _lisp-base
 	docker-compose -f docker-compose.util.yml build my-portfolio-base
