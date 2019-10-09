@@ -316,7 +316,7 @@
                                          :img "/static/logos/spring-logo.png"
                                          :desc "The core of my Java experience exists inside the context of Spring. I have developed RESTful services, cron jobs, web applications with spring.")
                                         (:name "SQL"
-                                         :img "/static/logos/mysql-logo.png"
+                                         :img "/static/logos/mysequel-logo.png"
                                          :desc "Starting in school but carrying forward to professional experience SQL has been a staple in my DB experience. The majority of projects I have been involved with have made use of relational databases.")
                                         (:name "Angular"
                                          :img "/static/logos/angular-logo.png"
