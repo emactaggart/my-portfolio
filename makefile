@@ -30,12 +30,14 @@ docker-build-my-portfolio: docker-test-clean-build
 run-dev:
 	docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --force-recreate my-portfolio
 
-run-dev-full:
+run-dev-full: _update-local-images
 	docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d --force-recreate
 
 # Runs our current local version of our production ready webapp
+# FIXME requires nginx.dev.conf to be used instead
 run-prod:
-	docker-compose up -d --force-recreate my-portfolio
+	docker-compose -f docker-compose.yml -f docker-compose.dev.yml -f docker-compose.certbot.yml up --force-recreate
+#	docker-compose up -d --force-recreate my-portfolio
 
 # Runs a fresh prod build on our local machine
 run-prod-clean-build: docker-build-prod run-prod
@@ -44,20 +46,29 @@ run-prod-clean-build: docker-build-prod run-prod
 dockerhub-publish: docker-test-clean-build
 	docker push emactaggart/my-portfolio:latest
 
+# TODO we need to decide if a certbot deploy is also required
 # Does a full deploy to our hosting server # Does this even blong in a make file?
-full-deploy: dockerhub-publish _my-portfolio-configs _nginx-configs
-	ssh tagg "docker-compose pull" \
+full-deploy: dockerhub-publish _all-configs
+	ssh tagg "docker-compose docker-compose.yml pull" \
 	&& ssh tagg "docker-compose up -d --force-recreate"
-
-# Does an nginx deploy on our hosting server
-nginx-deploy: _nginx-configs
-	ssh tagg "docker-compose pull nginx" \
-	&& ssh tagg "docker-compose up -d --force-recreate nginx"
 
 # Does an webapp deploy on our webserver
 my-portfolio-deploy: dockerhub-publish _my-portfolio-configs
 	ssh tagg "docker-compose pull my-portfolio" \
 	&& ssh tagg "docker-compose up -d --force-recreate my-portfolio"
+
+# Does an nginx deploy on our hosting server
+nginx-deploy: _nginx-configs
+	ssh tagg "docker-compose pull nginx" \
+	&& ssh tagg "docker-compose  up -d --force-recreate nginx"
+
+# FIXME we must be careful with our deploys, as certbot requires updated docker-compose.yml files,
+# which may lead to our deployed application being out of sync with it's compose and config files...
+# ... perhaps prevent certbot from being deployed without a full deploy?
+# Does loads certbot to renew our ssl certs via webroot plugin, requires nginx to serve directories
+certbot-deploy: _all-configs
+	ssh tagg "docker-compose -f docker-compose.yml -f docker-compose.certbot.yml pull nginx certbot" \
+	&& ssh tagg "docker-compose -f docker-compose.yml -f docker-compose.certbot.yml up -d --force-recreate nginx certbot"
 
 # TODO
 # run stack locally
@@ -78,17 +89,29 @@ clean:
 
 ## Helpers for preparing the prod server configs
 
-_nginx-configs:
-	ssh tagg 'mv ~/nginx.conf{,.bak}' \
-	&& scp {./,tagg:~/}nginx.conf
-
 _my-portfolio-configs:
 	ssh tagg 'mv ~/prod.taggrc{,.bak}' \
 	&& ssh tagg 'mv ~/docker-compose.yml{,.bak}' \
 	&& scp {~/,tagg:~/}prod.taggrc \
 	&& scp {./,tagg:~/}docker-compose.yml
 
+_nginx-configs:
+	ssh tagg 'mv ~/nginx.conf{,.bak}' \
+	&& scp {./,tagg:~/}nginx.conf
+
+_all-configs: _my-portfolio-configs _nginx-configs
+	ssh tagg 'mv ~/nginx.certbot.conf{,.bak}' \
+	&& ssh tagg 'mv ~/docker-compose.certbot.yml{,.bak}' \
+	&& scp {./,tagg:~/}nginx.certbot.conf \
+	&& scp {./,tagg:~/}docker-compose.certbot.yml
+
+
 # Helpers for building docker images
+
+# TODO update when dev dockerfiles are cleaned up
+_update-local-images:
+	docker-compose pull nginx
+# docker-compose -f docker-compose.yml -f docker-compose.dev.yml pull
 
 _portfolio-base: _lisp-base
 	docker-compose -f docker-compose.util.yml build my-portfolio-base

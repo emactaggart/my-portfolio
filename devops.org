@@ -4,9 +4,9 @@
   :end:
 
   Special thanks to [[https://github.com/wrightmikea/simple-docker-tangle][wrightmikea]]!
-  This file is an attempt at *Literate Devops*
+  This file is an attempt at *Literate Devops* 
+  ... looks like we scrapped this idea though, perhaps this is where some deployment documentation will go...
 ** Setup
-
 *** Logging Directory Setup
 #+name: logging-dir-setup
 #+begin_src sh :var app_name="" username=""
@@ -34,240 +34,21 @@
 
 *** TODO Docker setup
 *** TODO Docker Compose Setup
-** Project Configuration
-*** .taggrc
-
-#+name: example-taggrc
-#+begin_src txt
-PROFILE=DEV
-MAILGUN_API_KEY=YOUR-MAILGUN-KEY
-APPLICATION_ROOT=~/Downloads/my-portfolio
-APPLICATION_NAME=my-portfolio
-#+end_src
-
-*** Dockerfile
- #+name: generate-dockerfile
- #+BEGIN_SRC dockerfile :tangle Dockerfile
-   FROM daewok/sbcl:alpine
-
-   # COPY ./ /usr/src/app/
-
-   ## TODO Securer install of quicklisp (needs to be updated for alpine (no apt-get))
-   # RUN set -x \
-   #   && apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt \
-   #   && curl "https://beta.quicklisp.org/release-key.txt" > /tmp/quicklisp-release-key.txt \
-   #   && curl "https://beta.quicklisp.org/quicklisp.lisp" > /tmp/quicklisp.lisp \
-   #   && curl "https://beta.quicklisp.org/quicklisp.lisp.asc" > /tmp/quicklisp.lisp.asc \
-   #   && export GNUPGHOME="$(mktemp -d)" \
-   #   && gpg --batch --import /tmp/quicklisp-release-key.txt \
-   #   && gpg --batch --verify /tmp/quicklisp.lisp.asc /tmp/quicklisp.lisp \
-   #   && sync \
-   #   && sleep 2 \
-   #   && rm -rf "$GNUPGHOME" /tmp/quicklisp.lisp.asc \
-   #   && export HOME=/home/lisp \
-   #   && sbcl --no-sysinit --no-userinit --non-interactive \
-   #   --load /tmp/quicklisp.lisp \
-   #   --eval "(quicklisp-quickstart:install)" \
-   #   --eval "(ql::without-prompting (dolist (imp '(:sbcl :ccl :abcl :ecl)) (ql:add-to-init-file imp)))" \
-   #   && rm -rf /tmp/*
-
-   # FIXME remove this for production (but make available in development?)
-   # RUN apk add --no-cache bash
-
-   # FIXME improve security and fingerprinting for quicklisp install...
-   RUN cd /tmp && \
-     wget https://beta.quicklisp.org/quicklisp.lisp && \
-     sbcl --load quicklisp.lisp --quit --eval '(quicklisp-quickstart:install)'
-
-   COPY sbclrc /root/.sbclrc
-   COPY ./ /root/my-portfolio/
-   RUN ln -s /root/my-portfolio/my-portfolio.asd /root/quicklisp/local-projects/
-
-   EXPOSE 8080
-
-   WORKDIR /root
-
-   ENTRYPOINT ["sbcl", "--eval", "(ql:quickload 'my-portfolio)", "--eval", "(control:start-server)"]
-
- #+END_SRC
-
-*** docker-compose.yml
-
- #+name: docker-compose
-  #+begin_src yaml :tangle docker-compose.yml
-   version: '3'
-   services:
-     nginx:
-       image: nginx:alpine
-       container_name: nginx
-       volumes:
-         - ./nginx.conf:/etc/nginx/nginx.conf:ro
-         - /etc/letsencrypt:/etc/letsencrypt:ro
-         - /var/log/nginx:/var/log/nginx
-       ports:
-         - 80:80
-         - 443:443
-     my-portfolio:
-       image: emactaggart/my-portfolio
-       container_name: my-portfolio
-       ports:
-         - 8080:8080
-       volumes:
-         - ~/prod.taggrc:/root/.taggrc:ro
-         - /var/log/my-portfolio:/var/log/my-portfolio
-       # stdin_open: true
-       tty: true
-  #+end_src
- 
-*** nginx.conf
-
- #+name: nginx-configuration
- #+begin_src nginx :tangle nginx.conf
- user nginx;
- worker_processes 1;
-
- events {
-     worker_connections 512;
- }
-
- http {
-     server_tokens off;
-     # include /etc/nginx/mime.types;
-
-     default_type application/octet-stream;
-     log_format main '$remote_addr - $remote_user [$time_local]  $status '
-     '"$request" $body_bytes_sent "$http_referer" '
-     '"$http_user_agent" "$http_x_forwarded_for"';
-     access_log /var/log/nginx/access.log main;
-     error_log /var/log/nginx/error.log;
+*** TODO Local
+**** letsencrypt directories
+***** dhparam generation
+***** self signed certs
+***** trusting certs
+***** /var/lib/letsencrypt/
+***** /var/www/html/
+***** /etc/letsencrypt/
+**** logging directories
+**** my-portfolio config files
 
 
-
-     server {
-         server_name mactagg.art;
-         listen 80;
-         listen 443 ssl;
-
-         ssl_certificate /etc/letsencrypt/live/mactagg.art/fullchain.pem;
-         ssl_certificate_key /etc/letsencrypt/live/mactagg.art/privkey.pem;
-
-         location / {
-             proxy_pass http://my-portfolio:8080;
-             proxy_set_header Host $host;
-             proxy_set_header X-Real_IP $remote_addr;
-             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-         }
-
-         gzip on;
-         gzip_proxied any;
-         gzip_comp_level 3;
-         gzip_types text/css text/javascript text/xml text/plain application/javascript application/x-javascript application/json image/*; 
-
-     }
- }
- #+end_src
-
-#+name: nginx-reload-conf
-#+begin_src sh :var container_name="nginx" :dir /scp:tagg:~
-docker container exec $container_name nginx -s reload 
-#+end_src
-
-*** Letsencrypt
-
-#+name: run-cert-bot
-#+begin_src 
-
-docker-compose -f docker-compose.certbot.yml run -p 80:80 -p 443:443 certbot certonly
-
-#+end_src
-
-#+name: certbot-docker-compose
-#+begin_src yaml :tangle docker-compose.certbot.yml
-version: '3'
-services:
-  certbot:
-    image: certbot/certbot
-    container_name: certbot
-    volumes:
-      - /etc/letsencrypt:/etc/letsencrypt
-      - ./nginx:/etc/nginx
-    ports:
-      - 80:80
-      - 443:443
-#+end_src
-
-
-
-
-** Deployment
-*** Send Configurations To Server
-
-#+name: send-configurations-to-server
-#+begin_src sh :results none
-scp ~/prod.taggrc tagg:~/prod.taggrc
-scp $(pwd)/docker-compose.yml tagg:~/
-scp $(pwd)/nginx.conf tagg:~/
-#+end_src
-
-*** Deploy to server
-    :properties:
-    :header-args+: :dir /ssh:tagg:~
-    :end:
-
-#+name: deploy-webapp
-#+begin_src sh
-docker pull emactaggart/my-portfolio
-docker-compose up -d my-portfolio
-#+end_src
-
-#+name: deploy-all
-#+begin_src sh
-docker-compose up -d
-#+end_src
-
-#+name: fresh-deploy-all
-#+begin_src sh
-docker-compose up -d --force-recreate
-#+end_src
- 
-** Local Deployment
-   :properties:
-   :header-args+: :var app_name="my-portfolio" repo="emactaggart"
-   :end:
-*** Run Local
-# TODO create local docker-compose.yml to run local builds instead of having to push
-#+name docker-compose-local
-#+begin_src sh :session local-deploy
-docker-compose up -d --force-recreate
-#+end_src
-
-*** Docker push
-
-#+name: build-image
-#+begin_src sh
-  docker build -t $repo/$app_name:latest ./
-#+end_src
-
-#+name: push-image
-#+BEGIN_SRC sh
-  docker push $repo/$app_name:latest 
-#+END_SRC
-
-*** docker-compose.dev.yml
-#+begin_src yaml :tangle docker-compose.dev.yml
-  services:
-    portfolio:
-      build: .
-  # add volume for code
-  # add env for profile
-  # add env for the location of configs?
-#+end_src
-
-** Future Improvemens [0/3]
-*** TODO [#A] How do we want to execute main 
-**** Start in bash
-**** Start with sbcl -eval
-**** Create an executable
-*** TODO Cache the quicklisp dependencies 
-    It would be possilble to link a volume for the dev environment?
-    For production we should probably just install everything fresh? Load time is pretty bad though...
+* Footnotes / Tutorials
+** Nginx
+*** [[https://help.dreamhost.com/hc/en-us/articles/222784068-The-most-important-steps-to-take-to-make-an-nginx-server-more-secure][Nginx Security Configuration]]
+*** Rate limiting
+*** [[https://www.digitalocean.com/community/tutorials/how-to-secure-a-containerized-node-js-application-with-nginx-let-s-encrypt-and-docker-compose][Certbot Setup]]
+*** [[http://blog.code4hire.com/2018/06/define-named-volume-with-host-mount-in-the-docker-compose-file/][Regarding Docker->Volumes->Driver->Local->"o: bind"]]

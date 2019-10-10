@@ -1,26 +1,22 @@
 version: '3.7'
 services:
+  my-portfolio:
+    # TODO local docker file for dev
+    # build:
+      # dockerfile: ./Dockerfile.my-portfolio-base
+    # image: emactaggart/my-portfolio:latest
+    # environment:
+      # PROFILE: DEV
+    ports:
+      - 8080:8080
+    volumes:
+      # - ~/prod.taggrc:/root/.taggrc:ro
+      - ~/dev.taggrc:/root/.taggrc:ro
+    stdin_open: true
+    tty: true
   nginx:
-    # image: nginx:alpine
-    # container_name: nginx
     volumes:
       - ./nginx.dev.conf:/etc/nginx/nginx.conf:ro
     #   - /etc/letsencrypt:/etc/letsencrypt:ro
     #   - /var/log/nginx:/var/log/nginx
-    # ports:
-    #   - 80:80
-    #   - 443:443
-  my-portfolio:
-    # image: emactaggart/my-portfolio:latest
-    # container_name: my-portfolio
-    # ports:
-    #   - 8080:8080
-    # environment:
-      # PROFILE: DEV
-    volumes:
-      # - ~/prod.taggrc:/root/.taggrc:ro
-      # - ~/prod.taggrc:/root/.taggrc:ro
-      - ~/dev.taggrc:/root/.taggrc:ro
-      # - /var/log/my-portfolio:/var/log/my-portfolio
-    stdin_open: true
-    tty: true
+
