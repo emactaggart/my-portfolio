@@ -9,7 +9,7 @@ Oh, and it's a personal website now I guess!
 * My-Portfolio
 ** TODO Don't leak server version, both nginx and hunchentoot
    - [ ] hunchentoot version leaking (requires a custom acceptor)
-   - [ ] hunchentoot leaks port 
+   - [ ] hunchentoot leaks ip and port 
 ** DONE Pen test and Security Review
    CLOSED: [2019-10-11 Fri 23:00]
   - [X] [[https://www.google.com/search?ei=3o44XdpO2Na1BpXIsvAH&q=hunchentoot+security+review&oq=hunchentoot+security+review&gs_l=psy-ab.3..33i160.106483.107725..107897...0.0..0.216.930.0j6j1......0....1..gws-wiz.......0i71j33i21.g_mCbXDATCI&ved=0ahUKEwjateyPhM7jAhVYa80KHRWkDH4Q4dUDCAo&uact=5][Security Review]]

@@ -635,11 +635,10 @@
                                                     :class "form-control"
                                                     :style "height: 150px"
                                                     :name "message" :placeholder "Your message."
-                                                    :onkeypress (str (ps ((\ (event)
+                                                    :onkeyup (str (ps ((\ (event)
                                                                              ($$ "#message-count"
                                                                                (text (- (lisp *message-length*)
-                                                                                        (@ event target text-length)
-                                                                                        1))))
+                                                                                        (@ event target text-length)))))
                                                                           event)))
 
                                                     :maxlength *message-length*
