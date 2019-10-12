@@ -20,3 +20,9 @@ services:
     #   - /etc/letsencrypt:/etc/letsencrypt:ro
     #   - /var/log/nginx:/var/log/nginx
 
+  # FIXME compose our main docker-compose.yml file with certbot
+  # FIXME modify certbot to use --staging flag
+  # certbot:
+    # command: certonly --webroot --webroot-path=/var/www/html --email evan.mactaggart@gmail.com --agree-tos --no-eff-email --force-renewal --staging -d mactagg.art -d www.mactagg.art
+
+
