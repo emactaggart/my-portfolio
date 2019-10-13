@@ -7,65 +7,32 @@ Oh, and it's a personal website now I guess!
 #+end_src
 
 * My-Portfolio
-** TODO Don't leak server version, both nginx and hunchentoot
-   - [ ] hunchentoot version leaking (requires a custom acceptor)
-   - [ ] hunchentoot leaks ip and port 
-** DONE Pen test and Security Review
-   CLOSED: [2019-10-11 Fri 23:00]
-  - [X] [[https://www.google.com/search?ei=3o44XdpO2Na1BpXIsvAH&q=hunchentoot+security+review&oq=hunchentoot+security+review&gs_l=psy-ab.3..33i160.106483.107725..107897...0.0..0.216.930.0j6j1......0....1..gws-wiz.......0i71j33i21.g_mCbXDATCI&ved=0ahUKEwjateyPhM7jAhVYa80KHRWkDH4Q4dUDCAo&uact=5][Security Review]]
-  - [X] [[https://zaries.wordpress.com/2010/11/09/lisp-web-server-from-scratch-using-hunchentoot-and-nginx/][Hunchentoot Nginx]]
-  - [X] [[https://zaries.wordpress.com/2010/12/22/hunchentoot-webserver-and-application-security/][Hunchentoot Security]]
-  - [X] metasploit, wmap module
-** TODO Find better Lisp code formatter
-** TODO Html, js, and css minifying
-** TODO Tree shaking
-** DONE Post Deploy Security Review [2/4]
-   CLOSED: [2019-10-11 Fri 22:59]
-   - [X] Certificate & Signature
-   - [X] HTTPS
-** DONE Deployable build script
-   CLOSED: [2019-10-11 Fri 22:56]
-   - [ ] grab vendor dependencies... +or store them in the repo...+ built and stored in docker image
-*** DONE Cleanup control
-    CLOSED: [2019-10-11 Fri 22:56]
-    Is threading necessary? 
-    - [X] Threading
-    - [X] C-c'ing
- #+begin_src common-lisp
- (defun main ()
-   (print "starting server on port 8080")
-
-   ;; this should be in the thread?
-   (start-server)
-   ;; let the webserver run.
-   ;; warning: hardcoded "hunchentoot".
-   (handler-case (bt:join-thread (find-if (lambda (th)
-                                            (search "hunchentoot" (bt:thread-name th)))
-                                          (bt:all-threads)))
-     ;; catch a user's c-c
-     (#+sbcl sb-sys:interactive-interrupt
-      #+ccl  ccl:interrupt-signal-condition
-      #+clisp system::simple-interrupt-condition
-      #+ecl ext:interactive-interrupt
-      #+allegro excl:interrupt-signal
-      () (progn
-           (format *error-output* "aborting.~&")
-           (stop-server)
-           (uiop:quit)))
-     (error (c) (format t "woops, an unknown error occured:~&~a~&" c))))
- #+end_src
-** TODO Unit Testing [1/2]
-   - [X] Setup framework (handled with (asdf:test-system), and docker)
-   - [ ] Unit tests
-** TODO Integration Testing
-   - [ ] create testable *staging* environment, probably with docker containers
-   - [ ] mailgun-client
-   - [ ] End to end integration testing (phantom.js?)
-** TODO Error and other HTTP Status pages
+** TODO [#A] Error and other HTTP Status pages
    - [ ] 404
    - [ ] 50x
    - [ ] 40x
    - [ ] maintenance pages? This might require higher level nginx stuff
+** TODO [#A] Unit Testing [1/2]
+   - [X] Setup framework (handled with (asdf:test-system), and docker)
+   - [ ] Unit tests
+   - [ ] Email Handler Tests
+** TODO [#B] Monitoring
+*** docker
+*** nginx
+*** lisp-app
+*** email notifications
+** TODO [#B] Html, js, and css minifying
+** TODO [#B] dynamically load webfonts? and boostrap?
+** TODO [#B] github release versions? dockerhub release versions?
+** TODO [#C] Loading Spinner
+** TODO [#C] Find better Lisp code formatter
+** TODO [#C] Tree shaking
+** TODO [#C] Integration Testing
+   - [ ] create testable *staging* environment, probably with docker containers
+   - [ ] mailgun-client
+   - [ ] End to end integration testing (phantom.js?)
+** TODO [#C] solidify endpoints, only allow minimum number of request-methods
+*** Do this via [[https://github.com/archimag/restas][Restas]] or [[http://8arrow.org/caveman/][Caveman2]]
 ** TODO Create Web project template Library
 ** TODO Performance Profiling
 ** TODO CI Server (Gitlab)
@@ -77,6 +44,52 @@ Oh, and it's a personal website now I guess!
    - [X] use correct directory for storage
    - [ ] cleanup cronjob?
    - [ ] configure in an automated way
+** TODO Improve handling of application secrets
+   *Avoid creating a development environment nightmare*
+   - [[https://docs.docker.com/engine/swarm/secrets/][Docker Secrets]]
+   - [[https://kubernetes.io/docs/concepts/configuration/secret/][Kubernetes Secrets]]
+   - [[https://www.vaultproject.io/][Vault]]
+** TODO log4cl
+   *Is this necessary?* Perhaps only for learning purposes...
+   Probably an improvement over hunchentoot's mutex stuff
+#+src 
+;; NOTE eventually upgrade to log4cl from hunchentoot's default logging functionality
+(defun log4cl-setup ()
+  (when (string= "PROD" (get-config "PROFILE"))
+    (log4cl:remove-all-appenders log4cl:*root-logger*)
+    ;; TODO standardized logging file location? /var/log/lisp-application.log
+    (log:config :daily "~/lisp-application.log" :backup t)
+    (setf (log4cl:logger-log-level log4cl:*root-logger*) log4cl:+log-level-info+))
+  (when (string= "DEV" (get-config "PROFILE"))
+    ;; TODO figure out how to setup a default log4cl instance...
+    nil))
+    #+end_src
+** TODO Add d3 skill chart
+** TODO Database for images
+** TODO Character count on paste
+** TODO Cleanup devops.org file, maybe even remove it...
+** TODO Cleanup all the docker files as well...
+** TODO spinner on submit message
+** TODO minor config from [[https://gitlab.onnix.io/root/pr0nage/blob/9fa3f5d837cdd00f65e9d2c944b11b7de7e42440/init.lisp][Some Gitlab Repo]]
+*** (setf (html-mode) :html5)?
+*** *html-no-indent-tags
+*** print-object / print-unreadable-obect
+*** contact submit
+*** entire site?
+** TODO [[https://github.com/fail2ban/fail2ban][fail2ban]]
+** TODO [[https://geekflare.com/open-source-web-application-firewall/][Pick a WAF]]
+
+** DONE Travel Section
+   CLOSED: [2019-10-11 Fri 22:55]
+** DONE Certificates
+   CLOSED: [2019-10-11 Fri 22:55]
+*** [[https://itnext.io/using-letsencrypt-ssl-certificates-in-aws-certificate-manager-c2bc3c6ae10][Lets Encrypt & AWS]]
+*** [[https://medium.com/@pentacent/nginx-and-lets-encrypt-with-docker-in-less-than-5-minutes-b4b8a60d3a71][Nginx & Docker]]
+
+** DONE Don't leak server version, both nginx and hunchentoot
+   CLOSED: [2019-10-13 Sun 15:48]
+   - [X] hunchentoot version leaking (requires a custom acceptor)
+   - [X] +hunchentoot leaks ip and port on errors+ (requires error template, see customer 4xx and 5xx pages)
 ** DONE Server Daemon
    CLOSED: [2019-10-11 Fri 22:55]
    *Do we even need this? What is the benefit?*
@@ -106,57 +119,47 @@ Oh, and it's a personal website now I guess!
     (sb-ext:exit))
   (launch-app nil))
 #+END_SRC
-** TODO Improve handling of application secrets
-   *Avoid creating a development environment nightmare*
-   - [[https://docs.docker.com/engine/swarm/secrets/][Docker Secrets]]
-   - [[https://kubernetes.io/docs/concepts/configuration/secret/][Kubernetes Secrets]]
-   - [[https://www.vaultproject.io/][Vault]]
-** TODO log4cl
-   *Is this necessary?* Perhaps only for learning purposes...
-   Probably an improvement over hunchentoot's mutex stuff
-#+src 
-;; NOTE eventually upgrade to log4cl from hunchentoot's default logging functionality
-(defun log4cl-setup ()
-  (when (string= "PROD" (get-config "PROFILE"))
-    (log4cl:remove-all-appenders log4cl:*root-logger*)
-    ;; TODO standardized logging file location? /var/log/lisp-application.log
-    (log:config :daily "~/lisp-application.log" :backup t)
-    (setf (log4cl:logger-log-level log4cl:*root-logger*) log4cl:+log-level-info+))
-  (when (string= "DEV" (get-config "PROFILE"))
-    ;; TODO figure out how to setup a default log4cl instance...
-    nil))
-    #+end_src
-** TODO Add d3 skill chart
-** TODO Database for images
-** DONE Travel Section
-   CLOSED: [2019-10-11 Fri 22:55]
-** DONE Certificates
-   CLOSED: [2019-10-11 Fri 22:55]
-*** [[https://itnext.io/using-letsencrypt-ssl-certificates-in-aws-certificate-manager-c2bc3c6ae10][Lets Encrypt & AWS]]
-*** [[https://medium.com/@pentacent/nginx-and-lets-encrypt-with-docker-in-less-than-5-minutes-b4b8a60d3a71][Nginx & Docker]]
+** DONE Deployable build script
+   CLOSED: [2019-10-11 Fri 22:56]
+   - [ ] grab vendor dependencies... +or store them in the repo...+ built and stored in docker image
+** DONE Cleanup control
+   CLOSED: [2019-10-11 Fri 22:56]
+   Is threading necessary? 
+   - [X] Threading
+   - [X] C-c'ing
+#+begin_src common-lisp
+(defun main ()
+  (print "starting server on port 8080")
 
-* [#A] Priority 
-** Cleanup devops.org file, maybe even remove it...
-** Cleanup all the docker files as well...
-** dynamically load webfonts? and boostrap?
-** character count mobile
-*** and on paste
-** github release versions? dockerhub release versions?
-** spinner on submit message
-** minor config from [[https://gitlab.onnix.io/root/pr0nage/blob/9fa3f5d837cdd00f65e9d2c944b11b7de7e42440/init.lisp][Some Gitlab Repo]]
-*** (setf (html-mode) :html5)?
-*** *html-no-indent-tags
-*** print-object / print-unreadable-obect
-** Loading Spinner
-*** contact submit
-*** entire site?
-** TODO email handler tests
-** solidify endpoints, only allow minimum number of request-methods
-** [[https://github.com/fail2ban/fail2ban][fail2ban]]
-** [[https://geekflare.com/open-source-web-application-firewall/][Pick a WAF]]
-** Monitoring
-*** docker
-*** nginx
-*** lisp-app
-*** email notifications
+  ;; this should be in the thread?
+  (start-server)
+  ;; let the webserver run.
+  ;; warning: hardcoded "hunchentoot".
+  (handler-case (bt:join-thread (find-if (lambda (th)
+                                           (search "hunchentoot" (bt:thread-name th)))
+                                         (bt:all-threads)))
+    ;; catch a user's c-c
+    (#+sbcl sb-sys:interactive-interrupt
+     #+ccl  ccl:interrupt-signal-condition
+     #+clisp system::simple-interrupt-condition
+     #+ecl ext:interactive-interrupt
+     #+allegro excl:interrupt-signal
+     () (progn
+          (format *error-output* "aborting.~&")
+          (stop-server)
+          (uiop:quit)))
+    (error (c) (format t "woops, an unknown error occured:~&~a~&" c))))
+#+end_src
+** DONE Post Deploy Security Review [2/2]
+   CLOSED: [2019-10-11 Fri 22:59]
+   - [X] Certificate & Signature
+   - [X] HTTPS
+** DONE Pen test and Security Review
+   CLOSED: [2019-10-11 Fri 23:00]
+  - [X] [[https://www.google.com/search?ei=3o44XdpO2Na1BpXIsvAH&q=hunchentoot+security+review&oq=hunchentoot+security+review&gs_l=psy-ab.3..33i160.106483.107725..107897...0.0..0.216.930.0j6j1......0....1..gws-wiz.......0i71j33i21.g_mCbXDATCI&ved=0ahUKEwjateyPhM7jAhVYa80KHRWkDH4Q4dUDCAo&uact=5][Security Review]]
+  - [X] [[https://zaries.wordpress.com/2010/11/09/lisp-web-server-from-scratch-using-hunchentoot-and-nginx/][Hunchentoot Nginx]]
+  - [X] [[https://zaries.wordpress.com/2010/12/22/hunchentoot-webserver-and-application-security/][Hunchentoot Security]]
+  - [X] metasploit, wmap module
+** DONE character count mobile
+   CLOSED: [2019-10-13 Sun 15:55]
 

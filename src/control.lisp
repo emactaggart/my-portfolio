@@ -10,6 +10,11 @@
 
 (defvar **acceptor** nil)
 
+(defclass secure-reply (reply)
+  ((headers-out
+    ;; Preventing Hunchentoot server version leak... This could also be done via nginx server
+    :initform '((:server . "Nginx")))))
+
 ;; FIXME should the configuration start here? perhaps pull out into a separate function
 ;; FIXME due to the async the repl now freezes when the app is started
 ;; FIXME killing seems not as simple...
@@ -34,6 +39,7 @@
                                   :port 8080
                                   ;; :document-root #p"/dev/null" ;; TODO eventually create custom error pages
                                   ;; :acceptor-error-template-directory #p"/dev/null"
+                                  :reply-class 'secure-reply
                                   :access-log-destination (merge-pathnames "access.log" log-directory)
                                   :message-log-destination (merge-pathnames "message.log" log-directory))))
       (handler-case (bt:join-thread (find-if (lambda (th)
