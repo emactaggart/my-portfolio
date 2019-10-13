@@ -1,10 +1,11 @@
 (defpackage :mailgun-client
   (:use :cl)
-  (:export :send-to-self))
+  (:export :send-to-self :configure-mail-client))
 
+;; FIXME use a single namespace, this isn't java...
 (in-package :mailgun-client)
 
-(defvar *api-key* (config:get-config "MAILGUN_API_KEY"))
+(defvar *api-key* nil)
 (defvar *domain* "sandbox61d987eb88cd452eace1c7584ca34ec0.mailgun.org")
 (defvar *mailgun-messages-endpoint* (concatenate 'string "https://api.mailgun.net/v3/" *domain* "/messages"))
 
@@ -26,8 +27,7 @@
                     :verbose t)
     (t (e)
       (log-message* :error
-       "Failed to send email with parameters from: ~s to: ~s subject: ~s text: ~s" from to subject message)
-       e )))
+       "Failed to send email with parameters from: ~s to: ~s subject: ~s text: ~s" from to subject message))))
 
 (defun send-to-self (name from message)
   (let ((from (concatenate 'string name " <" from ">"))
@@ -35,3 +35,7 @@
         (subject (concatenate 'string "Inquiry from " name))
         (message message))
     (send-message to from subject message)))
+
+;; TODO do we need a 'setter'? or should api key be store in a better place?
+(defun configure-mail-client (api-key)
+  (setf *api-key* api-key))

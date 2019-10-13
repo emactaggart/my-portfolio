@@ -39,9 +39,7 @@
   :components ((:file "main"))
   :description "Test system for my-portfolio"
   :perform (test-op (op system)
-                    (symbol-call :my-portfolio-tests :run-all-tests-and-fail)
-                    ;; (symbol-call :fiveam :run-all-tests)
-                    ))
+                    (symbol-call :my-portfolio-tests :run-all-tests-and-fail)))
 
 #+sb-core-compression
 (defmethod asdf:perform ((op asdf:image-op) (system asdf:system))

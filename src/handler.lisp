@@ -42,8 +42,9 @@
                         (log-message* :info "Result: ~s" result-no-body))
                     (values-list result))
       (t (c)
-        (log-message* :error "Something blew up when calling: ~a with ~s" fn args)
-        c))))
+        (log-message* :error "Something blew up when calling: ~a with ~s. ~a" fn args c)
+        ;; FIXME handle restart-case correctly TODO learn about restart-cases...
+        (error  c)))))
 
 (defun configure-handlers (application-root)
   (push (create-folder-dispatcher-and-handler "/styles/" (merge-pathnames "static/styles/" application-root)) *dispatch-table*)
@@ -70,21 +71,19 @@
               (,(lambda (name) (< (length name) *message-length*)) (format nil "Message must be less than ~a characters." *message-length*)))))
 
 (defun message-handler ()
-  (flet ((get-or-post-parameter (parameter-name)
-           (or (post-parameter parameter-name) (get-parameter parameter-name) "")))
-    (let* ((name (get-or-post-parameter "name"))
-           (email (get-or-post-parameter "email"))
-           (message (get-or-post-parameter "message"))
-           (error-messages
-             (validate-all `(:name ,name :email ,email :message ,message) *message-handler-validations*)))
-      (if (alexandria:emptyp error-messages)
-          (progn
-            (mailgun-client:send-to-self name email message)
-            (jsown:to-json '(:obj (:message . "good job"))))
-          (progn
-            (log-message* :warn "Bad inputs: " error-messages "~%")
-            (setf (return-code*) 400)
-            (jsown:to-json (alexandria:plist-hash-table error-messages)))))))
+  (let* ((name (post-parameter "name"))
+         (email (post-parameter "email"))
+         (message (post-parameter "message"))
+         (error-messages
+           (validate-all `(:name ,name :email ,email :message ,message) *message-handler-validations*)))
+    (if (alexandria:emptyp error-messages)
+        (progn
+          (mailgun-client:send-to-self name email message)
+          (jsown:to-json '(:obj (:message . "good job"))))
+        (progn
+          (log-message* :warn "Bad inputs: " error-messages "~%")
+          (setf (return-code*) 400)
+          (jsown:to-json (alexandria:plist-hash-table error-messages))))))
 
 (defun validate-all (input-list validation-list)
   (let* ((error-messages (loop for (input-name input-value) on input-list :by #'cddr
