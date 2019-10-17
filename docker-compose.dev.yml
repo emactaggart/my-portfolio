@@ -2,8 +2,9 @@ version: '3.7'
 services:
   my-portfolio:
     # TODO local docker file for dev
-    # build:
-      # dockerfile: ./Dockerfile.my-portfolio-base
+    build:
+      context: .
+      dockerfile: ./Dockerfile.my-portfolio-base
     # image: emactaggart/my-portfolio:latest
     # environment:
       # PROFILE: DEV
@@ -17,12 +18,8 @@ services:
   nginx:
     volumes:
       - ./nginx.dev.conf:/etc/nginx/nginx.conf:ro
-    #   - /etc/letsencrypt:/etc/letsencrypt:ro
-    #   - /var/log/nginx:/var/log/nginx
 
-  # FIXME compose our main docker-compose.yml file with certbot
-  # FIXME modify certbot to use --staging flag
-  # certbot:
-    # command: certonly --webroot --webroot-path=/var/www/html --email evan.mactaggart@gmail.com --agree-tos --no-eff-email --force-renewal --staging -d mactagg.art -d www.mactagg.art
+  certbot:
+    command: certonly --webroot --webroot-path=/var/www/html --email evan.mactaggart@gmail.com --agree-tos --no-eff-email --force-renewal --staging --dry-run -d mactagg.art -d www.mactagg.art
 
 

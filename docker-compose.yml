@@ -7,6 +7,9 @@ services:
     volumes:
       - ~/prod.taggrc:/root/.taggrc:ro
       - /var/log/my-portfolio:/var/log/my-portfolio
+      - webroot:/var/www/html
+      - letsencrypt-var:/var/lib/letsencrypt
+      - ./nginx.certbot.conf:/etc/nginx/nginx.certbot.conf:ro      
     networks:
       - app-network
   nginx:
@@ -24,6 +27,17 @@ services:
       - my-portfolio
     networks:
       - app-network
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - letsencrypt-etc:/etc/letsencrypt
+      - letsencrypt-var:/var/letsencrypt
+      - webroot:/var/www/html
+    depends_on:
+      - nginx
+    # entrypoint: /bin/sh
+    command: certonly --webroot --webroot-path=/var/www/html --email evan.mactaggart@gmail.com --agree-tos --no-eff-email --force-renewal -d mactagg.art -d www.mactagg.art      
 
 volumes:
   letsencrypt-etc:
@@ -31,6 +45,21 @@ volumes:
     driver_opts:
       type: none
       device: /etc/letsencrypt/
+      o: bind
+  # This is required as it is writable to both nginx and certbot
+  letsencrypt-var: 
+    driver: local
+    driver_opts:
+      type: none
+      device: /var/lib/letsencrypt/
+      o: bind
+  # Nginx only needs a webroot when we are using certbot,
+  # this lets us deploy everything fine without docker-compose.certbot.yml
+  webroot:
+    driver: local
+    driver_opts:
+      type: none
+      device: /var/www/html/
       o: bind
 
 networks:

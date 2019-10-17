@@ -14,33 +14,40 @@ test:
 
 # Runs the test against the current local version of the base project docker image
 docker-test:
-	docker-compose -f docker-compose.util.yml up docker-test
+	docker run --rm emactaggart/my-portfolio-base:alpine make test
 
 # Runs the test in against a freshly built version of the project docker image
-docker-test-clean-build: _portfolio-base docker-test
+docker-test-clean-build: _update-local-images _portfolio-base docker-test
 
-# Produces a production ready docker image containing a webserver executable and static files
-docker-build: docker-build-my-portfolio
-
-docker-build-my-portfolio: docker-test-clean-build
-	docker-compose -f docker-compose.util.yml up make-prod-executable \
-	&& 	docker-compose -f docker-compose.util.yml build build-prod
+# First creates an sbcl executable containing our lisp application,
+# Then bundles the executable to produces a production ready docker image
+# containing a webserver executable and static files
+docker-build: docker-test-clean-build
+	docker run --rm \
+	-v ${pwd}/builds:/root/my-portfolio/builds \
+	emactaggart/my-portfolio-base:alpine \
+	make build \
+	&& docker build \
+	-t emactaggart/my-portfolio:latest \
+	-f Dockerfile.prod .
 
 # FIXME shouldn't have to build prod exe... take a look in docker-compose.util.yml
 run-dev:
-	docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --force-recreate my-portfolio
-
-run-dev-full: _update-local-images
-	docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d --force-recreate
+	docker-compose \
+	-f docker-compose.yml \
+	-f docker-compose.dev.yml \
+	up --force-recreate my-portfolio
 
 # Runs our current local version of our production ready webapp
-# FIXME requires nginx.dev.conf to be used instead
-run-prod:
-	docker-compose -f docker-compose.yml -f docker-compose.dev.yml -f docker-compose.certbot.yml up --force-recreate
-#	docker-compose up -d --force-recreate my-portfolio
+# FIXME requires nginx.dev.conf to be used instead, although this is about as close to the prod environment we'll get due to ssl related stuff
+run-prod-local: _update-local-images
+	docker-compose \
+	-f docker-compose.yml \
+	-f docker-compose.dev.yml \
+	up --force-recreate
 
 # Runs a fresh prod build on our local machine
-run-prod-clean-build: docker-build-prod run-prod
+run-prod-clean: docker-build run-prod-local
 
 # Pushes a freshly built and tested webappliction image
 dockerhub-publish: docker-test-clean-build
@@ -67,8 +74,8 @@ nginx-deploy: _nginx-configs
 # ... perhaps prevent certbot from being deployed without a full deploy?
 # Does loads certbot to renew our ssl certs via webroot plugin, requires nginx to serve directories
 certbot-deploy: _all-configs
-	ssh tagg "docker-compose -f docker-compose.yml -f docker-compose.certbot.yml pull nginx certbot" \
-	&& ssh tagg "docker-compose -f docker-compose.yml -f docker-compose.certbot.yml up -d --force-recreate nginx certbot"
+	ssh tagg "docker-compose -f docker-compose.yml pull nginx certbot" \
+	&& ssh tagg "docker-compose -f docker-compose.yml up -d --force-recreate nginx certbot"
 
 # TODO
 # run stack locally
@@ -101,23 +108,23 @@ _nginx-configs:
 
 _all-configs: _my-portfolio-configs _nginx-configs
 	ssh tagg 'mv ~/nginx.certbot.conf{,.bak}' \
-	&& ssh tagg 'mv ~/docker-compose.certbot.yml{,.bak}' \
-	&& scp {./,tagg:~/}nginx.certbot.conf \
-	&& scp {./,tagg:~/}docker-compose.certbot.yml
+	&& scp {./,tagg:~/}nginx.certbot.conf
 
 
 # Helpers for building docker images
 
-# TODO update when dev dockerfiles are cleaned up
 _update-local-images:
-	docker-compose pull nginx
-# docker-compose -f docker-compose.yml -f docker-compose.dev.yml pull
+	docker-compose -f docker-compose.yml -f docker-compose.dev.yml pull
 
 _portfolio-base: _lisp-base
-	docker-compose -f docker-compose.util.yml build my-portfolio-base
+	docker build \
+	-t emactaggart/my-portfolio-base:alpine \
+	-f Dockerfile.my-portfolio-base .
 
 _lisp-base: _sbcl
-	docker-compose -f docker-compose.util.yml build lisp-base
+	docker build \
+	-t emactaggart/lisp-base:alpine \
+	-f Dockerfile.lisp-base .
 
 _sbcl:
 	docker pull daewok/sbcl:alpine
