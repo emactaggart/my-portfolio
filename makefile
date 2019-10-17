@@ -22,7 +22,7 @@ docker-test-clean-build: _update-local-images _portfolio-base docker-test
 # First creates an sbcl executable containing our lisp application,
 # Then bundles the executable to produces a production ready docker image
 # containing a webserver executable and static files
-docker-build: docker-test-clean-build
+docker-build-prod: docker-test-clean-build
 	docker run --rm \
 	-v ${pwd}/builds:/root/my-portfolio/builds \
 	emactaggart/my-portfolio-base:alpine \
@@ -47,7 +47,7 @@ run-prod-local: _update-local-images
 	up --force-recreate
 
 # Runs a fresh prod build on our local machine
-run-prod-clean: docker-build run-prod-local
+run-prod-clean: docker-build-prod run-prod-local
 
 # Pushes a freshly built and tested webappliction image
 dockerhub-publish: docker-test-clean-build

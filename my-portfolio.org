@@ -7,10 +7,6 @@ Oh, and it's a personal website now I guess!
 #+end_src
 
 * My-Portfolio
-** TODO [#A] Unit Testing [1/2]
-   - [X] Setup framework (handled with (asdf:test-system), and docker)
-   - [ ] Unit tests
-   - [ ] Email Handler Tests
 ** TODO [#A] More travel photos
 ** TODO [#B] Monitoring
 *** docker
@@ -32,11 +28,11 @@ Oh, and it's a personal website now I guess!
 ** TODO Create Web project template Library
 ** TODO Performance Profiling
 ** TODO CI Server (Gitlab)
-** TODO index.txt and robots.txt and sitemaps
+** TODO [1/3] index.txt and robots.txt and sitemaps
    - [X] robots.txt
    - [ ] html <meta> robots directive
    - [ ] http response headers x-robots-tag
-** TODO Handler logging file size growth
+** TODO [1/3] Handler logging file size growth
    - [X] use correct directory for storage
    - [ ] cleanup cronjob?
    - [ ] configure in an automated way
@@ -45,6 +41,7 @@ Oh, and it's a personal website now I guess!
    - [[https://docs.docker.com/engine/swarm/secrets/][Docker Secrets]]
    - [[https://kubernetes.io/docs/concepts/configuration/secret/][Kubernetes Secrets]]
    - [[https://www.vaultproject.io/][Vault]]
+*** At least create standard env files
 ** TODO log4cl
    *Is this necessary?* Perhaps only for learning purposes...
    Probably an improvement over hunchentoot's mutex stuff
@@ -63,7 +60,6 @@ Oh, and it's a personal website now I guess!
 ** TODO Add d3 skill chart
 ** TODO Database for images
 ** TODO Cleanup devops.org file, maybe even remove it...
-** TODO Cleanup all the docker files as well...
 ** TODO spinner on submit message
 ** TODO minor config from [[https://gitlab.onnix.io/root/pr0nage/blob/9fa3f5d837cdd00f65e9d2c944b11b7de7e42440/init.lisp][Some Gitlab Repo]]
 *** (setf (html-mode) :html5)?
@@ -78,6 +74,13 @@ Oh, and it's a personal website now I guess!
    - [ ] 4xx
    - [ ] maintenance pages? This might require higher level nginx stuff
      These would be backup, always available to nginx despite the portfolio webapp being unavailable (perhaps use docker volume magic with static files?)
+** DONE Unit Testing [3/3]
+   CLOSED: [2019-10-17 Thu 14:22]
+   - [X] Setup framework (handled with (asdf:test-system), and docker)
+   - [X] Unit tests
+   - [X] Email Handler Tests
+** DONE Cleanup all the docker files as well...
+   CLOSED: [2019-10-16 Wed 23:15]
 ** DONE Error and other HTTP Status pages
    CLOSED: [2019-10-16 Wed 21:59]
    - [X] 404

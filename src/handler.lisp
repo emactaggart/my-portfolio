@@ -1,6 +1,7 @@
 (defpackage :handler
   (:use :cl :hunchentoot :parenscript :cl-who)
-  (:export :configure-handlers :http-code-handler))
+  (:export :configure-handlers :http-code-handler)
+  (:import-from :alexandria :emptyp :plist-hash-table))
 
 (in-package :handler)
 
@@ -63,12 +64,12 @@
 
 (defparameter *message-handler-validations*
   `(:name ((,(lambda (name) (> (length name) 0)) "Please enter a name")
-           (,(lambda (name) (< (length name) *name-length*)) (format nil "Name must be less than ~a characters." *name-length*)))
+           (,(lambda (name) (< (length name) *name-length*)) ,(format nil "Name must be less than ~a characters." *name-length*)))
     :email ((,(lambda (email) (and (< (length email) 1024)
                                    (email-address-p email)))
              "Invalid email address."))
     :message ((,(lambda (name) (> (length name) 0)) "Please enter a message.")
-              (,(lambda (name) (< (length name) *message-length*)) (format nil "Message must be less than ~a characters." *message-length*)))))
+              (,(lambda (name) (< (length name) *message-length*)) ,(format nil "Message must be less than ~a characters." *message-length*)))))
 
 (defun message-handler ()
   (let* ((name (post-parameter "name"))
@@ -76,14 +77,14 @@
          (message (post-parameter "message"))
          (error-messages
            (validate-all `(:name ,name :email ,email :message ,message) *message-handler-validations*)))
-    (if (alexandria:emptyp error-messages)
+    (if (emptyp error-messages)
         (progn
           (mailgun-client:send-to-self name email message)
           (jsown:to-json '(:obj (:message . "good job"))))
         (progn
           (log-message* :warn "Bad inputs: " error-messages "~%")
           (setf (return-code*) 400)
-          (jsown:to-json (alexandria:plist-hash-table error-messages))))))
+          (jsown:to-json (plist-hash-table error-messages))))))
 
 (defun validate-all (input-list validation-list)
   (let* ((error-messages (loop for (input-name input-value) on input-list :by #'cddr
