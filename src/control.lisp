@@ -3,12 +3,23 @@
   (:export :main
            :start-server
            :stop-server)
-  (:import-from :handler :configure-handlers)
+  (:import-from :handler :configure-handlers :http-code-handler)
   (:import-from :mailgun-client :configure-mail-client))
 
 (in-package control)
 
-(defvar **acceptor** nil)
+;; Defining our own acceptor to override the http-code error handling
+(defclass portfolio-acceptor (easy-acceptor) ())
+
+;; TODO dispatch on a range of status codes (and (>= 400 n) (< 500 n)) hunchentoot:acceptor-dispatch-request hunchentoot:handle-request
+;; or use static files as opposted to custom dynamic handlers
+(defmethod hunchentoot:acceptor-status-message
+    ((acceptor portfolio-acceptor) (http-status-code (eql 404)) &key)
+  (http-code-handler 404 "Not found."))
+
+(defmethod hunchentoot:acceptor-status-message
+    ((acceptor portfolio-acceptor) (http-status-code (eql 500)) &key)
+  (http-code-handler 500 "Something appears to have exploded..."))
 
 (defclass secure-reply (reply)
   ((headers-out
@@ -22,7 +33,6 @@
   (let ((config-file (truename #p"~/.taggrc")))
     (load-configs config-file)
 
-    ;; FIXME is this the default logging directory we're after? perhaps we can specify ourselves?
     (let* ((profile (get-config "PROFILE"))
            (application-root (truename (get-config-or-error "APPLICATION_ROOT")))
            (application-name (get-config-or-error "APPLICATION_NAME"))
@@ -34,14 +44,11 @@
       (configure-test-handlers profile)
       (configure-handlers application-root)
       (configure-mail-client api-key)
-      (setf **acceptor**
-            (start (make-instance 'easy-acceptor
-                                  :port 8080
-                                  ;; :document-root #p"/dev/null" ;; TODO eventually create custom error pages
-                                  ;; :acceptor-error-template-directory #p"/dev/null"
-                                  :reply-class 'secure-reply
-                                  :access-log-destination (merge-pathnames "access.log" log-directory)
-                                  :message-log-destination (merge-pathnames "message.log" log-directory))))
+      (start (make-instance 'portfolio-acceptor
+                            :port 8080
+                            :reply-class 'secure-reply
+                            :access-log-destination (merge-pathnames "access.log" log-directory)
+                            :message-log-destination (merge-pathnames "message.log" log-directory)))
       (handler-case (bt:join-thread (find-if (lambda (th)
                                                (search "hunchentoot" (bt:thread-name th)))
                                              (bt:all-threads)))
@@ -53,15 +60,14 @@
         (error (c) (format t "Woops, an unknown error occured:~&~a~&" c))))))
 
 (defun stop-server ()
-  (when (not (hunchentoot::acceptor-shutdown-p **acceptor**))
-    (stop **acceptor**)))
+  (when (not (acceptor-shutdown-p *acceptor*))
+    (stop *acceptor*)))
 
 ;; FIXME put this somewhere else?...
 (defun configure-test-handlers (profile)
   (when (string= profile "DEV")
     (defun test-handler ()
-      ;; TODO wrap this on every request, or create our own *reply* object?
-      (setf (header-out "Server") "Ngninx")
+      (error "wow")
       (who:with-html-output (*standard-output* nil :prologue t :indent nil)
         (:html
          (:body

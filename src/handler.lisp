@@ -1,6 +1,6 @@
 (defpackage :handler
   (:use :cl :hunchentoot :parenscript :cl-who)
-  (:export :configure-handlers))
+  (:export :configure-handlers :http-code-handler))
 
 (in-package :handler)
 
@@ -110,6 +110,49 @@
 
 ;; HANDLERS
 
+(defmacro http-code-template ((&key title) &body body)
+  `(with-html-output-to-string (*standard-output* nil :prologue t :indent nil)
+     (:html
+      (:head
+       (:meta :charset "utf-8")
+       (:meta :name "viewport" :content "width=device-width, initial-scale=1, shrink-to-fit=no")
+       (:link :rel "stylesheet"
+              :href "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+              :integrity "sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+              :crossorigin "anonymous")
+
+       (:link :rel "stylesheet" :href "/styles/fontawesome-all.css")
+       ;; Cheers Conrad! http://www.lisperati.com/logo.html
+       (:link :rel "icon" :type "image/png" :href "favicon.ico")
+       (:link :rel "stylesheet" :type "text/css" :href "/styles/main.css")
+       (:title (str ,title)))
+      (:body :class "container-fluid w-100 p-0"
+             ,@body))))
+
+
+(defun http-code-handler (http-code message)
+  (http-code-template (:title http-code)
+    (with-html-output (*standard-output*)
+      (:div :class "d-flex flex-column" :style "height: 100vh;"
+            (:div :class "nav-container"
+                  (:nav :class "navbar navbar-expand-sm navbar-dark"
+                        (:a :class "navbar-brand" :href "/#home" "Evan MacTaggart" )))
+
+            (:div :class "flex-grow-1"
+                  (:div :class "h-100 d-flex justify-content-center align-items-center text-center"
+                        (:h1 (str message))))
+
+            (:footer :class "footer py-5 position-relative"
+                     (:div :class "d-flex flex-row justify-content-center py-3"
+                           (:a :class "p-2" :href "https://github.com/emactaggart"
+                               (:i :class "fab fa-3x fa-github-square p-2"))
+                           (:a :class "p-2" :href "https://www.linkedin.com/in/evan-mactaggart-1a7826122"
+                               (:i :class "fab fa-3x fa-linkedin p-2")))
+
+                     (:div :class "d-flex flex-row justify-content-center py-3"
+                           (:small :style "color: var(--grey-400)" "EVAN MACTAGGART"
+                                   (:span :style "color: var(--accent-1)" " 2019"))))))))
+
 (defmacro page-template ((&key title) &body body)
   `(with-html-output-to-string (*standard-output* nil :prologue t :indent nil)
      (:html
@@ -126,7 +169,7 @@
        (:link :rel "icon" :type "image/png" :href "favicon.ico")
 
        (:link :rel "stylesheet" :type "text/css" :href "/styles/main.css")
-       (:title ,@title)
+       (:title (str ,title))
        (:script :src "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js")
 
        (:script :type "text/javascript"
@@ -634,7 +677,7 @@
                                                     :class "form-control"
                                                     :style "height: 150px"
                                                     :name "message" :placeholder "Your message."
-                                                    :onkeyup (str (ps ((\ (event)
+                                                    :oninput (str (ps ((\ (event)
                                                                              ($$ "#message-count"
                                                                                (text (- (lisp *message-length*)
                                                                                         (@ event target text-length)))))
