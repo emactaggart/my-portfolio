@@ -14,15 +14,6 @@ Oh, and it's a personal website now I guess!
 ** TODO [#A] More travel photos
    - [ ] find the original dnf/yum flags used to configure image-magick 
    - [ ] build image-magick from source with heif support (./configure --with-heic=yes)
-** DONE Update nginx.conf to block more pesky hackers
-   CLOSED: [2019-10-18 Fri 13:30]
-   - [X] add ignore to every server block
-   - [X] pull conf into it's own file, and the link everything up with docker, also keep track on server
-** TODO [#B] Cleanup project configuration build directories
-   - [ ] directories (build, configs)
-   - [ ] docker-compose reference cleanup
-   - [ ] nginx conf reference cleanup
-   - [ ] makefile reference cleanup
 ** TODO [#B] Monitoring
 *** docker
 *** nginx
@@ -31,6 +22,7 @@ Oh, and it's a personal website now I guess!
 ** TODO [#B] Html, js, and css minifying
 ** TODO [#B] dynamically load webfonts? and boostrap?
 ** TODO [#B] github release versions? dockerhub release versions?
+** TODO [#B] Backup and rollbacks
 ** TODO [#C] Loading Spinner
 ** TODO [#C] Find better Lisp code formatter
 ** TODO [#C] Tree shaking
@@ -93,6 +85,16 @@ Oh, and it's a personal website now I guess!
    - [ ] 4xx
    - [ ] maintenance pages? This might require higher level nginx stuff
      These would be backup, always available to nginx despite the portfolio webapp being unavailable (perhaps use docker volume magic with static files?)
+** DONE Update nginx.conf to block more pesky hackers
+   CLOSED: [2019-10-18 Fri 13:30]
+   - [X] add ignore to every server block
+   - [X] pull conf into it's own file, and the link everything up with docker, also keep track on server
+** DONE Cleanup project configuration build directories
+   CLOSED: [2019-10-18 Fri 15:07]
+   - [X] directories (build, configs)
+   - [X] docker-compose reference cleanup
+   - [X] nginx conf reference cleanup
+   - [X] makefile reference cleanup
 ** DONE Unit Testing [3/3]
    CLOSED: [2019-10-17 Thu 14:22]
    - [X] Setup framework (handled with (asdf:test-system), and docker)

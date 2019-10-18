@@ -56,7 +56,7 @@ dockerhub-publish: docker-test-clean-build
 # TODO we need to decide if a certbot deploy is also required
 # Does a full deploy to our hosting server # Does this even blong in a make file?
 full-deploy: dockerhub-publish _all-configs
-	ssh tagg "docker-compose docker-compose.yml pull" \
+	ssh tagg "docker-compose pull" \
 	&& ssh tagg "docker-compose up -d --force-recreate"
 
 # Does an webapp deploy on our webserver
@@ -67,7 +67,7 @@ my-portfolio-deploy: dockerhub-publish _my-portfolio-configs
 # Does an nginx deploy on our hosting server
 nginx-deploy: _nginx-configs
 	ssh tagg "docker-compose pull nginx" \
-	&& ssh tagg "docker-compose  up -d --force-recreate nginx"
+	&& ssh tagg "docker-compose up -d --force-recreate nginx"
 
 # FIXME we must be careful with our deploys, as certbot requires updated docker-compose.yml files,
 # which may lead to our deployed application being out of sync with it's compose and config files...
@@ -110,7 +110,7 @@ _my-portfolio-configs: _docker-compose-configs
 _nginx-configs: _docker-compose-configs
 	ssh tagg 'mv ~/configs/nginx.conf{,.bak}'
 	scp {./,tagg:~/}configs/nginx.conf
-	ssh tagg 'mv ~/configs/nginx-snippets{,.bak}'
+	ssh tagg 'rm -r ~/configs/nginx-snippets.bak && mv ~/configs/nginx-snippets{,.bak}'
 	scp -r {./,tagg:~/}configs/nginx-snippets
 
 _docker-compose-configs:
