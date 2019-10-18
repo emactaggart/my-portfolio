@@ -8,4 +8,4 @@
 .#*
 /access.log
 /message.log
-my-portfolio.exe
+/dist/*

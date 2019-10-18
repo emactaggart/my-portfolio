@@ -24,12 +24,12 @@ docker-test-clean-build: _update-local-images _portfolio-base docker-test
 # containing a webserver executable and static files
 docker-build-prod: docker-test-clean-build
 	docker run --rm \
-	-v ${pwd}/builds:/root/my-portfolio/builds \
+	-v ${PWD}/dist:/root/my-portfolio/dist \
 	emactaggart/my-portfolio-base:alpine \
 	make build \
 	&& docker build \
 	-t emactaggart/my-portfolio:latest \
-	-f Dockerfile.prod .
+	-f ./build/Dockerfile.prod .
 
 # FIXME shouldn't have to build prod exe... take a look in docker-compose.util.yml
 run-dev:
@@ -125,12 +125,12 @@ _update-local-images:
 _portfolio-base: _lisp-base
 	docker build \
 	-t emactaggart/my-portfolio-base:alpine \
-	-f Dockerfile.my-portfolio-base .
+	-f ./build/Dockerfile.my-portfolio-base .
 
 _lisp-base: _sbcl
 	docker build \
 	-t emactaggart/lisp-base:alpine \
-	-f Dockerfile.lisp-base .
+	-f ./build/Dockerfile.lisp-base .
 
 _sbcl:
 	docker pull daewok/sbcl:alpine

@@ -3,7 +3,7 @@
   :author ""
   :license ""
   :build-operation "program-op"
-  :build-pathname "builds/my-portfolio.exe"
+  :build-pathname "dist/my-portfolio.exe"
   :entry-point "control:start-server"
   :depends-on ("alexandria"
                "bordeaux-threads"

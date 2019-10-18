@@ -4,7 +4,7 @@ services:
     # TODO local docker file for dev
     build:
       context: .
-      dockerfile: ./Dockerfile.my-portfolio-base
+      dockerfile: ./build/Dockerfile.my-portfolio-base
     # image: emactaggart/my-portfolio:latest
     # environment:
       # PROFILE: DEV
