@@ -7,9 +7,6 @@ services:
     volumes:
       - ~/prod.taggrc:/root/.taggrc:ro
       - /var/log/my-portfolio:/var/log/my-portfolio
-      - webroot:/var/www/html
-      - letsencrypt-var:/var/lib/letsencrypt
-      - ./nginx.certbot.conf:/etc/nginx/nginx.certbot.conf:ro      
     networks:
       - app-network
   nginx:
@@ -21,8 +18,11 @@ services:
       - 443:443
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx.certbot.conf:/etc/nginx/nginx.certbot.conf:ro
       - /var/log/nginx:/var/log/nginx
       - letsencrypt-etc:/etc/letsencrypt:ro
+      - letsencrypt-var:/var/lib/letsencrypt
+      - webroot:/var/www/html
     depends_on:
       - my-portfolio
     networks:
@@ -53,8 +53,7 @@ volumes:
       type: none
       device: /var/lib/letsencrypt/
       o: bind
-  # Nginx only needs a webroot when we are using certbot,
-  # this lets us deploy everything fine without docker-compose.certbot.yml
+  # Certbot webroot is served through nginx
   webroot:
     driver: local
     driver_opts:
