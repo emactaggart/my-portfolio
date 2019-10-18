@@ -17,7 +17,7 @@ services:
     tty: true
   nginx:
     volumes:
-      - ./nginx.dev.conf:/etc/nginx/nginx.conf:ro
+      - ./configs/nginx.dev.conf:/etc/nginx/nginx.conf:ro
 
   certbot:
     command: certonly --webroot --webroot-path=/var/www/html --email evan.mactaggart@gmail.com --agree-tos --no-eff-email --force-renewal --staging --dry-run -d mactagg.art -d www.mactagg.art

@@ -96,26 +96,26 @@ clean:
 
 ## Helpers for preparing the prod server configs
 
+# XXX Food For Thought - would it be possible to encapsulate configs in a docker container?
+# then just share volumes between the config-container
 # TODO create scripts for this non-sense
 # TODO maybe we should actually learn how to use make?
 # FIXME our bak files are not very safe from multiple deploys, and will wipe our actual backups... (that's what git is for?)
 _all-configs: _my-portfolio-configs _nginx-configs
-	ssh tagg 'mv ~/nginx.certbot.conf{,.bak}' \
-	&& scp {./,tagg:~/}nginx.certbot.conf
 
 _my-portfolio-configs: _docker-compose-configs
-	ssh tagg 'mv ~/prod.taggrc{,.bak}' \
-	&& scp {~/,tagg:~/}prod.taggrc
+	ssh tagg 'mv ~/prod.taggrc{,.bak}'
+	scp {~/,tagg:~/}prod.taggrc
 
 _nginx-configs: _docker-compose-configs
-	ssh tagg 'mv ~/nginx.conf{,.bak}' \
-	&& ssh tagg 'mv ~/nginx.drop.conf{,.bak}' \
-	&& scp {./,tagg:~/}nginx.conf \
-	&& scp {./,tagg:~/}nginx.drop.conf
+	ssh tagg 'mv ~/configs/nginx.conf{,.bak}'
+	scp {./,tagg:~/}configs/nginx.conf
+	ssh tagg 'mv ~/configs/nginx-snippets{,.bak}'
+	scp -r {./,tagg:~/}configs/nginx-snippets
 
 _docker-compose-configs:
-	ssh tagg 'mv ~/docker-compose.yml{,.bak}' \
-	&& scp {./,tagg:~/}docker-compose.yml
+	ssh tagg 'mv ~/docker-compose.yml{,.bak}'
+	scp {./,tagg:~/}docker-compose.yml
 
 # Helpers for building docker images
 
