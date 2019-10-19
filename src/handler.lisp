@@ -276,7 +276,7 @@
                                                  ($$ "#van"
                                                    (collapse "hide")))))))
                             ($$ ".nav-link" (click (\ ()
-                                                     ($$ ".navbar-collapse" (collapse "hide")))))))))
+                                                      ($$ ".navbar-collapse" (collapse "hide")))))))))
 
       (:section
        :id "home" :class "home d-flex flex-row"
@@ -296,11 +296,11 @@
               "A backpacker and programmer.")
 
              (:a :class "garbage-btn btn btn-primary btn-lg m-3 px-3 text-light"
-                      :href "#about"
-                      (:div :class "align-middle"
-                            (:span :class "align-middle" :style "height: 100%;" "See more" )
-                            (:i :class "fa fa-arrow-circle-right rotate-90-animation ml-2 align-middle"))
-                      )))
+                 :href "#about"
+                 (:div :class "align-middle"
+                       (:span :class "align-middle" :style "height: 100%;" "See more" )
+                       (:i :class "fa fa-arrow-circle-right rotate-90-animation ml-2 align-middle"))
+                 )))
 
       (:section :id "about" :class "about py-5"
                 (:div :class "container text-center"
@@ -654,7 +654,7 @@
                        (:span :class "carousel-control-next-icon" :aria-hidden "true")
                        (:span :class "sr-only" "Next"))
                  (:script :type "text/javascript"
-                 ;; FIXME only handle events picture on focus (add/remove handlers on focus?)
+                          ;; FIXME only handle events picture on focus (add/remove handlers on focus?)
                           (str (ps
                                  ($$ document
                                    (keydown
@@ -662,7 +662,7 @@
                                       (when (eql (@ event key-code) 37)
                                         ($$ "#travel-carousel" (carousel "prev")))
                                       (when (eql (@ event key-code) 39)
-                                        ($$ "#travel-carousel" (carousel "next")))))))))))))))
+                                        ($$ "#travel-carousel" (carousel "next"))))))))))))))
 
       (:section :id "contact" :class "contact py-5 h-100"
 
@@ -698,10 +698,10 @@
                                                     :style "height: 150px"
                                                     :name "message" :placeholder "Your message."
                                                     :oninput (str (ps ((\ (event)
-                                                                             ($$ "#message-count"
-                                                                               (text (- (lisp *message-length*)
-                                                                                        (@ event target text-length)))))
-                                                                          event)))
+                                                                          ($$ "#message-count"
+                                                                            (text (- (lisp *message-length*)
+                                                                                     (@ event target text-length)))))
+                                                                       event)))
 
                                                     :maxlength *message-length*
                                                     :required t
@@ -715,14 +715,14 @@
                                                    (str (ps
                                                           ((\ ()
                                                               ($$ document
-                                                               (ready
-                                                                (\ ()
-                                                                   (let ((message-length ($$ "#message"
-                                                                                           (val) length))))
+                                                                (ready
+                                                                 (\ ()
+                                                                    (let ((message-length ($$ "#message"
+                                                                                            (val) length))))
 
-                                                                   ($$ "#message-count"
-                                                                     (text (- (lisp *message-length*)
-                                                                              message-length)))))))))))))
+                                                                    ($$ "#message-count"
+                                                                      (text (- (lisp *message-length*)
+                                                                               message-length)))))))))))))
 
                                    (:div :id "contact-success" :class "alert alert-success mt-2 d-none"
                                          "Message sent!")
@@ -785,9 +785,7 @@
 
                (:div :class "d-flex flex-row justify-content-center py-3"
                      (:small :style "color: var(--grey-400)" "EVAN MACTAGGART"
-                             (:span :style "color: var(--accent-1)" " 2019"))))
-
-      )))
+                             (:span :style "color: var(--accent-1)" " 2019")))))))
 
 (defun home-canvas-ps ()
   (ps
