@@ -11,9 +11,6 @@ Oh, and it's a personal website now I guess!
    Essentially we don't want to update the compose file on the server but only deploy one service, 
    making the other running services out of date with the current compose... perhaps docker already manages this?
    Always do full deploys?
-** TODO [#A] More travel photos
-   - [ ] find the original dnf/yum flags used to configure image-magick 
-   - [ ] build image-magick from source with heif support (./configure --with-heic=yes)
 ** TODO [#B] Monitoring
 *** docker
 *** nginx
@@ -21,7 +18,12 @@ Oh, and it's a personal website now I guess!
 *** email notifications
 ** TODO [#B] Html, js, and css minifying
 ** TODO [#B] dynamically load webfonts? and boostrap?
-** TODO [#B] github release versions? dockerhub release versions?
+** TODO [#B] [0/2] Versioning
+   - [ ] github release versions
+   - [ ] dockerhub release versions?
+** TODO [#B] Database for images
+** TODO [#B] [0/1] Database Versioning
+   - [ ] integrate into current build system
 ** TODO [#B] Backup and rollbacks
 ** TODO [#C] Loading Spinner
 ** TODO [#C] Find better Lisp code formatter
@@ -69,7 +71,6 @@ Oh, and it's a personal website now I guess!
     nil))
     #+end_src
 ** TODO Add d3 skill chart
-** TODO Database for images
 ** TODO Cleanup devops.org file, maybe even remove it...
 ** TODO spinner on submit message
 ** TODO minor config from [[https://gitlab.onnix.io/root/pr0nage/blob/9fa3f5d837cdd00f65e9d2c944b11b7de7e42440/init.lisp][Some Gitlab Repo]]
@@ -85,6 +86,10 @@ Oh, and it's a personal website now I guess!
    - [ ] 4xx
    - [ ] maintenance pages? This might require higher level nginx stuff
      These would be backup, always available to nginx despite the portfolio webapp being unavailable (perhaps use docker volume magic with static files?)
+** DONE More travel photos
+   CLOSED: [2019-10-18 Fri 18:30]
+   - [X] find the original dnf/yum flags used to configure image-magick 
+   - [X] build image-magick from source with heif support (./configure --with-heic=yes)
 ** DONE Update nginx.conf to block more pesky hackers
    CLOSED: [2019-10-18 Fri 13:30]
    - [X] add ignore to every server block

@@ -564,6 +564,9 @@
                  (:desc "Escaping the concrete jungle."
                   :location "Bangkok, Thailand"
                   :img "/static/travel-photos/bkk-graffiti.jpg")
+                 (:desc "Surrounded by beaches!"
+                  :location "Zen Beach, Koh Phangan, Thailand"
+                  :img "/static/travel-photos/koh-phangan-zen-beach-nicole-evan-selfie.jpg")
                  (:desc "Using Google maps in Laos leads to sweaty sunsets."
                   :location "Pha Ngern Viewpoint 2, Vang Vieng, Laos"
                   :img "/static/travel-photos/vang-vieng-pha-ngern-viewpoint-2.jpg")
@@ -579,9 +582,15 @@
                  (:desc "Do as the locals do and cross the river using the motorbike ferry."
                   :location "Xe Bangfai River Crossing, somewhere between Bualapha and Ban Xoang, Laos"
                   :img "/static/travel-photos/laos-bamboo-raft-river-crossing.jpg")
+                 (:desc "Drunken palm trees with equally drunken tourists."
+                  :location "Lotus Beach Bar, Koh Tao, Thailand"
+                  :img "/static/travel-photos/koh-tao-bent-palm.jpg")
                  (:desc "Lovely views and relaxing vibes."
                   :location "Otres Beach, Cambodia"
                   :img "/static/travel-photos/otres-beach-easy-panda.jpg")
+                 (:desc "Comfort parrots helping my girlfriend relax after her first day in Thai scooter traffic."
+                  :location "Phuket Bird Park, Phuket, Thailand"
+                  :img "/static/travel-photos/phuket-bird-park-team-parots.jpg")
                  (:desc "Picking up a smoking habit while in Thailand."
                   :location "Khao Sok National Park, Thailand"
                   :img "/static/travel-photos/khao-sok-smoking.jpg")
@@ -643,7 +652,17 @@
                  (:div :class "carousel-control-next" :style "cursor: pointer;"
                        :href "#travel-carousel" :role "button" :data-slide "next"
                        (:span :class "carousel-control-next-icon" :aria-hidden "true")
-                       (:span :class "sr-only" "Next")))))))
+                       (:span :class "sr-only" "Next"))
+                 (:script :type "text/javascript"
+                 ;; FIXME only handle events picture on focus (add/remove handlers on focus?)
+                          (str (ps
+                                 ($$ document
+                                   (keydown
+                                    (lambda (event)
+                                      (when (eql (@ event key-code) 37)
+                                        ($$ "#travel-carousel" (carousel "prev")))
+                                      (when (eql (@ event key-code) 39)
+                                        ($$ "#travel-carousel" (carousel "next")))))))))))))))
 
       (:section :id "contact" :class "contact py-5 h-100"
 

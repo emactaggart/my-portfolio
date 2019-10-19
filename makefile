@@ -97,7 +97,7 @@ clean:
 ## Helpers for preparing the prod server configs
 
 # XXX Food For Thought - would it be possible to encapsulate configs in a docker container?
-# then just share volumes between the config-container
+# then just share volumes between the config-container? how do we transfer securely to server?
 # TODO create scripts for this non-sense
 # TODO maybe we should actually learn how to use make?
 # FIXME our bak files are not very safe from multiple deploys, and will wipe our actual backups... (that's what git is for?)
