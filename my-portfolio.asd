@@ -7,7 +7,7 @@
   :entry-point "control:start-server"
   :depends-on ("alexandria"
                "bordeaux-threads"
-               "cl-arrows"
+               "arrow-macros"
                "cl-ppcre"
                "cl-who"
                "dexador"
