@@ -6,7 +6,7 @@ services:
     restart: unless-stopped
     volumes:
       - ~/prod.taggrc:/root/.taggrc:ro
-      - /var/log/my-portfolio:/var/log/my-portfolio
+      - /var/log/my-portfolio:/var/log/my-portfolio:Z
     networks:
       - app-network
   nginx:
