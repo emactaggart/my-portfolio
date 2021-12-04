@@ -1,6 +1,6 @@
-FROM daewok/sbcl:alpine
+FROM daewok/sbcl:2.1.11-alpine3.14
 
-RUN apk --update add make
+# RUN apk --update add make
 
 # TODO build everything personally??
 
@@ -36,8 +36,6 @@ RUN apk --update add make
 #   --eval "(quicklisp-quickstart:install)" \
 #   --eval "(ql::without-prompting (dolist (imp '(:sbcl :ccl :abcl :ecl)) (ql:add-to-init-file imp)))" \
 #   && rm -rf /tmp/*
-
-
 
 
 ## QUICKLISP

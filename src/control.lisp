@@ -36,7 +36,7 @@
     (let* ((profile (get-config "PROFILE"))
            (application-root (truename (get-config-or-error "APPLICATION_ROOT")))
            (application-name (get-config-or-error "APPLICATION_NAME"))
-           (log-directory (truename (merge-pathnames application-name #p"/var/log/")))
+           ;; (log-directory (truename (merge-pathnames application-name #p"/var/log/")))
            (api-key (get-config-or-error "MAILGUN_API_KEY"))
            )
       ;; FIXME how do we abstract this out of here
@@ -47,8 +47,11 @@
       (start (make-instance 'portfolio-acceptor
                             :port 8080
                             :reply-class 'secure-reply
-                            :access-log-destination (merge-pathnames "access.log" log-directory)
-                            :message-log-destination (merge-pathnames "message.log" log-directory)))
+                            ;; :access-log-destination (merge-pathnames "access.log" log-directory)
+                            ;; :message-log-destination (merge-pathnames "message.log" log-directory)
+                            :access-log-destination *standard-output*
+                            :message-log-destination *standard-output*
+                            ))
       (handler-case (bt:join-thread (find-if (lambda (th)
                                                (search "hunchentoot" (bt:thread-name th)))
                                              (bt:all-threads)))

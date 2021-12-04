@@ -1,6 +1,6 @@
 FROM emactaggart/lisp-base:alpine
 
-COPY ./ /root/my-portfolio/
+# COPY ./ /root/my-portfolio/
 RUN ln -s /root/my-portfolio/my-portfolio.asd /root/quicklisp/local-projects/
 
 EXPOSE 8080

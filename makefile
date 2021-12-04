@@ -1,9 +1,14 @@
+build-prod-image: build-webapp-exe
+	docker build . -f build/Dockerfile.prod -t my-portfolio:alpine
+
+
 # Creates an executable with the lisp package management system (ASDF)
-build: test
+build-webapp-exe: test
 	sbcl --no-userinit --no-sysinit --non-interactive \
 			 --load ~/quicklisp/setup.lisp \
 			 --eval "(ql:quickload :my-portfolio)" \
 			 --eval "(asdf:make :my-portfolio)"
+
 
 # Runs unit tests against the current version of our project
 test:
@@ -37,6 +42,10 @@ run-dev:
 	-f docker-compose.yml \
 	-f docker-compose.dev.yml \
 	up --force-recreate my-portfolio
+
+
+run-local:
+	sbcl --eval "(ql:quickload :my-portfolio)"
 
 # Runs our current local version of our production ready webapp
 # FIXME requires nginx.dev.conf to be used instead, although this is about as close to the prod environment we'll get due to ssl related stuff
