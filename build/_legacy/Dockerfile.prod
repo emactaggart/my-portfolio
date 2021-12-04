@@ -1,11 +1,10 @@
+# FROM daewok/sbcl:alpine
 FROM alpine:latest
 
-COPY .prod.taggrc /root/.taggrc
+# RUN apk --update
 RUN mkdir /root/my-portfolio
 COPY ./static /root/my-portfolio/static
 COPY ./dist/my-portfolio.exe /root/my-portfolio.exe
-
-EXPOSE 8080
 
 WORKDIR /root
 
