@@ -17,6 +17,6 @@ docker run \
 
 pwd
 
-docker build . -f build/Dockerfile.prod -t my-portfolio:alpine
+docker build --format docker -f build/Dockerfile.prod -t my-portfolio:alpine .
 
 popd
