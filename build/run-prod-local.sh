@@ -1,8 +1,14 @@
 #!/usr/bin/env bash
 
-pushd ~/Development/my-portfolio
+if [ ! -d "$APPS_MY_PORTFOLIO_ROOT" ]; then
+    echo 'The env var $APPS_MY_PORTFOLIO_ROOT does not appear to be set' && exit 1
+else
+    pushd $APPS_MY_PORTFOLIO_ROOT
+fi
 
-# docker run -p 80:80 --entrypoint sh --interactive --tty my-portfolio:alpine
+# To run locally
+# docker run -p 8080:80 --entrypoint sh --interactive --tty my-portfolio:alpine
+
 docker run -p 80:80 --entrypoint sh --interactive --tty my-portfolio:alpine -c /root/my-portfolio.exe
 
 popd
