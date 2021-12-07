@@ -79,8 +79,14 @@
            (validate-all `(:name ,name :email ,email :message ,message) *message-handler-validations*)))
     (if (emptyp error-messages)
         (progn
-          (mailgun-client:send-to-self name email message)
-          (jsown:to-json '(:obj (:message . "good job"))))
+          ;; TODO fix this when secrets can be properly wired in securely
+          ;; (handler-case
+          ;;     (pron (mailgun-client:send-to-self name email message)
+          ;;           (jsown:to-json '(:obj (:message . "good job"))))
+          ;;   (error ()
+          ;;     (jsown:to-json '(:obj (:message . "ERROR"))))))
+          (log-message* :error "Email: ~s; Name: ~s; Body: ~s" email name message)
+          (jsown:to-json '(:obj (:message . "good job! wow!"))))
         (progn
           (log-message* :warn "Bad inputs: " error-messages "~%")
           (setf (return-code*) 400)
@@ -232,7 +238,6 @@
                                                                                                          (- section-bottom 80)))))
                                                                   (when (and (window-within-section-p)
                                                                              (!= current-section section-hash))
-                                                                    (clog "setting current section" current-section section-hash)
                                                                     (set-urlbar-hash section-hash)
                                                                     (activate-nav-link section-hash)))))))))))))))
       (:body :class "container-fluid w-100 p-0"
@@ -747,6 +752,7 @@
                                          "Sending message was unsuccessful. Feel free to contact me directly at "
                                          (:a :class "alert-link" :href "mailto: evan.mactaggart@gmail.com" "evan.mactaggart@gmail.com"))
 
+                                   ;; TODO add loading spinner
                                    (:button :class "garbage-btn btn btn-primary mt-1 float-right"
                                             :type "submit"
                                             :id "submit"
@@ -780,9 +786,7 @@
                                                                    (\ ()
                                                                       ($$ "#contact-success" (add-class "d-none"))
                                                                       ($$ "#contact-error" (remove-class "d-none"))))))
-                                                         f)))
-                                                   ))))
-                            )))
+                                                         f))))))))))
 
       (:footer :class "footer py-5 position-relative"
 
