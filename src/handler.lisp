@@ -211,8 +211,8 @@
                                        (@@ event (prevent-default))
                                        (smooth-scroll ($. (attr this "href")) t)
                                        (setf (@ window location hash) ($. (attr this "href"))))))
-                   ($$ document (on "scroll"
-                                    ;; FIXME currently there's an issue with setting the url-hashtag too often (every scroll event which there are a lot of, only switch the tag when the section actually changes)
+                   (let ((current-section nil))
+                     ($$ document (on "scroll"
                                     (\ (event)
                                        ($$ "section" (each (\ ()
                                                               (let* ((section-top ($$ this (offset) top))
@@ -221,7 +221,8 @@
                                                                      (section-hash ($$ this (attr "id"))))
                                                                 (flet ((set-urlbar-hash (hash)
                                                                          ;; (setf (@ window location hash) hash)
-                                                                         (@@ history (replace-state nil nil (+ "#" hash))))
+                                                                         (@@ history (replace-state nil nil (+ "#" hash)))
+                                                                         (setf current-section hash))
                                                                        (activate-nav-link (hash)
                                                                          ($$ ".nav-link" (each (\ () ($$ this (remove-class "active")))) )
                                                                          ($$ (+ ".nav-link[href='#" hash "']") (add-class "active")))
@@ -229,9 +230,11 @@
                                                                                                          window-top)
                                                                                                       (< window-top
                                                                                                          (- section-bottom 80)))))
-                                                                  (when (window-within-section-p)
+                                                                  (when (and (window-within-section-p)
+                                                                             (!= current-section section-hash))
+                                                                    (clog "setting current section" current-section section-hash)
                                                                     (set-urlbar-hash section-hash)
-                                                                    (activate-nav-link section-hash))))))))))))))
+                                                                    (activate-nav-link section-hash)))))))))))))))
       (:body :class "container-fluid w-100 p-0"
              ,@body
              (:script :src "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" :integrity "sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" :crossorigin "anonymous")
@@ -343,7 +346,6 @@
 
                       (:div :class "py-3"
                             "I'm a developer comfortable working in a plethora of technologies and environments and not afraid to learn something new. Have a look at some of my skills!")
-
 
                       (let ((professional
                               '(:id "pro"
