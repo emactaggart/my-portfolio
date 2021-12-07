@@ -9,3 +9,5 @@
 /access.log
 /message.log
 /dist/*
+/quicklisp/*
+/.cache/common-lisp/*
