@@ -17,6 +17,6 @@ docker run -i --tty --entrypoint sbcl \
     -v $APPS_MY_PORTFOLIO_ROOT/.cache/common-lisp:/root/.cache/common-lisp:Z \
     -v $APPS_MY_PORTFOLIO_ROOT/quicklisp:/root/quicklisp:Z \
     -v $APPS_MY_PORTFOLIO_ROOT:/root/my-portfolio:Z \
-    dev-base --eval "(ql:quickload :my-portfolio)" --eval "(control:start-server)" --quit
+    dev-base --non-interactive --eval "(ql:quickload :my-portfolio)" --eval "(control:start-server)"
 
 popd
