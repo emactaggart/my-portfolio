@@ -139,7 +139,7 @@
                   (:nav :class "navbar navbar-expand-sm navbar-dark"
                         (:a :class "navbar-brand" :href "/#home" "Evan MacTaggart" )))
 
-            (:div :class "flex-grow-1"
+            (:div :class "flex-grow-1"ub
                   (:div :class "h-100 d-flex justify-content-center align-items-center text-center"
                         (:h1 (str message))))
 
@@ -148,11 +148,15 @@
                            (:a :class "p-2" :href "https://github.com/emactaggart"
                                (:i :class "fab fa-3x fa-github-square p-2"))
                            (:a :class "p-2" :href "https://www.linkedin.com/in/evan-mactaggart-1a7826122"
-                               (:i :class "fab fa-3x fa-linkedin p-2")))
-
+                               (:i :class "fab fa-3x fa-linkedin p-2"))
+                           ;; (:a :class "p-2" :href "https://soundcloud.com/mactagg"
+                           ;;     (:i :class "fab fa-3x fa-soundcloud p-2"))
+                           ;; (:a :class "p-2" :href "https://bandcamp.com/emactaggart"
+                           ;;     (:i :class "fab fa-3x fa-bandcamp p-2"))
+                           )
                      (:div :class "d-flex flex-row justify-content-center py-3"
                            (:small :style "color: var(--grey-400)" "EVAN MACTAGGART"
-                                   (:span :style "color: var(--accent-1)" " 2019"))))))))
+                                   (:span :style "color: var(--accent-1)" " DEC 2021"))))))))
 
 (defmacro page-template ((&key title) &body body)
   `(with-html-output-to-string (*standard-output* nil :prologue t :indent nil)
@@ -208,17 +212,16 @@
                                        (smooth-scroll ($. (attr this "href")) t)
                                        (setf (@ window location hash) ($. (attr this "href"))))))
                    ($$ document (on "scroll"
+                                    ;; FIXME currently there's an issue with setting the url-hashtag too often (every scroll event which there are a lot of, only switch the tag when the section actually changes)
                                     (\ (event)
                                        ($$ "section" (each (\ ()
-
                                                               (let* ((section-top ($$ this (offset) top))
                                                                      (section-bottom (+ section-top ($$ this (height))))
                                                                      (window-top (@@ window page-y-offset))
                                                                      (section-hash ($$ this (attr "id"))))
                                                                 (flet ((set-urlbar-hash (hash)
                                                                          ;; (setf (@ window location hash) hash)
-                                                                         (@@ history (replace-state nil nil (+ "#" hash)))
-                                                                         )
+                                                                         (@@ history (replace-state nil nil (+ "#" hash))))
                                                                        (activate-nav-link (hash)
                                                                          ($$ ".nav-link" (each (\ () ($$ this (remove-class "active")))) )
                                                                          ($$ (+ ".nav-link[href='#" hash "']") (add-class "active")))
@@ -231,7 +234,6 @@
                                                                     (activate-nav-link section-hash))))))))))))))
       (:body :class "container-fluid w-100 p-0"
              ,@body
-
              (:script :src "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" :integrity "sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" :crossorigin "anonymous")
              (:script :src "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" :integrity "sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" :crossorigin "anonymous")))))
 
@@ -299,8 +301,7 @@
                  :href "#about"
                  (:div :class "align-middle"
                        (:span :class "align-middle" :style "height: 100%;" "See more" )
-                       (:i :class "fa fa-arrow-circle-right rotate-90-animation ml-2 align-middle"))
-                 )))
+                       (:i :class "fa fa-arrow-circle-right rotate-90-animation ml-2 align-middle")))))
 
       (:section :id "about" :class "about py-5"
                 (:div :class "container text-center"
@@ -348,7 +349,12 @@
                               '(:id "pro"
                                 :title "Professional"
                                 :desc "The technologies I've used in the majority of my professional experience."
-                                :items (
+                                :items ((:name "Python"
+                                         :img "/static/logos/python-logo.png"
+                                         :desc "Having once stemmed from school and hobbyist netsec projects, my experience with Python has now grown tremendously where I have gotten to play with it in the real world, using it in web development via Django and some scripting and command line applications in my own personal projects.")
+                                        (:name "Google Cloud Platform"
+                                         :img "/static/logos/gcp-logo.png"
+                                         :desc "Recent projects I have worked on have made heavy use of a handful of GCP's services ranging from monitoring, logging, and error reporting, to handling the bulk of application builds, deploys, asynchronous workloads, scheduled tasks, and data storage.")
                                         (:name "Java"
                                          :img "/static/logos/java-logo.png"
                                          :desc "With Java I have developed backend services for various applications as well as some internal business facing GUI applications. A handlful university courses also used Java as a point of focus for OOP.")
@@ -370,30 +376,35 @@
                             (hobbies
                               '(:id "hobbies"
                                 :title "Hobbies"
-                                :desc "Some things I'm currently dabbling in."
+                                :desc "Some things (mostly tech) I'm currently dabbling in."
                                 :items
                                 ((:name "Common Lisp"
                                   :img "/static/logos/lisp-logo.png"
                                   :desc "I built this website using Common Lisp, take a look at github to see it's current state. My experience has been short but enlightening and very enjoyable once climbing over some initial hurdles. I have intentions of continuing my exploration through this humble language.")
-                                 (:name "Statistics"
-                                  :img "/static/logos/panda-stats-logo.png"
-                                  :desc "I'm slowly working working my way through various online tutorials to eventually pursue some foolish endeavours in the area of quantitive analysis. My venture into model generation and machine learning  come somewhere in between. I intend to make use of Python's Pandas and NumPy libraries, as well as JavaScripts D3 for visual representation.")
                                  (:name "Emacs"
                                   :img "/static/logos/emacs-logo.png"
                                   :desc "After succumbing to the dark side I transitioned from Vim to Emacs through Spacemacs, which I'm currently still using as my editor of choice. Emacs was the monumental driver towards learning Lisp like languages.")
                                  (:name "Docker"
                                   :img "/static/logos/docker-logo.png"
-                                  :desc "Docker is a technology I have more recently been diving into for the sake of cleaner devops and work environment purposes."
-                                  ))))
-                            (generic-dev
-                              '(:id "generic"
-                                :title "Generic"
+                                  :desc "My use of Docker is primarily centered around creating build environments and pipelines, but also extends to containerized applications such as this website.")
+                                 (:name "Finance and Investing"
+                                  :img "/static/logos/panda-stats-logo.png"
+                                  :desc "Still in its infancy, my lifelong journey into the stock markets and investing will hopefuly be a prosperous one! Not having a large background in finance prior, I am now beginning to practice some of the basics when it comes to company valuation, recognizing solid company fundamentals, researching and reading financial statements, and bringing my programming knowledge into the land of spreadsheets.")
+                                 (:name "DJing"
+                                  :img "/static/logos/vinyl-logo.png"
+                                  :desc "Feeling the urge to create something other than software music became the first thing that drew my interest. Starting with a friend's mixer I began practicing a little over two years ago and have yet to stop. I now have my own gear to practice on and a decent pair of studio monitors to make some noise, now all that is left is to join up with some friends and work on throwing some shows!"
+                                  )
+                                 (:name "Music Production"
+                                  :img "/static/logos/synth-logo.png"
+                                  :desc "Tying into DJing and live performing, a more meticulous form of creating I'm just beginning to explore is music production. With a knack for learning and a self proclaimed good ear for sound, I plan to drum/synth up some unique musical flavors in the near future."))))
+                            (general-dev
+                              '(:id "general"
+                                :title "General"
                                 :desc "Various technologies I've used both in and out of my professional experience."
                                 :items
                                 ((:name "Linux"
                                   :img "/static/logos/linux-logo.png"
-                                  :desc "Since my introduction to using Linux in early university I have gradually transitioned into using it full time as my go-to OS. At this instant I'm running Fedora but have dabbled in Ubuntu, debian, and CentOS in the past. I have even built my own linux kernel from scratch through various tutorials! I have also dabbled in MacOS, and have a dual boot to Windows for other occasional uses."
-                                  )
+                                  :desc "Since my introduction to using Linux in early university I have gradually transitioned into using it full time as my go-to OS. At this instant I'm running Fedora but have dabbled in Ubuntu, debian, and CentOS in the past. I have even built my own linux kernel from scratch through various tutorials! I have also dabbled in MacOS, and have a dual boot to Windows for other occasional uses.")
                                  (:name "Devops"
                                   :img "/static/logos/devops-logo.png"
                                   :desc "Not being totally new to web development, but being relatively new to hosting my own services, devops is an area of interest of mine. Having plenty of linux experience, and now freshly, an understanding docker, I am digging deeper into the processes involed with devops automation and continuous integration, with which I have made use of in previous work experience.")
@@ -408,7 +419,10 @@
                                   :desc "Starting in my student developer work terms testing has been a strong area of interest. I have professional experience with building tests ranging from unit tests, to integration tests, to automated UI tests with PhantomJS, to building a framework for automated integration tests on ran by the CI server.")
                                  (:name "Security"
                                   :img "/static/logos/google-security-logo.png"
-                                  :desc "I like to think that I'm not as security ignorant as most. However I am not perfect, so I do believe security reviews and security audits are very important."))))
+                                  :desc "I like to think that I'm not as security ignorant as most. However I am not perfect, so I do believe security reviews and security audits are very important.")
+                                 (:name "Amazon Web Services"
+                                  :img "/static/logos/aws-logo.png"
+                                  :desc "Initially this site was hosted on an EC2 instance running as a Docker host, however I had made an attempt at getting a simplified containerized version running AWS's ECS service, however ran into headaches around load balancing target groups not finding the ECS containers. Nonetheless I enjoy the hands-on process of devops and development that AWS provides (but have had greater success and more experience with GCP)."))))
                             (misc
                               '(:id "misc"
                                 :title "Miscellaneous"
@@ -420,9 +434,6 @@
                                  (:name "Clojure"
                                   :img ""
                                   :desc "After having been shown the light of functional programming from Haskell and having a solid understanding of Java and the JVM, I ventured towards into Rich Hickey's child, Clojure / Clojurescript. Clojure being my first Lisp  was a surprisingly smooth introduction to a more dynamic functional programming language.")
-                                 (:name "Python"
-                                  :img ""
-                                  :desc "My Python experience stems primarily from use for various school projects. One for a cryptography/network security course where I implemented a cipher to encrypt/decrypt. I have dabbled in Django and have used various libraries for simple servers and other one-off side projects. I have ambitions of getting into data analysis using Python's vetted data libraries.")
                                  (:name "Vim"
                                   :img ""
                                   :desc "As a young soldier in the editor war I eventually found myself having to choose a side, my initial choice being Vim. My reasoning backing this decision remains forgotten, howver I was fearful of the rumored \"Emac's Pinky\".")
@@ -438,7 +449,6 @@
                                  (:name "PHP"
                                   :img ""
                                   :desc "Although not a personal favorite, with PHP I was lucky enough to have some experience building a tool and web interface to archive VM images ranging from ~40GBs in size.")))))
-
                         (labels ((card (skill)
                                    (htm
                                     (:div
@@ -511,7 +521,7 @@
                                  :class "m-3"
                                  (apply #'accordian-item professional)
                                  (apply #'accordian-item hobbies)
-                                 (apply #'accordian-item generic-dev)
+                                 (apply #'accordian-item general-dev)
                                  (apply #'accordian-item misc)))))))
 
       (:hr)
@@ -532,24 +542,29 @@
                               (:div
                                (:a :class "m-2" :href "https://github.com/emactaggart"
                                    (:i :class "wonk fab fa-8x fa-github"))
-
                                (:a :class "m-2" :href "https://www.linkedin.com/in/evan-mactaggart-1a7826122"
                                    (:i :class "fab fa-8x fa-linkedin"))
-
                                (:a :class "m-2 text-middle"
                                    :href "https://drive.google.com/file/d/1sZk9o56LG1O-f8gmzVKcrvowXqAjBiCU/view"
-                                   (:i :class "fa fa-8x fa-file-pdf")))))
+                                   (:i :class "fa fa-8x fa-file-pdf"))
+                               ;; (:a :class "m-2" :href "https://soundcloud.com/mactagg"
+                               ;;     (:i :class "fab fa-8x fa-soundcloud"))
+                               ;; (:a :class "-2" :href "https://bandcamp.com/emactaggart"
+                               ;;     (:i :class "fab fa-8x fa-bandcamp"))
+                               )))
                        (:div :class "alert alert-warning"
                              (:i :class "fa fa-lg fa-hard-hat")
-                             " My projects are underway, come back in the later to check them out! "
-                             (:i :class "fa fa-lg fa-tools")))
-                      ))
+                             " My projects are underway, come back later to check them out! "
+                             (:i :class "fa fa-lg fa-tools")))))
 
       (:hr)
 
       (:section
        :id "travel"
        :class "travel py-5 text-center"
+       ;; TODO Add snowboarding and other section for canada?
+       ;; TODO lazy load photos
+       ;; TOOD compress photos
 
        (let ((images
                '((:desc "Being half lost makes for some half decent views."
@@ -564,7 +579,7 @@
                  (:desc "Escaping the concrete jungle."
                   :location "Bangkok, Thailand"
                   :img "/static/travel-photos/bkk-graffiti.jpg")
-                 (:desc "Surrounded by beaches!"
+                 (:desc "Surrounded by sand, sunshine, and beaches!"
                   :location "Zen Beach, Koh Phangan, Thailand"
                   :img "/static/travel-photos/koh-phangan-zen-beach-nicole-evan-selfie.jpg")
                  (:desc "Using Google maps in Laos leads to sweaty sunsets."
@@ -579,7 +594,7 @@
                  (:desc "A sunset signalling that you probably find a place to sleep soon."
                   :location "Near Kong Lor Cave on the Thakhek Loop, Laos"
                   :img "/static/travel-photos/thakhek-valley-view-near-konglor-cave.jpg")
-                 (:desc "Do as the locals do and cross the river using the motorbike ferry."
+                 (:desc "Do as the locals do and cross the river using the motorbike \"ferry\"."
                   :location "Xe Bangfai River Crossing, somewhere between Bualapha and Ban Xoang, Laos"
                   :img "/static/travel-photos/laos-bamboo-raft-river-crossing.jpg")
                  (:desc "Drunken palm trees with equally drunken tourists."
@@ -762,12 +777,8 @@
                                                                   (fail
                                                                    (\ ()
                                                                       ($$ "#contact-success" (add-class "d-none"))
-                                                                      ($$ "#contact-error" (remove-class "d-none"))
-                                                                      ))
-                                                                  ))
-
+                                                                      ($$ "#contact-error" (remove-class "d-none"))))))
                                                          f)))
-
                                                    ))))
                             )))
 
@@ -781,11 +792,16 @@
                      (:a :class "p-2" :href "https://github.com/emactaggart"
                          (:i :class "fab fa-3x fa-github-square p-2"))
                      (:a :class "p-2" :href "https://www.linkedin.com/in/evan-mactaggart-1a7826122"
-                         (:i :class "fab fa-3x fa-linkedin p-2")))
+                         (:i :class "fab fa-3x fa-linkedin p-2"))
+                     ;; (:a :class "p-2" :href "https://soundcloud.com/mactagg"
+                     ;;     (:i :class "fab fa-3x fa-soundcloud p-2"))
+                     ;; (:a :class "p-2" :href "https://bandcamp.com/emactaggart"
+                     ;;     (:i :class "fab fa-3x fa-bandcamp p-2"))
+                     )
 
                (:div :class "d-flex flex-row justify-content-center py-3"
                      (:small :style "color: var(--grey-400)" "EVAN MACTAGGART"
-                             (:span :style "color: var(--accent-1)" " 2019")))))))
+                             (:span :style "color: var(--accent-1)" " DEC 2021")))))))
 
 (defun home-canvas-ps ()
   (ps

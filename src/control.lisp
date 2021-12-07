@@ -1,3 +1,4 @@
+
 (defpackage :control
   (:use :cl :hunchentoot :bordeaux-threads :config)
   (:export :main
@@ -30,28 +31,23 @@
 ;; FIXME due to the async the repl now freezes when the app is started
 ;; FIXME killing seems not as simple...
 (defun start-server ()
-  (let ((config-file (truename #p"~/.taggrc")))
+  (let ((config-file (truename #p"/root/.taggrc")))
     (load-configs config-file)
-
     (let* ((profile (get-config "PROFILE"))
            (application-root (truename (get-config-or-error "APPLICATION_ROOT")))
            (application-name (get-config-or-error "APPLICATION_NAME"))
            ;; (log-directory (truename (merge-pathnames application-name #p"/var/log/")))
-           (api-key (get-config-or-error "MAILGUN_API_KEY"))
-           )
+           (api-key (get-config-or-error "MAILGUN_API_KEY")))
       ;; FIXME how do we abstract this out of here
       (configure-hunchentoot profile)
       (configure-test-handlers profile)
       (configure-handlers application-root)
       (configure-mail-client api-key)
       (start (make-instance 'portfolio-acceptor
-                            :port 8080
+                            :port (or (parse-integer (get-config "PORT")) 8080)
                             :reply-class 'secure-reply
-                            ;; :access-log-destination (merge-pathnames "access.log" log-directory)
-                            ;; :message-log-destination (merge-pathnames "message.log" log-directory)
-                            :access-log-destination *standard-output*
-                            :message-log-destination *standard-output*
-                            ))
+                            :access-log-destination *standard-output* ;; We are now logging to stdout where logs are magically gathered by a log aggregator
+                            :message-log-destination *standard-output*))
       (handler-case (bt:join-thread (find-if (lambda (th)
                                                (search "hunchentoot" (bt:thread-name th)))
                                              (bt:all-threads)))
