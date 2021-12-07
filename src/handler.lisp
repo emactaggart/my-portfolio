@@ -821,8 +821,8 @@
       (window.add-event-listener
        "mousemove"
        (\ (event)
-          (setf mouse.x event.x)
-          (setf mouse.y event.y)))
+          (setf mouse.x (+ event.x (@@ window page-x-offset)))
+          (setf mouse.y (+ event.y (@@ window page-y-offset)))))
 
       (defun -circle (x y dx dy radius color)
         (setf this.x x)
@@ -849,17 +849,14 @@
                      (setf this.dy (- this.dy)))
                  (incf this.x this.dx)
                  (incf this.y this.dy)
-
-                 (cond ((and (< (- mouse.x this.x) 50)
-                             (> (- mouse.x this.x) -50)
-                             (< (- mouse.y this.y) 50)
-                             (> (- mouse.y this.y) -50)
-                             )
+                 (cond ((and (< (- this.x mouse.x) 50)
+                             (> (- this.x mouse.x) -50)
+                             (< (- this.y mouse.y) 50)
+                             (> (- this.y mouse.y) -50))
                         (if (< this.radius max-radius)
                             (incf this.radius)))
                        ((> this.radius this.min-radius)
                         (decf this.radius)))
-
                  (this.draw)
                  nil))
         this)
