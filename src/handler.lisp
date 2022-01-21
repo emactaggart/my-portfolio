@@ -35,7 +35,7 @@
 
 (defun log-handler-wrapper (fn &key (log-response-body nil))
   (lambda (&rest args)
-    (log-message* :info "Calling function: ~a with args: ~s" fn args)
+    ;; (log-message* :info "Calling function: ~a with args: ~s" fn args)
     (handler-case (let* ((result (multiple-value-list (apply fn args)))
                          (result-no-body (cdr result)))
                     (if log-response-body
@@ -54,7 +54,7 @@
   (push (create-static-file-dispatcher-and-handler "/favicon.ico" (merge-pathnames "static/favicon.ico" application-root)) *dispatch-table*)
   (push (create-static-file-dispatcher-and-handler "/robots.txt" (merge-pathnames "static/robots.txt" application-root)) *dispatch-table*)
 
-  (push (create-regex-dispatcher "^/$" (log-handler-wrapper 'profile-handler)) *dispatch-table*)
+  (push (create-regex-dispatcher "^/$" 'profile-handler) *dispatch-table*)
 
   (push (create-regex-dispatcher "/send-message" (log-handler-wrapper 'message-handler :log-response-body t)) *dispatch-table*))
 
@@ -136,7 +136,6 @@
       (:body :class "container-fluid w-100 p-0"
              ,@body))))
 
-
 (defun http-code-handler (http-code message)
   (http-code-template (:title http-code)
     (with-html-output (*standard-output*)
@@ -145,7 +144,7 @@
                   (:nav :class "navbar navbar-expand-sm navbar-dark"
                         (:a :class "navbar-brand" :href "/#home" "Evan MacTaggart" )))
 
-            (:div :class "flex-grow-1"ub
+            (:div :class "flex-grow-1"
                   (:div :class "h-100 d-flex justify-content-center align-items-center text-center"
                         (:h1 (str message))))
 
