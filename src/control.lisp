@@ -3,6 +3,7 @@
   (:use :cl :hunchentoot :bordeaux-threads :config)
   (:export :main
            :start-server
+           :start-dev-server
            :stop-server)
   (:import-from :handler :configure-handlers :http-code-handler)
   (:import-from :mailgun-client :configure-mail-client))
@@ -30,24 +31,24 @@
 ;; FIXME should the configuration start here? perhaps pull out into a separate function
 ;; FIXME due to the async the repl now freezes when the app is started
 ;; FIXME killing seems not as simple...
-(defun start-server ()
-  (let ((config-file (truename #p"/root/.taggrc")))
+;; TODO Killing this while running jams up the port; release port
+(defun start-server-with-config (config-path)
+  (let ((config-file (truename config-path)))
     (load-configs config-file)
     (let* ((profile (get-config "PROFILE"))
            (application-root (truename (get-config-or-error "APPLICATION_ROOT")))
            (application-name (get-config-or-error "APPLICATION_NAME"))
-           ;; (log-directory (truename (merge-pathnames application-name #p"/var/log/")))
+           ;; (log-directory (truename (merge-pathnames application-name #p"/var/log/"))) ;; NOTE: we now print out to stdout/err and GCP logging handles the storage
            (api-key (get-config-or-error "MAILGUN_API_KEY")))
-      ;; FIXME how do we abstract this out of here
       (configure-hunchentoot profile)
       (configure-test-handlers profile)
       (configure-handlers application-root)
       (configure-mail-client api-key)
       (start (make-instance 'portfolio-acceptor
-                            :port (or (parse-integer (get-config "PORT")) 8080)
-                            :reply-class 'secure-reply
-                            :access-log-destination *standard-output* ;; We are now logging to stdout where logs are magically gathered by a log aggregator
-                            :message-log-destination *standard-output*))
+                                   :port (or (parse-integer (get-config "PORT")) 8080)
+                                   :reply-class 'secure-reply
+                                   :access-log-destination *standard-output* ;; We are now logging to stdout where logs are magically gathered by a log aggregator
+                                   :message-log-destination *standard-output*))
       (handler-case (bt:join-thread (find-if (lambda (th)
                                                (search "hunchentoot" (bt:thread-name th)))
                                              (bt:all-threads)))
@@ -56,7 +57,14 @@
               (format *error-output* "Aborting.~&")
               (stop-server)
               (uiop:quit)))
-        (error (c) (format t "Woops, an unknown error occured:~&~a~&" c))))))
+        (error (c) (format t "Woops, an unknown error occured:~&~a~&" c)))
+      )))
+
+(defun start-dev-server ()
+  (start-server-with-config "~/.taggrc"))
+
+(defun start-server ()
+  (start-server-with-config #p"/root/.taggrc"))
 
 (defun stop-server ()
   (when (not (acceptor-shutdown-p *acceptor*))
