@@ -11,3 +11,4 @@
 /dist/*
 /quicklisp/*
 /.cache/common-lisp/*
+/vendor
