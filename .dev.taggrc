@@ -2,5 +2,7 @@ PROFILE=DEV
 APPLICATION_ROOT=/root/my-portfolio
 APPLICATION_NAME=my-portfolio
 PORT=8080
+USE_CDN=
+# USE_CDN=https://static.mactagg.art
 LOG_ROOT=
 MAILGUN_API_KEY=
