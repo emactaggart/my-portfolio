@@ -1,4 +1,3 @@
-
 (defpackage :control
   (:use :cl :hunchentoot :bordeaux-threads :config)
   (:export :main
@@ -28,6 +27,8 @@
     ;; Preventing Hunchentoot server version leak... This could also be done via nginx server
     :initform '((:server . "Nginx")))))
 
+(defvar *mp-acceptor* nil)
+
 ;; FIXME should the configuration start here? perhaps pull out into a separate function
 ;; FIXME due to the async the repl now freezes when the app is started
 ;; FIXME killing seems not as simple...
@@ -44,21 +45,12 @@
       (configure-test-handlers profile)
       (configure-handlers application-root)
       (configure-mail-client api-key)
-      (start (make-instance 'portfolio-acceptor
-                                   :port (or (parse-integer (get-config "PORT")) 8080)
-                                   :reply-class 'secure-reply
-                                   :access-log-destination *standard-output* ;; We are now logging to stdout where logs are magically gathered by a log aggregator
-                                   :message-log-destination *standard-output*))
-      (handler-case (bt:join-thread (find-if (lambda (th)
-                                               (search "hunchentoot" (bt:thread-name th)))
-                                             (bt:all-threads)))
-        (#+sbcl sb-sys:interactive-interrupt
-         () (progn
-              (format *error-output* "Aborting.~&")
-              (stop-server)
-              (uiop:quit)))
-        (error (c) (format t "Woops, an unknown error occured:~&~a~&" c)))
-      )))
+      (setf *mp-acceptor* (make-instance 'portfolio-acceptor
+                                :port (or (parse-integer (get-config "PORT")) 8080)
+                                :reply-class 'secure-reply
+                                :access-log-destination *standard-output* ;; We are now logging to stdout where logs are magically gathered by a log aggregator
+                                :message-log-destination *standard-output*))
+      (start *mp-acceptor*))))
 
 (defun start-dev-server ()
   (start-server-with-config "~/.taggrc"))
@@ -67,8 +59,8 @@
   (start-server-with-config #p"/root/.taggrc"))
 
 (defun stop-server ()
-  (when (not (acceptor-shutdown-p *acceptor*))
-    (stop *acceptor*)))
+  (when (started-p *mp-acceptor*)
+    (stop *mp-acceptor*)))
 
 ;; FIXME put this somewhere else?...
 (defun configure-test-handlers (profile)
