@@ -3,7 +3,8 @@
   (:export :main
            :start-server
            :start-dev-server
-           :stop-server)
+           :stop-server
+           :restart-dev-server)
   (:import-from :handler :configure-handlers :http-code-handler)
   (:import-from :mailgun-client :configure-mail-client))
 
@@ -61,6 +62,11 @@
 (defun stop-server ()
   (when (started-p *mp-acceptor*)
     (stop *mp-acceptor*)))
+
+(defun restart-dev-server ()
+  (stop-server)
+  (asdf:load-system :my-portfolio)
+  (start-dev-server))
 
 ;; FIXME put this somewhere else?...
 (defun configure-test-handlers (profile)
