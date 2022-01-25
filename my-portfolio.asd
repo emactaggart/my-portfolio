@@ -10,6 +10,7 @@
                "arrow-macros"
                "cl-ppcre"
                "cl-who"
+               "str"
                "dexador"
                "hunchentoot"
                "jsown"
