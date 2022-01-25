@@ -1,7 +1,9 @@
 (defpackage :handler
   (:use :cl :hunchentoot :parenscript :cl-who)
   (:export :configure-handlers :http-code-handler)
-  (:import-from :alexandria :emptyp :plist-hash-table))
+  (:import-from :alexandria :emptyp :plist-hash-table)
+  (:import-from :config :get-config-or-error)
+  (:import-from :str :concat))
 
 (in-package :handler)
 
@@ -27,7 +29,6 @@
 ;; on-event macro
 ;; on document ready macro
 
-
 (setf cl-who:*attribute-quote-char* #\")
 
 ;; TODO look further into ps namespacing
@@ -47,15 +48,26 @@
         ;; FIXME handle restart-case correctly TODO learn about restart-cases...
         (error  c)))))
 
+(defun static-asset (relative-url)
+  (let ((cdn (get-config-or-error "USE_CDN")))
+    (if cdn
+        (concat cdn relative-url)
+        relative-url)))
+
 (defun configure-handlers (application-root)
-  (push (create-folder-dispatcher-and-handler "/styles/" (merge-pathnames "static/styles/" application-root)) *dispatch-table*)
-  (push (create-folder-dispatcher-and-handler "/webfonts/" (merge-pathnames "static/webfonts/" application-root)) *dispatch-table*)
-  (push (create-folder-dispatcher-and-handler "/static/" (merge-pathnames "static/" application-root)) *dispatch-table*)
-  (push (create-static-file-dispatcher-and-handler "/favicon.ico" (merge-pathnames "static/favicon.ico" application-root)) *dispatch-table*)
-  (push (create-static-file-dispatcher-and-handler "/robots.txt" (merge-pathnames "static/robots.txt" application-root)) *dispatch-table*)
-
+  (let ((cdn (get-config-or-error "USE_CDN")))
+    (if cdn
+        (progn
+          (push (create-prefix-dispatcher "/favicon.ico" (redirect-handler (concat cdn "/static/favicon.ico"))) *dispatch-table*)
+          (push (create-prefix-dispatcher "/robots.txt" (redirect-handler (concat cdn "/static/robots.txt"))) *dispatch-table*))
+        (progn
+          ;; FIXME busted pathing
+          ;; (push (create-folder-dispatcher-and-handler "/styles/" (merge-pathnames "static/styles/" application-root)) *dispatch-table*)
+          ;; FIXME this seems unused - 2021-01 -  (push (create-folder-dispatcher-and-handler "/webfonts/" (merge-pathnames "static/webfonts/" application-root)) *dispatch-table*)
+          (push (create-folder-dispatcher-and-handler "/static/" (merge-pathnames "static/" application-root)) *dispatch-table*)
+          (push (create-static-file-dispatcher-and-handler "/favicon.ico" (merge-pathnames "static/favicon.ico" application-root)) *dispatch-table*)
+          (push (create-static-file-dispatcher-and-handler "/robots.txt" (merge-pathnames "static/robots.txt" application-root)) *dispatch-table*))))
   (push (create-regex-dispatcher "^/$" 'profile-handler) *dispatch-table*)
-
   (push (create-regex-dispatcher "/send-message" (log-handler-wrapper 'message-handler :log-response-body t)) *dispatch-table*))
 
 (defvar *email-address-regex* "\\A([\\w+\\-].?)+@[a-z\\d\\-]+(\\.[a-z]+)*\\.[a-z]+\\z")
@@ -70,6 +82,11 @@
              "Invalid email address."))
     :message ((,(lambda (name) (> (length name) 0)) "Please enter a message.")
               (,(lambda (name) (< (length name) *message-length*)) ,(format nil "Message must be less than ~a characters." *message-length*)))))
+
+(defun redirect-handler (redirect-url)
+  (lambda ()
+    (setf (return-code*) 301)
+    (setf (hunchentoot:header-out :Location) redirect-url)))
 
 (defun message-handler ()
   (let* ((name (post-parameter "name"))
@@ -128,10 +145,10 @@
               :integrity "sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
               :crossorigin "anonymous")
 
-       (:link :rel "stylesheet" :href "/styles/fontawesome-all.css")
+       (:link :rel "stylesheet" :href "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css")
        ;; Cheers Conrad! http://www.lisperati.com/logo.html
        (:link :rel "icon" :type "image/png" :href "favicon.ico")
-       (:link :rel "stylesheet" :type "text/css" :href "/styles/main.css")
+       (:link :rel "stylesheet" :type "text/css" :href (static-asset "/static/styles/main.css"))
        (:title (str ,title)))
       (:body :class "container-fluid w-100 p-0"
              ,@body))))
@@ -174,11 +191,10 @@
               :integrity "sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
               :crossorigin "anonymous")
 
-       (:link :rel "stylesheet" :href "/styles/fontawesome-all.css")
+       (:link :rel "stylesheet" :href "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css")
        ;; Cheers Conrad! http://www.lisperati.com/logo.html
        (:link :rel "icon" :type "image/png" :href "favicon.ico")
-
-       (:link :rel "stylesheet" :type "text/css" :href "/styles/main.css")
+       (:link :rel "stylesheet" :type "text/css" :href (static-asset "/static/styles/main.css"))
        (:title (str ,title))
        (:script :src "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js")
 
@@ -346,91 +362,91 @@
                                   (:p "Simplicity is the key to sane development. Likewise I prefer to avoid over-designing and over-engineering things.")))
 
                       (:div :class "portrait-container mx-auto"
-                            (:img :class "portrait" :src "/static/profile-photos/cooking-ahh.jpg"))
+                            (:img :class "portrait" :src (static-asset "/static/profile-photos/cooking-ahh.jpg")))
 
                       (:div :class "py-3"
                             "I'm a developer comfortable working in a plethora of technologies and environments and not afraid to learn something new. Have a look at some of my skills!")
 
                       (let ((professional
-                              '(:id "pro"
+                              `(:id "pro"
                                 :title "Professional"
                                 :desc "The technologies I've used in the majority of my professional experience."
                                 :items ((:name "Python"
-                                         :img "/static/logos/python-logo.png"
+                                         :img ,(static-asset "/static/logos/python-logo.png")
                                          :desc "Having once stemmed from school and hobbyist netsec projects, my experience with Python has now grown tremendously where I have gotten to play with it in the real world, using it in web development via Django and some scripting and command line applications in my own personal projects.")
                                         (:name "Google Cloud Platform"
-                                         :img "/static/logos/gcp-logo.png"
+                                         :img ,(static-asset "/static/logos/gcp-logo.png")
                                          :desc "Recent projects I have worked on have made heavy use of a handful of GCP's services ranging from monitoring, logging, and error reporting, to handling the bulk of application builds, deploys, asynchronous workloads, scheduled tasks, and data storage.")
                                         (:name "Java"
-                                         :img "/static/logos/java-logo.png"
+                                         :img ,(static-asset "/static/logos/java-logo.png")
                                          :desc "With Java I have developed backend services for various applications as well as some internal business facing GUI applications. A handlful university courses also used Java as a point of focus for OOP.")
                                         (:name "JavaScript"
-                                         :img "/static/logos/javascript-logo.png"
+                                         :img ,(static-asset "/static/logos/javascript-logo.png")
                                          :desc "Javascript is unavoidable at this point. Through school and the majority of my work experience I have used Javascript for front end and back end, primarily the former.")
                                         (:name "Spring & Spring Boot"
-                                         :img "/static/logos/spring-logo.png"
+                                         :img ,(static-asset "/static/logos/spring-logo.png")
                                          :desc "The core of my Java experience exists inside the context of Spring. I have developed RESTful services, cron jobs, web applications with spring.")
                                         (:name "SQL"
-                                         :img "/static/logos/mysequel-logo.png"
+                                         :img ,(static-asset "/static/logos/mysequel-logo.png")
                                          :desc "Starting in school but carrying forward to professional experience SQL has been a staple in my DB experience. The majority of projects I have been involved with have made use of relational databases.")
                                         (:name "Angular"
-                                         :img "/static/logos/angular-logo.png"
+                                         :img ,(static-asset "/static/logos/angular-logo.png")
                                          :desc "My first professional web development experience out of university was Angular. My experience primarily exists with version 2+, but have had a short time with the original. With Angular I have built various single-page web applications, both customer and business facing.")
                                         (:name "Web Development"
-                                         :img "/static/logos/html-css-js-logo.png"
+                                         :img ,(static-asset "/static/logos/html-css-js-logo.png")
                                          :desc "The web being such an incredibly useful medium, web development is likewise a common task. Mobile responsive design is also in the realm of my expertise, as hopefully this page can attest."))))
                             (hobbies
-                              '(:id "hobbies"
+                              `(:id "hobbies"
                                 :title "Hobbies"
                                 :desc "Some things (mostly tech) I'm currently dabbling in."
                                 :items
                                 ((:name "Common Lisp"
-                                  :img "/static/logos/lisp-logo.png"
+                                  :img ,(static-asset "/static/logos/lisp-logo.png")
                                   :desc "I built this website using Common Lisp, take a look at github to see it's current state. My experience has been short but enlightening and very enjoyable once climbing over some initial hurdles. I have intentions of continuing my exploration through this humble language.")
                                  (:name "Emacs"
-                                  :img "/static/logos/emacs-logo.png"
+                                  :img ,(static-asset "/static/logos/emacs-logo.png")
                                   :desc "After succumbing to the dark side I transitioned from Vim to Emacs through Spacemacs, which I'm currently still using as my editor of choice. Emacs was the monumental driver towards learning Lisp like languages.")
                                  (:name "Docker"
-                                  :img "/static/logos/docker-logo.png"
+                                  :img ,(static-asset "/static/logos/docker-logo.png")
                                   :desc "My use of Docker is primarily centered around creating build environments and pipelines, but also extends to containerized applications such as this website.")
                                  (:name "Finance and Investing"
-                                  :img "/static/logos/panda-stats-logo.png"
+                                  :img ,(static-asset "/static/logos/panda-stats-logo.png")
                                   :desc "Still in its infancy, my lifelong journey into the stock markets and investing will hopefuly be a prosperous one! Not having a large background in finance prior, I am now beginning to practice some of the basics when it comes to company valuation, recognizing solid company fundamentals, researching and reading financial statements, and bringing my programming knowledge into the land of spreadsheets.")
                                  (:name "DJing"
-                                  :img "/static/logos/vinyl-logo.png"
+                                  :img ,(static-asset "/static/logos/vinyl-logo.png")
                                   :desc "Feeling the urge to create something other than software music became the first thing that drew my interest. Starting with a friend's mixer I began practicing a little over two years ago and have yet to stop. I now have my own gear to practice on and a decent pair of studio monitors to make some noise, now all that is left is to join up with some friends and work on throwing some shows!"
                                   )
                                  (:name "Music Production"
-                                  :img "/static/logos/synth-logo.png"
+                                  :img ,(static-asset "/static/logos/synth-logo.png")
                                   :desc "Tying into DJing and live performing, a more meticulous form of creating I'm just beginning to explore is music production. With a knack for learning and a self proclaimed good ear for sound, I plan to drum/synth up some unique musical flavors in the near future."))))
                             (general-dev
-                              '(:id "general"
+                              `(:id "general"
                                 :title "General"
                                 :desc "Various technologies I've used both in and out of my professional experience."
                                 :items
                                 ((:name "Linux"
-                                  :img "/static/logos/linux-logo.png"
+                                  :img ,(static-asset "/static/logos/linux-logo.png")
                                   :desc "Since my introduction to using Linux in early university I have gradually transitioned into using it full time as my go-to OS. At this instant I'm running Fedora but have dabbled in Ubuntu, debian, and CentOS in the past. I have even built my own linux kernel from scratch through various tutorials! I have also dabbled in MacOS, and have a dual boot to Windows for other occasional uses.")
                                  (:name "Devops"
-                                  :img "/static/logos/devops-logo.png"
+                                  :img ,(static-asset "/static/logos/devops-logo.png")
                                   :desc "Not being totally new to web development, but being relatively new to hosting my own services, devops is an area of interest of mine. Having plenty of linux experience, and now freshly, an understanding docker, I am digging deeper into the processes involed with devops automation and continuous integration, with which I have made use of in previous work experience.")
                                  (:name "Git"
-                                  :img "/static/logos/git-logo.png"
+                                  :img ,(static-asset "/static/logos/git-logo.png")
                                   :desc "Since early on in my development career Git has been the primary choice of version control. Being a command line warrior I like to think that I have a intermediate-advanced level of understanding of git, without digging into the sublevel commands git is comprised of. My git client of choice is Magit, a lovely Emacs plugin. I have also used Mercurial in a professional environment as well.")
                                  (:name "Scrum"
-                                  :img "/static/logos/scrum-logo.png"
+                                  :img ,(static-asset "/static/logos/scrum-logo.png")
                                   :desc "Through previous corporate work experience, I had the pleasure of collaborating on a few teams where Scrum was used effectively, dynamically, and autonomously as each team saw fit. I have also collaborated with teams on larger scale projects where by each team would coordinate and comprimise when driven towards a large, single, encompassing goal. The teams ranged from 3 to 10 people.")
                                  (:name "Testing"
-                                  :img "/static/logos/testing-logo.png"
+                                  :img ,(static-asset "/static/logos/testing-logo.png")
                                   :desc "Starting in my student developer work terms testing has been a strong area of interest. I have professional experience with building tests ranging from unit tests, to integration tests, to automated UI tests with PhantomJS, to building a framework for automated integration tests on ran by the CI server.")
                                  (:name "Security"
-                                  :img "/static/logos/google-security-logo.png"
+                                  :img ,(static-asset "/static/logos/google-security-logo.png")
                                   :desc "I like to think that I'm not as security ignorant as most. However I am not perfect, so I do believe security reviews and security audits are very important.")
                                  (:name "Amazon Web Services"
-                                  :img "/static/logos/aws-logo.png"
+                                  :img ,(static-asset "/static/logos/aws-logo.png")
                                   :desc "Initially this site was hosted on an EC2 instance running as a Docker host, however I had made an attempt at getting a simplified containerized version running AWS's ECS service, however ran into headaches around load balancing target groups not finding the ECS containers. Nonetheless I enjoy the hands-on process of devops and development that AWS provides (but have had greater success and more experience with GCP)."))))
                             (misc
-                              '(:id "misc"
+                              `(:id "misc"
                                 :title "Miscellaneous"
                                 :desc "Stuff I've played around with in the past for various reasons, willingly or not."
                                 :items
@@ -573,57 +589,57 @@
        ;; TOOD compress photos
 
        (let ((images
-               '((:desc "Being half lost makes for some half decent views."
+               `((:desc "Being half lost makes for some half decent views."
                   :location "A wrong turn somewhere between Cao Bang and Ba Bể National Park, Vietnam"
-                  :img "/static/travel-photos/cao-bang-to-ba-be-lake.jpg")
+                  :img ,(static-asset "/static/travel-photos/cao-bang-to-ba-be-lake.jpg"))
                  (:desc "Realistically a mountain can only get you so high."
                   :location "Hải Vân Pass, between Hội An and Huế, Vietnam"
-                  :img "/static/travel-photos/hai-van-pass-tower.jpg")
+                  :img ,(static-asset "/static/travel-photos/hai-van-pass-tower.jpg"))
                  (:desc "The endless beaches of Koh Lanta provide some pretty-not-too-bad sunsets."
                   :location "Phra Ae Beach, Koh Lanta, Thailand"
-                  :img "/static/travel-photos/koh-lanta-sunset.jpg")
+                  :img ,(static-asset "/static/travel-photos/koh-lanta-sunset.jpg"))
                  (:desc "Escaping the concrete jungle."
                   :location "Bangkok, Thailand"
-                  :img "/static/travel-photos/bkk-graffiti.jpg")
+                  :img ,(static-asset "/static/travel-photos/bkk-graffiti.jpg"))
                  (:desc "Surrounded by sand, sunshine, and beaches!"
                   :location "Zen Beach, Koh Phangan, Thailand"
-                  :img "/static/travel-photos/koh-phangan-zen-beach-nicole-evan-selfie.jpg")
+                  :img ,(static-asset "/static/travel-photos/koh-phangan-zen-beach-nicole-evan-selfie.jpg"))
                  (:desc "Using Google maps in Laos leads to sweaty sunsets."
                   :location "Pha Ngern Viewpoint 2, Vang Vieng, Laos"
-                  :img "/static/travel-photos/vang-vieng-pha-ngern-viewpoint-2.jpg")
+                  :img ,(static-asset "/static/travel-photos/vang-vieng-pha-ngern-viewpoint-2.jpg"))
                  (:desc "Kerfuffle Cambodia, and yes that is a moped-powered-ferris-wheel."
                   :location "Somewhere near Otres Beach 3, Sihanoukville, Cambodia"
-                  :img "/static/travel-photos/kerfuffle.jpg")
+                  :img ,(static-asset "/static/travel-photos/kerfuffle.jpg"))
                  (:desc "Picking up some fresh threads for the Khmer New Year."
                   :location "Kampot, Cambodia"
-                  :img "/static/travel-photos/cambodian-new-year-party.jpg")
+                  :img ,(static-asset "/static/travel-photos/cambodian-new-year-party.jpg"))
                  (:desc "A sunset signalling that you probably find a place to sleep soon."
                   :location "Near Kong Lor Cave on the Thakhek Loop, Laos"
-                  :img "/static/travel-photos/thakhek-valley-view-near-konglor-cave.jpg")
+                  :img ,(static-asset "/static/travel-photos/thakhek-valley-view-near-konglor-cave.jpg"))
                  (:desc "Do as the locals do and cross the river using the motorbike \"ferry\"."
                   :location "Xe Bangfai River Crossing, somewhere between Bualapha and Ban Xoang, Laos"
-                  :img "/static/travel-photos/laos-bamboo-raft-river-crossing.jpg")
+                  :img ,(static-asset "/static/travel-photos/laos-bamboo-raft-river-crossing.jpg"))
                  (:desc "Drunken palm trees with equally drunken tourists."
                   :location "Lotus Beach Bar, Koh Tao, Thailand"
-                  :img "/static/travel-photos/koh-tao-bent-palm.jpg")
+                  :img ,(static-asset "/static/travel-photos/koh-tao-bent-palm.jpg"))
                  (:desc "Lovely views and relaxing vibes."
                   :location "Otres Beach, Cambodia"
-                  :img "/static/travel-photos/otres-beach-easy-panda.jpg")
+                  :img ,(static-asset "/static/travel-photos/otres-beach-easy-panda.jpg"))
                  (:desc "Comfort parrots helping my girlfriend relax after her first day in Thai scooter traffic."
                   :location "Phuket Bird Park, Phuket, Thailand"
-                  :img "/static/travel-photos/phuket-bird-park-team-parots.jpg")
+                  :img ,(static-asset "/static/travel-photos/phuket-bird-park-team-parots.jpg"))
                  (:desc "Picking up a smoking habit while in Thailand."
                   :location "Khao Sok National Park, Thailand"
-                  :img "/static/travel-photos/khao-sok-smoking.jpg")
+                  :img ,(static-asset "/static/travel-photos/khao-sok-smoking.jpg"))
                  (:desc "In the dragon's mouth."
                   :location "A \"well guarded\" Abandoned Water Park near Huế, Vietnam"
-                  :img "/static/travel-photos/hue-abandoned-water-park.jpg")
+                  :img ,(static-asset "/static/travel-photos/hue-abandoned-water-park.jpg"))
                  (:desc "An average Kampot sunset shadowed by Bokor Mountain."
                   :location "Kampot, Cambodia"
-                  :img "/static/travel-photos/kampot-sunset.jpg")
+                  :img ,(static-asset "/static/travel-photos/kampot-sunset.jpg"))
                  (:desc "A sweaty and steady climb up some limbstone mountains."
                   :location "Cát Bà National Park, Cát Bà Island, Vietnam"
-                  :img "/static/travel-photos/cat-ba-national-park-peace.jpg")
+                  :img ,(static-asset "/static/travel-photos/cat-ba-national-park-peace.jpg"))
                  )))
 
          (htm
