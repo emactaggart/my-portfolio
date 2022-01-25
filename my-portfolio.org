@@ -7,6 +7,8 @@ Oh, and it's a personal website now I guess!
 #+end_src
 
 * My-Portfolio
+** TODO <2022-01-21 Fri> Cleanup this file, remove what is no longer relevant
+** TODO <2022-01-21 Fri> when deploying to prod, avoid deploying static files?
 ** TODO Is it possible to separate docker-compose files by service? making them independently deployable?
    Essentially we don't want to update the compose file on the server but only deploy one service, 
    making the other running services out of date with the current compose... perhaps docker already manages this?
