@@ -4,7 +4,9 @@
            :start-server
            :start-dev-server
            :stop-server
-           :restart-dev-server)
+           :restart-dev-server
+           :join-blocking-thread
+           :start-blocking-server)
   (:import-from :handler :configure-handlers :http-code-handler)
   (:import-from :mailgun-client :configure-mail-client))
 
@@ -57,7 +59,13 @@
   (start-server-with-config "~/.taggrc"))
 
 (defun start-server ()
+  ;; TODO make this blocking so the process does not end
   (start-server-with-config #p"/root/.taggrc"))
+
+(defun start-blocking-server ()
+  ;; TODO make this blocking so the process does not end
+  (start-server)
+  (join-blocking-thread))
 
 (defun stop-server ()
   (when (started-p *mp-acceptor*)
@@ -67,6 +75,14 @@
   (stop-server)
   (asdf:load-system :my-portfolio)
   (start-dev-server))
+
+(defun join-blocking-thread ()
+  "The idea is that when we want sbcl to continue running in our containers we
+must join the interpreter to the running thread so it does not automatically
+quit (despite the process still running in the background)"
+  (bt:join-thread (find-if (lambda (th)
+                             (search "hunchentoot-listener" (bt:thread-name th)))
+                           (bt:all-threads))))
 
 ;; FIXME put this somewhere else?...
 (defun configure-test-handlers (profile)
