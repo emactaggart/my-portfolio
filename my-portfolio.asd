@@ -4,7 +4,7 @@
   :license ""
   :build-operation "program-op"
   :build-pathname "dist/my-portfolio.exe"
-  :entry-point "control:start-server"
+  :entry-point "control:start-blocking-server"
   :depends-on ("alexandria"
                "bordeaux-threads"
                "arrow-macros"
