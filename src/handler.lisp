@@ -134,6 +134,7 @@
 
 ;; HANDLERS
 
+
 (defmacro http-code-template ((&key title) &body body)
   `(with-html-output-to-string (*standard-output* nil :prologue t :indent nil)
      (:html
@@ -179,6 +180,7 @@
                      (:div :class "d-flex flex-row justify-content-center py-3"
                            (:small :style "color: var(--grey-400)" "EVAN MACTAGGART"
                                    (:span :style "color: var(--accent-1)" " DEC 2021"))))))))
+
 
 (defmacro page-template ((&key title) &body body)
   `(with-html-output-to-string (*standard-output* nil :prologue t :indent nil)
